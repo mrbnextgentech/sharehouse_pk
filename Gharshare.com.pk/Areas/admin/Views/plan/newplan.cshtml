@@ -1,0 +1,116 @@
+﻿@using Gharshare.Models
+@model Plan
+@{
+    ViewData["Title"] = "";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmplan">
+                            <input id="txtintroPersonId" type="hidden" />
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">Plan name</label>
+                                    <div class="flex">
+                                        <input id="txtname" asp-for="Title" type="text" class="form-control"
+                                               required placeholder="Enter plan name...">
+                                        <span asp-validation-for="Title" id="spanname" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="row justify-content-center mb-3">
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Plan Type</label>
+                                    <div class="d-flex">
+                                        <select id="ddltype" asp-for="PlanType" class="nice-select w-100">
+                                            <option value="" selected>select plan type</option>
+                                            <option value="1">For landlord</option>
+                                            <option value="2">For tenant</option>
+                                            <option value="3">For both</option>
+                                        </select>
+                                        <span asp-validation-for="PlanType" id="spantype" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Plan Status</label>
+                                    <div class="flex">
+                                        <select id="ddlstatus" asp-for="PlanStatus" class="nice-select w-100">
+                                            <option value="" selected>select plan status</option>
+                                            <option value="1">Active</option>
+                                            <option value="2">Pending</option>
+                                        </select>
+                                        <span asp-validation-for="PlanStatus" id="spanstatus" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Price</label>
+                                    <div class="flex">
+                                        <input id="txtprice" asp-for="Price" number type="text" class="form-control"
+                                               required placeholder="Enter plan price...">
+                                        <span asp-validation-for="Price" id="spanprice" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Plan Days</label>
+                                    <div class="flex">
+                                        <input id="txtdays" asp-for="Days" type="text" class="form-control"
+                                               required placeholder="Enter no of days plan is valid for...">
+                                        <span asp-validation-for="Days" id="spandays" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Tagline</label>
+                                    <div class="flex">
+                                        <input id="txttagline" asp-for="Tagline" type="text" class="form-control"
+                                               required placeholder="Enter tagline...">
+                                        <span asp-validation-for="Tagline" id="spantagline" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                 <div class="col-sm-6">
+                                     <label class="text-label form-label">Guarantees success?</label>
+                                     <div class="form-check custom-checkbox ms-1 ">
+                                    <input type="checkbox" value="true" id="Guaranteed" name="Guaranteed"
+                                        @(Model.Guaranteed == true ? "checked" : "") 
+                                        asp-for="Guaranteed"
+                                           class="form-check-input" />
+                                    <label class="form-check-label">
+                                        Yes! this plan guarantees to provide tenant/property?
+                                    </label>
+                                </div>
+                                </div>                                
+                            </div>  
+                            <div>
+                                <div class="row justify-content-center mb-3">
+                                    <label class="text-label form-label">Plan description</label>
+                                    <div class="flex">
+                                        <textarea id="txtdescription" rows="10" style="height:100px;"   
+                                        class="form-control" placeholder="Enter plan description..."
+                                    asp-for="Description"></textarea>
+                                        <span id="spandescription" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-2">
+                                <button type="submit" class="btn btn-primary w-50">
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<partial name="_dtpPartial" />
+@*<script src="~/js/plan/createplanlist.js"></script>
+*@<script src="~/js/plan/savePlan.js"></script>

@@ -1,0 +1,126 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model List<Plan>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] ="Subscription Plans";
+    Pager pager = new Pager();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="col-lg-12">
+    <div class="card m-5">
+        <div class="card-header">
+            <h4 class="card-title">Subscription Plans</h4>
+        </div>
+        <div class="card-body">
+            <div class="row m-2">
+                <div class="col-md-8">
+                    <a onclick="loadAddplanView()" href="#"
+                       class="btn btn-primary" data-bs-toggle="modal"
+                       data-bs-target="#largeModal">
+                        <i class="fa fa-plus"></i>
+                        Add new plan
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <select id="ddlplantype" class="nice-select wide w-100">
+                        <option value="" data-plantype="">All plans</option>
+                        <option value="1" data-plantype="1">For landlords</option>
+                        <option value="2" data-plantype="2">For tenants</option>
+                        <option value="3" data-plantype="3">For both </option>
+                    </select>
+                </div>
+            </div>
+            @if (Model.Any())
+            {
+                <div id="planlist" class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">
+                                    <strong>No</strong>
+                                </th>
+                                <th><strong>Plan Name</strong></th>
+                                <th><strong>Price</strong></th>
+                                <th><strong>For</strong></th>
+                                <th><strong>Status</strong></th>
+                                <th><strong>Action</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Count(); i++)
+                            {
+                                var plan = Model[i];
+                                var sno = @i + 1;
+                                <tr>
+                                    <td>@sno</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="w-space-no">@plan.Title</span>
+                                        </div>
+                                    </td>
+                                    <td>Rs @Utility.Format(@plan.Price)</td>
+                                    <td>@Utility.GetEnumDisplayName(@plan.PlanType)</td>
+                                    <td>
+                                        @if (plan.PlanStatus == Plan.Status.active)
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-success me-1"></i> Active
+                                            </div>
+                                        }
+                                        else if (plan.PlanStatus == Plan.Status.pending)
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-warning me-1"></i> Pending
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-danger me-1"></i> Canceled
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="d-flex">
+                                            <a href="#" data-planid="@plan.ID" data-bs-toggle="modal" data-bs-target="#largeModal"
+                                            class="edit btn btn-danger shadow btn-xs sharp me-1">
+                                                <i class="fa fa-pen"></i>
+                                            </a>
+                                            <a href="#" onclick="loadviewAddservice2Plan(@plan.ID)" data-bs-toggle="modal" data-bs-target="#largeModal"
+                                            title="add service to plan" class="btn btn-danger shadow btn-xs sharp me-1"><i class="fa fa-plus"></i></a>
+                                            <a href="#" data-planid="@plan.ID" data-bs-toggle="modal" data-bs-target="#largeModal"
+                                            class="delete btn btn-danger shadow btn-xs sharp" title="Delete Plan"><i class="fa fa-trash"></i></a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <partial name="_Pager" model="@pager" />
+            }
+            else
+            {
+                <div id="noplan" class="row text-center p-3">
+                    <h4>No record exists</h4>
+                </div>
+            }
+            <div style="display:none" id="message" class="row text-center p-3">
+                @*used when no data in ajax success*@
+                <h4>No record exists</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/plan/addeditPlan.js"></script>
+<script src="~/js/plan/getPlans.js"></script>
+<script src="~/js/plan/createplanlist.js"></script>
+<script src="~/js/plan/loadPlan2edit.js"></script>
+<script src="~/js/plan/loadviewAddservice2Plan.js"></script>

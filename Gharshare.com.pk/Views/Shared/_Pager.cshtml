@@ -1,0 +1,80 @@
+﻿@model Gharshare.CommonHelper.Pager
+@{
+
+}
+@if (Model.TotalPages > 1)
+{
+    <nav>
+        <ul class="pagination pagination-circle justify-content-center pt-5">
+            @if (Model.CurrentPage > 1)
+            {
+                //'asp-route-type' is for scenario where the action method where
+                //paging is applied expects a string parameter named 'type'.
+                <li class="page-item">
+                    <a title="First" asp-route-pg="1" class="page-link me-2"
+               asp-controller=@Model.ControllerName asp-route-type=@Model.Type
+               asp-route-sortOrder=@Model.SortOrder>
+                        <i class="fas fa-angle-double-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a title="Previous" asp-controller=@Model.ControllerName
+               asp-route-sortOrder=@Model.SortOrder asp-route-type=@Model.Type class="page-link me-2"
+               asp-action=@Model.ActionName asp-route-pg="@(Model.CurrentPage-1)">
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+            }
+            @for (var pge = Model.StartPage; pge <= Model.EndPage; pge++)
+            {
+                <li class="page-item @(pge==Model.CurrentPage ? "active" : "")">
+                    <a class="page-link" asp-controller=@Model.ControllerName asp-action=@Model.ActionName
+               asp-route-sortOrder=@Model.SortOrder asp-route-pg="@pge" asp-route-type=@Model.Type>@pge</a>
+                </li>
+            }
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                if (Model.HasSearchPhrase == true)
+                {
+                    <li class="page-item page-indicator">
+                        <a title="Next" asp-controller=@Model.ControllerName 
+               asp-action=@Model.ActionName class="page-link me-2" asp-route-type=@Model.Type
+               asp-route-Searchphrase=@Model.SearchPhrase
+               asp-route-sortOrder=@Model.SortOrder
+               asp-route-pg="@(Model.CurrentPage + 1)">
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="page-item page-indicator">
+                        <a title="Last" asp-controller=@Model.ControllerName
+               asp-route-Searchphrase=@Model.SearchPhrase class="page-link me-2"
+               asp-action=@Model.ActionName asp-route-sortOrder=@Model.SortOrder 
+               asp-route-type=@Model.Type asp-route-pg="@(Model.TotalPages)">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item page-indicator">
+                        <a title="Next" asp-controller=@Model.ControllerName
+               asp-action=@Model.ActionName class="page-link me-2" asp-route-type=@Model.Type
+               asp-route-sortOrder=@Model.SortOrder
+               asp-route-pg="@(Model.CurrentPage + 1)">
+                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        </a>
+                    </li>
+                    <li class="page-item page-indicator">
+                        <a class="page-link me-2" title="Last"
+               asp-controller=@Model.ControllerName asp-route-type=@Model.Type
+               asp-action=@Model.ActionName asp-route-sortOrder=@Model.SortOrder
+               asp-route-pg="@(Model.TotalPages)">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+        <p class="text-center mb-3">Viewing @Model.FromRecord-@Model.ToRecord of @Model.TotalItems records</p>
+    </nav>
+}

@@ -1,0 +1,846 @@
+﻿@using Gharshare.Models
+@model PropertyListingVM
+
+@{
+    ViewData["Title"] = "List a place";
+    Layout = "_Layout4Listings";
+}
+<div class="container-fluid">
+    <!-- row -->
+    <div class="row">
+        <div class="col-xl-12 col-xxl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">DESCRIBE YOUR PLACE</h4>
+                </div>
+                <div class="card-body">
+                    <div id="smartwizard">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#accommodationtype">
+                                    <span class="num">Accommodation Type</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#about">
+                                    <span class="num">About Property</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#roomfeatures">
+                                    <span class="num">Room Features</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#rent_bond_bills">
+                                    <span class="num">Rent, Bond & Bill</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#availability">
+                                    <span class="num">Availability</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#propertyimages">
+                                    <span class="num">Property Images</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#flatmate_preference">
+                                    <span class="num">Flatmate Preference</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#intro">
+                                    <span class="num">Intro & Description</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#preview">
+                                    <span class="num">Preview</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="accommodationtype" class="tab-pane" role="tabpanel">
+                                <form id="accommodationtypestep">
+                                    <input id="txtacctypePropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4>
+                                                What type of accommodation are you
+                                                offering?
+                                            </h4>
+                                            <input type="hidden" asp-for="@Model.Property.ID" />
+                                            <input id="txtaccommodationtype" type="hidden" value="iswholepropertyfalse" />
+                                            <div class="row mt-3">
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="type radio-input" type="radio"
+                                                                   asp-for="@Model.Property.Accommodationtype" id="radioRoom" required
+                                                                   checked="@(Model.Property.Accommodationtype == @Property.AccType.Room? true : false)"
+                                                                   value="@Property.AccType.Room" />
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <img src="~/img/icons/propertytype/room.png" />
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>
+                                                            Room(s) in an existing
+                                                            sharehouse
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="type radio-input" type="radio" id="radiowholeproperty"
+                                                                   asp-for="@Model.Property.Accommodationtype" required
+                                                                   checked="@(Model.Property.Accommodationtype == @Property.AccType.WholeProperty? true : false)"
+                                                                   value="@Property.AccType.WholeProperty" />
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <img src="~/img/icons/propertytype/wholeproperty.png" />
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>Whole property for rent</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="type radio-input" type="radio" required
+                                                                   asp-for="@Model.Property.Accommodationtype" id="radiostudentaccommodation"
+                                                                   checked="@(Model.Property.Accommodationtype == @Property.AccType.StudentAccommodation? true : false)"
+                                                                   value="@Property.AccType.StudentAccommodation" />
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <img src="~/img/icons/propertytype/student-accommodation.png" />
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>Hostel</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="type radio-input" type="radio"
+                                                                   asp-for="@Model.Property.Accommodationtype" id="radionhomestay" required
+                                                                   checked="@(Model.Property.Accommodationtype == @Property.AccType.Homestay? true : false)"
+                                                                   value="@Property.AccType.Homestay" />
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <img src="~/img/icons/propertytype/homestay.png" />
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>Homestay </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="divExistinRoom" class="size-filter" style="display:none;">
+                                                <h4>Type of property</h4>
+                                                <div class="btn-group w-100" role="group"
+                                                     aria-label="Basic radio toggle button group">
+                                                    <input type="radio" class="btn-check" id="btnradiohouse"
+                                                           asp-for="@Model.Property.Propertytype"
+                                                           checked="@(Model.Property.Propertytype == @Property.PropertyType.House? true : false)"
+                                                           value="@Property.PropertyType.House" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="btnradiohouse">House</label>
+                                                    <input type="radio" class="btn-check" id="btnradioflat"
+                                                           asp-for="@Model.Property.Propertytype"
+                                                           checked="@(Model.Property.Propertytype == @Property.PropertyType.Flat? true : false)"
+                                                           value="@Property.PropertyType.Flat" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="btnradioflat">Flat</label>
+                                                </div>
+                                            </div>
+                                            <div id="divwholeproperty" class="size-filter" style="display:none;">
+                                                <h4>Type of property</h4>
+                                                <div class="btn-group w-100" role="group"
+                                                     aria-label="Basic radio toggle button group">
+                                                    <input type="radio" class="btn-check" id="radio2bd"
+                                                           asp-for="@Model.Property.Propertytype"
+                                                           checked
+                                                           value="@Property.PropertyType.Twoplusbedroom" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radio2bd">2+ Bedroom</label>
+                                                    <input type="radio" class="btn-check" id="radio1bd"
+                                                           asp-for="@Model.Property.Propertytype"
+                                                           checked="@(Model.Property.Propertytype == @Property.PropertyType.Onebed? true : false)"
+                                                           value="@Property.PropertyType.Onebed" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radio1bd">1 Bedroom</label>
+                                                    <input type="radio" class="btn-check" id="radiostudio"
+                                                           asp-for="@Model.Property.Propertytype"
+                                                           checked="@(Model.Property.Propertytype == @Property.PropertyType.Studio? true : false)"
+                                                           value="@Property.PropertyType.Studio" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radiostudio">Studio</label>
+                                                    <input type="radio" class="btn-check" id="radiogranny"
+                                                           asp-for="@Model.Property.Propertytype"
+                                                           checked="@(Model.Property.Propertytype == @Property.PropertyType.Grannyflat? true : false)"
+                                                           value="@Property.PropertyType.Grannyflat" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radiogranny">Granny Flat</label>
+                                                </div>
+                                            </div>
+                                            <div id="divhomestay" class="size-filter" style="display:none;">
+                                                <h4>Type of property</h4>
+                                                <div class="btn-group w-100" role="group"
+                                                     aria-label="Basic radio toggle button group">
+                                                    <input type="radio" class="btn-check" id="btnradiohstay"
+                                                           asp-for="@Model.Property.Propertytype"
+                                                           checked="@(Model.Property.Propertytype == @Property.PropertyType.Homestay? true : false)"
+                                                           value="@Property.PropertyType.Homestay" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="btnradiohstay">Homestay</label>
+                                                    <input type="radio" class="btn-check" id="btnradiostudent"
+                                                           asp-for="@Model.Property.Propertytype"
+                                                           checked="@(Model.Property.Propertytype == @Property.PropertyType.Studentaccommodation? true : false)"
+                                                           value="@Property.PropertyType.Studentaccommodation" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="btnradiostudent">Studentaccommodation</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="about" class="tab-pane" role="tabpanel">
+                                <form id="frmaboutstep">
+                                    <input id="txtaboutPropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4>
+                                                About the property
+                                            </h4>
+                                            <input type="hidden" asp-for="@Model.Property.ID" />
+                                            <div class="col-lg-12 mb-2">
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">
+                                                        Property Address
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <input id="propAddress" type="text" asp-for="Property.Address" required
+                                                               class="form-control" placeholder="Property Address" />
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">
+                                                        City
+                                                    </label>
+                                                    <div class="d-flex" id="dvCitylist">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 mb-2">
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Total bedrooms</label>
+                                                    <div class="btn-group w-100" role="group"
+                                                         aria-label="Basic radio toggle button group">
+                                                        <input type="radio" class="btn-check" required
+                                                               id="1bed" asp-for="Property.Bed" value="1" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="1bed">1</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="2bed" asp-for="Property.Bed" value="2" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="2bed">2</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="3bed" asp-for="Property.Bed" value="3" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="3bed">3</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="4bed" asp-for="Property.Bed" value="4" checked />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="4bed">4</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="5bed" asp-for="Property.Bed" value="5" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="5bed">5</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="6bed" asp-for="Property.Bed" value="6" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="6bed">6</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="custbed" asp-for="Property.Bed" value="7" />
+                                                        <label class="btn btn-outline-primary" id="lblcustbed"
+                                                               for="custbed">Enter your own number</label>
+                                                    </div>
+                                                    <p>Including the one you're offering</p>
+                                                </div>
+                                            </div>
+                                            <div id="divrooms4rent" style="display:none;" class="col-lg-12 mb-2">
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Room(s) available for rent</label>
+                                                    <div class="btn-group w-100" role="group"
+                                                         aria-label="Basic radio toggle button group">
+                                                        <input type="radio" class="btn-check" required
+                                                               id="1rfr" asp-for="@Model.Property.RoomsForRent" value="1" checked />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="1rfr">1</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="2rfr" asp-for="Property.RoomsForRent" value="2" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="2rfr">2</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="3rfr" asp-for="Property.RoomsForRent" value="3" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="3rfr">3</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="4rfr" asp-for="Property.RoomsForRent" value="4" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="4rfr">4</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="5rfr" asp-for="Property.RoomsForRent" value="5" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="5rfr">5</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="6rfr" asp-for="Property.RoomsForRent" value="6" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="6rfr">6</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="Custrfr" asp-for="Property.RoomsForRent" value="7" />
+                                                        <label class="btn btn-outline-primary" id="lblCustom"
+                                                               for="Custrfr">Enter your own number</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 mb-2">
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Total bathrooms</label>
+                                                    <div class="btn-group w-100" role="group"
+                                                         aria-label="Basic radio toggle button group">
+                                                        <input type="radio" class="btn-check" required
+                                                               id="1bath" asp-for="Property.Bathroom" value="1" checked />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="1bath">1</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="2bath" asp-for="Property.Bathroom" value="2" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="2bath">2</label>
+                                                        <input type="radio" class="btn-check" asp-for="Property.Bathroom" value="3"
+                                                               id="3bath">
+                                                        <label class="btn btn-outline-primary"
+                                                               for="3bath">3</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="4bath" asp-for="Property.Bathroom" value="4" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="4bath">4</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="5bath" asp-for="Property.Bathroom" value="5" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="5bath">5</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="6bath" asp-for="Property.Bathroom" value="6" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="6bath">6</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="Custbath" asp-for="Property.Bathroom" value="7">
+                                                        <label class="btn btn-outline-primary" id="lblcustbath"
+                                                               for="Custbath">Enter your own number</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 mb-2">
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Parking</label>
+                                                    <select class="mb-4 nice-select wide w-100" required
+                                                            asp-for="Property.Parkingtype">
+                                                        <option value="@Property.Parking.NoParking" selected>No parking</option>
+                                                        <option value="@Property.Parking.Offstree">
+                                                            Off-street parking
+                                                        </option>
+                                                        <option value="@Property.Parking.Onstreet">
+                                                            On-street Parking
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-12 mb-2">
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Internet</label>
+                                                    <select asp-for="Property.InternetStatus" class=" mb-4 nice-select wide w-100">
+                                                        <option value="@Property.Internet.Nointernet">
+                                                            No internet
+                                                        </option>
+                                                        <option value="@Property.Internet.AvailableNotincludedInRent">
+                                                            Available
+                                                            but
+                                                            not inc in rent
+                                                        </option>
+                                                        <option value="@Property.Internet.IncludedInRent" selected>
+                                                            Included in rent
+                                                        </option>
+                                                        <option value="@Property.Internet.UnlimitedIncludedInRent">
+                                                            Unlimited included in rent
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div id="wholepropertyFurnishing" style="display:none;" class="col-lg-12 mb-2">
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Room furnishings</label>
+                                                    <div class="btn-group w-100" role="group"
+                                                         aria-label="Basic radio toggle button group">
+                                                        <input type="radio" class="btn-check"
+                                                               asp-for="Property.FurnishingType"
+                                                               id="radioflexible" value="@Property.RoomFurnishing.Flexible">
+                                                        <label class="btn btn-outline-primary"
+                                                               for="radioflexible">Flexible</label>
+                                                        <input type="radio" class="btn-check" id="radiofurnished"
+                                                               asp-for="Property.FurnishingType" checked
+                                                               value="@Property.RoomFurnishing.Furnished">
+                                                        <label class="btn btn-outline-primary"
+                                                               for="radiofurnished">Furnished</label>
+                                                        <input type="radio" class="btn-check" id="radioUnfurnished"
+                                                               asp-for="Property.FurnishingType" value="@Property.RoomFurnishing.UnFurnished">
+                                                        <label class="btn btn-outline-primary"
+                                                               for="radioUnfurnished">Unfurnished</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="divwhocurrentlylives" class="col-lg-12 mb-2" style="display:none;">
+                                                <h4>Who currently lives in the property</h4>
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">
+                                                        Total number of
+                                                        flatmates
+                                                    </label>
+                                                    <div class="btn-group w-100" role="group"
+                                                         aria-label="Basic radio toggle button group">
+                                                        <input type="radio" class="btn-check"
+                                                               id="1flatmat" asp-for="Property.Totalflatmates" value="1" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="1flatmat">1</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="2flatmat" asp-for="Property.Totalflatmates" value="2" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="2flatmat">2</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="3flatmat" asp-for="Property.Totalflatmates" value="3" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="3flatmat">3</label>
+                                                        <input type="radio" class="btn-check" checked
+                                                               id="4flatmat" asp-for="Property.Totalflatmates" value="4" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="4flatmat">4</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="5flatmat" asp-for="Property.Totalflatmates" value="5" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="5flatmat">5</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="6flatmat" asp-for="Property.Totalflatmates" value="6" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="6flatmat">6</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="7flatmat" asp-for="Property.Totalflatmates" value="7" />
+                                                        <label class="btn btn-outline-primary"
+                                                               for="7flatmat">7</label>
+                                                        <input type="radio" class="btn-check"
+                                                               id="custflatmat" asp-for="Property.Totalflatmates" value="8" />
+                                                        <label class="btn btn-outline-primary" id="lblcustflatmat"
+                                                               for="custflatmat">Enter your own number</label>
+                                                    </div>
+                                                    <p>Once all rooms are rented</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="roomfeatures" class="tab-pane" role="tabpanel">
+                                <form id="frmroomfeaturesstep">
+                                    <input id="txtroomfeaturesPropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div id="divroomfeatures" class="row justify-content-center">
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="rent_bond_bills" class="tab-pane " role="tabpanel">
+                                <form id="frmwholepropertyrentstep">
+                                    <input id="txtwholePropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div id="divpropertyrent" style="display:none;" class="col-sm-6 mb-2">
+                                            <h4>Property rent, bond and bills</h4>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Monthly rent</label>
+                                                <div class="input-group">
+                                                    <input id="txtWholePropertyRent" type="text" asp-for="@Model.Property.Rent"
+                                                           class="rent form-control" placeholder="Monthly rent">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Bond</label>
+                                                <select asp-for="@Model.Property.Bond"
+                                                        class="nice-select wide w-100">
+                                                    <option value="@Property.BondType.none">none</option>
+                                                    <option value="@Property.BondType.onemonth" selected>1 month</option>
+                                                    <option value="@Property.BondType.twomonths">2 months</option>
+                                                    <option value="@Property.BondType.threemonths">3 months</option>
+                                                    <option value="@Property.BondType.fourmonths">4 months</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Bills</label>
+                                                <select asp-for="@Model.Property.Bill"
+                                                        class="nice-select wide w-100">
+                                                    <option value="@Property.Billstatus.AdditionalToRent" selected>
+                                                        Additional to the rent
+                                                    </option>
+                                                    <option value="@Property.Billstatus.SomeIncludedinRent">
+                                                        Some included in the rent
+                                                    </option>
+                                                    <option value="@Property.Billstatus.IncludedinRent">
+                                                        Included in rent
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form id="frmRoomrentstep">
+                                    <input id="txtroomrentPropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div id="divroomrent" class="col-sm-6 mb-2" style="display:none;">
+                                            @for (int i = 0; i < @Model.Room.Count(); i++)
+                                            {
+                                                <h4>Room-@(i + 1) rent, bond and bills</h4>
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Monthly rent</label>
+                                                    <input type="text" asp-for="@Model.Room[i].Rent"
+                                                           class="form-control" placeholder="Monthly rent">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Bond</label>
+                                                    <select asp-for="@Model.Room[i].BondType"
+                                                            class="nice-select wide w-100">
+                                                        <option value="@Room.Bond.None">none</option>
+                                                        <option value="@Room.Bond.OneMonth">1 month</option>
+                                                        <option value="@Room.Bond.TwoMonth">2 months</option>
+                                                        <option value="@Room.Bond.ThreeMonths">3 months</option>
+                                                        <option value="@Room.Bond.FourMonths">4 months</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Bills</label>
+                                                    <select asp-for="@Model.Room[i].Billstatus"
+                                                            class="nice-select wide w-100">
+                                                        <option value="@Room.Bill.AdditionalToRent">
+                                                            Additional to the rent
+                                                        </option>
+                                                        <option value="@Room.Bill.SomeIncludedinRent">
+                                                            Some included in the rent
+                                                        </option>
+                                                        <option value="@Room.Bill.IncludedinRent">
+                                                            Included in rent
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <hr />
+                                            }
+                                        </div>
+                                    </div>
+                                </form>
+
+                            </div>
+                            <div id="availability" class="tab-pane" role="tabpanel">
+                                <form id="frmpropavailabilitystep">
+                                    <input id="txtavailabilityPropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div id="divpropertyavailbility" class="col-sm-6 mb-2"
+                                             style="display:none;">
+                                            <h4>Availability</h4>
+                                            <div class="input-group mb-3">
+                                                <label class="text-label form-label">Date available</label>
+                                                <div class="input-group">
+                                                    <input id="txtAvailablefrom" asp-for="@Model.Property.AvailableFrom" type="text"
+                                                           class="datepicker form-control" readonly>
+                                                    <div class="input-group-text fa fa-calendar"></div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">
+                                                    Minimum length of stay
+                                                </label>
+                                                <select asp-for="@Model.Property.MinStay"
+                                                        class="nice-select wide w-100">
+                                                    <option value="@Property.MinimumStay.None" selected>No minimum stay</option>
+                                                    <option value="@Property.MinimumStay.OneMonth">1 month</option>
+                                                    <option value="@Property.MinimumStay.TwoMonth">2 months</option>
+                                                    <option value="@Property.MinimumStay.FourMonth">4 months</option>
+                                                    <option value="@Property.MinimumStay.Sixmonth">6 months</option>
+                                                    <option value="@Property.MinimumStay.Twelvemonth">12 months</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label mt-3">
+                                                    Maximum length of stay
+                                                </label>
+                                                <select asp-for="@Model.Property.MaxStay" class="nice-select wide w-100">
+                                                    <option value="@Property.MaximumStay.none" selected>
+                                                        No maximum stay
+                                                    </option>
+                                                    <option value="@Property.MaximumStay.OneMonth">1 month</option>
+                                                    <option value="@Property.MaximumStay.SixMonths">6 months</option>
+                                                    <option value="@Property.MaximumStay.OneYear">1 year</option>
+                                                    <option value="@Property.MaximumStay.TwoYears">2 years</option>
+                                                    <option value="@Property.MaximumStay.ThreeYears">3 years</option>
+                                                    <option value="@Property.MaximumStay.FiveYears">5 years or more</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <form id="frmRoomavailabilitystep">
+                                    <input id="txtroomavailPropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div id="divroomavailbility" class="col-sm-6 mb-2"
+                                             style="display:none;">
+                                            @for (int i = 0; i < @Model.Room.Count(); i++)
+                                            {
+                                                <h4>Room-@(i + 1) Availability</h4>
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">Date available</label>
+                                                    <input type="text" asp-for="@Model.Room[i].AvailableFrom"
+                                                           class="datepicker form-control" readonly>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label">
+                                                        Minimum length of stay
+                                                    </label>
+                                                    <select asp-for="@Model.Room[i].MinStay"
+                                                            class="nice-select wide w-100">
+                                                        <option value="@Room.MinimumStay.None" selected>No minimum stay</option>
+                                                        <option value="@Room.MinimumStay.OneMonth">1 month</option>
+                                                        <option value="@Room.MinimumStay.TwoMonth">2 months</option>
+                                                        <option value="@Room.MinimumStay.FourMonth">4 months</option>
+                                                        <option value="@Room.MinimumStay.Sixmonth">6 months</option>
+                                                        <option value="@Room.MinimumStay.Twelvemonth">12 months</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="text-label form-label mt-3">
+                                                        Maximum length of stay
+                                                    </label>
+                                                    <select asp-for="@Model.Room[i].MaxStay" class="nice-select wide w-100">
+                                                        <option value="@Room.MaximumStay.None">
+                                                            No maximum stay
+                                                        </option>
+                                                        <option value="@Room.MaximumStay.OneMonth">1 month</option>
+                                                        <option value="@Room.MaximumStay.SixMonths">6 months</option>
+                                                        <option value="@Room.MaximumStay.OneYear">1 year</option>
+                                                        <option value="@Room.MaximumStay.TwoYears">2 years</option>
+                                                        <option value="@Room.MaximumStay.ThreeYears">3 years</option>
+                                                        <option value="@Room.MaximumStay.FiveYears">5 years or more</option>
+                                                    </select>
+                                                </div>
+                                                <hr />
+                                            }
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="propertyimages" class="tab-pane " role="tabpanel">
+                                <form id="frmpropertyimagesstep" enctype="multipart/form-data">
+                                    <input id="txtimagePropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4>Property and room images</h4>
+                                            <div id="stepalert" style="display:none;" class="alert alert-success alert-dismissible fade show m-3">
+                                                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                                <strong>Info!</strong> Images are being saved. Please wait....
+                                            </div>
+                                            @*<div id="erroralert" style="display:none" class="alert alert-danger alert-dismissible fade show">
+                                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                            <strong>Error!</strong> Error occured while saving images.
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+                                            </button>
+                                            </div>*@
+                                            <div class="mb-3">
+                                                <div class="row">
+                                                    <h4>Show Off Your Property!</h4>
+                                                    <p class="card-text">
+                                                        Let potential flatmates know you're
+                                                        forreal and appear higher in search results.
+                                                    </p>
+                                                    <div>
+                                                        <div class="input-group mb-3">
+                                                            <div class="form-file">
+                                                                <input required id="files" multiple type="file" name="files"
+                                                                       class="form-file-input form-control">
+                                                            </div>
+                                                            <span id="btnupload" class="btn btn-primary">Upload</span>
+                                                        </div>
+                                                    </div>
+                                                    <div id="images" class="row mb-3 mt-3"></div>
+                                                </div>
+                                                <p>
+                                                    sharehouse.pk Hot Tip: for your safety, please don't upload
+                                                    images of the front of your home.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="flatmate_preference" class="tab-pane" role="tabpanel">
+                                <form id="frmflatmatepreferencestep">
+                                    <input id="txtpreferencePropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4>Flatmate Preference </h4>
+                                            <div class="mb-3">
+                                                <div class="btn-group w-100" role="group"
+                                                     aria-label="Basic radio toggle button group">
+                                                    <input type="radio" class="btn-check"
+                                                           id="radiowomenonly" required
+                                                           asp-for="Property.Flatmatepreference"
+                                                           value="@Property.Preference.Womenonly" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radiowomenonly">
+                                                        Women
+                                                        only
+                                                    </label>
+                                                    <input type="radio" class="btn-check"
+                                                           id="radiomenonly"
+                                                           asp-for="Property.Flatmatepreference"
+                                                           value="@Property.Preference.Menonly" />
+                                                    <label class="btn btn-outline-primary" for="radiomenonly">
+                                                        Men
+                                                        only
+                                                    </label>
+                                                    <input type="radio" class="btn-check"
+                                                           id="radionocouple"
+                                                           asp-for="Property.Flatmatepreference"
+                                                           value="@Property.Preference.Nocouples" />
+                                                    <label class="btn btn-outline-primary" for="radionocouple">
+                                                        No
+                                                        couples
+                                                    </label>
+                                                    <input type="radio" class="btn-check"
+                                                           id="radiocouple"
+                                                           asp-for="Property.Flatmatepreference"
+                                                           value="@Property.Preference.couple" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radiocouple">couples</label>
+                                                    <input type="radio" class="btn-check"
+                                                           id="radioanyone" checked
+                                                           asp-for="Property.Flatmatepreference"
+                                                           value="@Property.Preference.AnyoneIncCouples" />
+                                                    <label class="btn btn-outline-primary" for="radioanyone">
+                                                        Anyone
+                                                        (inc. couples)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <h4>Is this property for women only? </h4>
+                                                <div class="btn-group w-100" role="group"
+                                                     aria-label="Basic radio toggle button group">
+                                                    <input type="radio" class="btn-check"
+                                                           id="radiowomanonly"
+                                                           asp-for="Property.WomenOnlyProperty"
+                                                           value="true" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radiowomanonly">Yes</label>
+                                                    <input type="radio" class="btn-check"
+                                                           id="radionotwomanonly"
+                                                           asp-for="Property.WomenOnlyProperty"
+                                                           value="false" />
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radionotwomanonly">No</label>
+                                                </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <h4>Accepting</h4>
+                                            </div>
+                                            <div id="divaccepting" class="row mt-3">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="intro" class="tab-pane" role="tabpanel">
+                                <form id="frmintrostep">
+                                    <input id="txtintroPropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mt-5">
+                                            @*<h3>Tell us about you and your flatmates</h3>
+                                            <div class="mb-3">
+                                            <div class="input-group">
+                                            <textarea class="form-control" rows="4"
+                                            asp-for="Property.AboutFlatmates" required
+                                            id="comment"
+                                            style="height: 200px;"
+                                            placeholder="Say something about yourself...">
+                                            </textarea>
+                                            </div>
+                                            <p>
+                                            Tell your potential flatmate a little about yourself and
+                                            the
+                                            other flatmates living in the home. Describe what you do
+                                            for
+                                            work, where you're all from and what you do for fun.
+                                            </p>
+                                            </div>*@
+                                            <h3>About the property</h3>
+                                            <div class="mb-3">
+                                                <div class="input-group">
+                                                    <textarea class="form-control" rows="4" required
+                                                              asp-for="Property.Description"
+                                                              style="height: 200px;"
+                                                              placeholder="What makes your share house shine? This will appear at the top of your listing, so make it pop!">
+                                                </textarea>
+                                                </div>
+                                                <p>Required*</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="preview" class="tab-pane" role="tabpanel">
+                                <input type="hidden" id="txtPreviewPropertyId" />
+                                <div class="row justify-content-center">
+                                    <div class="col-sm-6 mt-5">
+                                        <h3 class="text-center">Show me what my listing will look like</h3>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <img src="~/img/illustration-preview-PNG.png" alt="" width="150">
+                                        <h4 class="mt-3">Preview Listing</h4>
+                                        <a class="btn btn-primary w-25"
+                                           onclick="location.href='@Url.Action("listplacepreview", "listing")?propertyId=' + encodeURIComponent(document.getElementById('txtPreviewPropertyId').value)">
+                                            Preview
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*Scripts*@
+<script src="~/js/listings/createPlacelisting.js"></script>
+<script src="~/js/listings/showHideStepElements.js"></script>
+<script src="~/js/commonfunctions/fileUploadLimit.js"></script>
+<script src="~/js/listings/savePropertyImages.js"></script>
+<script src="~/js/listings/deletePropertyImage.js"></script>
+<script src="~/js/listings/loadPropertyPreviewinPopup.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyQhihensPLJP3qiNAT0_b-SbtD1jbrOs&libraries=places"></script>
+<script src="~/js/googleAutocompleteAddresses.js"></script>
+<script src="~/js/listings/enterNoByPrompt.js"></script>
+
+<script>
+    function closeListPlace() {
+        // alert("Are you sure you want to close? Doing so will delete the listing you are creating.");
+    }
+</script>                                     

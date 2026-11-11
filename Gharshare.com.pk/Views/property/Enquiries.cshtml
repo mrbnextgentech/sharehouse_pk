@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Gharshare.Models.Enquiry>
+
+@{
+    ViewData["Title"] = "Enquiries";
+    Layout = "~/Views/Shared/_Layoutlandlord.cshtml";
+}
+<div class="container">
+
+<h1>Enquiries</h1>
+<table class="table">
+    <thead>
+        <tr> 
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateReceived)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Enquirystatus)
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr> 
+            <td>
+                @Html.DisplayFor(modelItem => item.Message)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateReceived)
+            </td>
+            <td class="status">                
+                <select asp-for="@item.Enquirystatus">
+                    <option value="1" data-eid="@item.ID" data-pid="@item.PropertyID">read</option>
+                    <option value="2" data-eid="@item.ID" data-pid="@item.PropertyID">unread</option>
+                    <option value="3" data-eid="@item.ID" data-pid="@item.PropertyID">shortlist</option>
+                    <option value="4" data-eid="@item.ID" data-pid="@item.PropertyID">not suitable</option>
+                </select>                
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/changeMessageStatus.js" type="text/javascript"></script>

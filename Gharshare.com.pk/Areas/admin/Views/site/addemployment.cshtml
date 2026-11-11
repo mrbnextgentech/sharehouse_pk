@@ -1,0 +1,77 @@
+﻿@using Gharshare.Models
+@model Employment
+@{
+    ViewData["Title"] = "Add Employment";
+    Layout = "_Layout4Popups";
+}
+<div class="col-lg-12">
+    <form id="frmEmployment" method="Post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="IconPath" />
+        @Html.AntiForgeryToken()
+        <div class="row justify-content-center mb-3">
+            <label class="text-label form-label">
+                Accepting icon
+            </label>
+            <div class="col-md-3 col-sm-6">
+                <div class="text-center mt-3">
+                    <label onclick="document.getElementById('file').click();">
+                        <input type="hidden" asp-for="ID">
+                        <span class="radio-tile">
+                            <span class="radio-icon">
+                                <img src='@(Model.IconPath == null ? "/img/tool-tip.png" : Model.IconPath)'>
+                            </span>
+                        </span>
+                        <input onchange="document.getElementById('path').innerHTML =this.files[0] ? this.files[0].name : 'No file chosen';"
+                        type="file" name="file" class="d-none" />
+                    </label>
+                </div>
+                <p id="path" class="text-center">Please click on the icon to change it.</p>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <label class="text-label form-label">
+                Name
+            </label>
+            <div class="flex">
+                <input type="text" asp-for="Title" required
+                       class="form-control required placeholder="Enter feature name..." />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        @*<div class="row">
+            <div class="col-sm-12">
+                <label class="text-label form-label">Is this accpting item being used in the application?</label>
+                <div class="form-check custom-checkbox ms-1 ">
+                    <input type="checkbox" asp-for="isSelected" class="form-check-input" />
+                    <label class="form-check-label">
+                        Yes! this accpting item in active
+                    </label>
+                </div>
+            </div>
+        </div>*@
+        <div class="row justify-content-center mb-3">
+            <div class="col-sm-6 text-end">
+                @if (Model.ID > 0)
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Update
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                }
+            </div>
+            <div class="col-sm-6">
+                <button id="btnclose" class="btn btn-secondary">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/site/saveEmployment.js"></script>

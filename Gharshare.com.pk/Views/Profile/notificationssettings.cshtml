@@ -1,0 +1,104 @@
+﻿@using Gharshare.Models
+@model List<UserNotification>
+@{
+    ViewData["Title"] = "Alert Settings";
+    Layout = "_Layout4Popups";
+}
+<div class="container">
+    <div class="row justify-content-center h-100 align-items-center">
+        <div class="col-md-12 m-3">
+            <div class="authincation-content">
+                <div class="row no-gutters">
+                    <div class="col-xl-12">
+                        <div class="auth-form">
+                            @*<h4 class="text-center mb-2">
+                            Email Alert Settings
+                        </h4>*@
+                            @*<form id="frmNotifications" method="post" asp-action="notificationssettings">*@
+                               <form id="frmNotifications">
+                                <div class="mb-2">
+                                    @for (int i = 0; i < Model.Count(); i++)
+                                    {
+                                        if (Model[i].NotificationTypeId != 2)
+                                        {
+                                            <div class="justify-content-center">
+                                                <h6>@Model[i].NotificationType.Name</h6>
+                                                <input type="hidden" asp-for="@Model[i].ID">
+                                                <input type="hidden" asp-for="@Model[i].UserId">
+                                                <input type="hidden" asp-for="@Model[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model[i].NotificationTypeId">
+                                                <input type="hidden" asp-for="@Model[i].DateCreated">
+                                                <p class="mb-1">@Model[i].NotificationType.Label</p>
+                                                <div class="size-filter">
+                                                    <div class="btn-group w-100" role="group"
+                                                 aria-label="Basic radio toggle button group">
+                                                        <input type="radio" id="radioEmail@(i)" class="btn-check visually-hidden"
+                                                       asp-for="@Model[i].Status" value="1"
+                                                       checked="@(Model[i].Status == @UserNotification.NotificationStatus.Email ? true : false)">
+                                                        <label for="radioEmail@(i)" class="btn btn-outline-primary">
+                                                            Email
+                                                        </label>
+                                                        <input type="radio" id="radioNoThanks@(i)" class="btn-check visually-hidden"
+                                                       value="2" checked="@(Model[i].Status == @UserNotification.NotificationStatus.Nothanks ? true : false)"
+                                                       asp-for="@Model[i].Status">
+                                                        <label for="radioNoThanks@(i)" class="btn btn-outline-primary no-left-border">
+                                                            No thanks
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="hr" />
+                                        }
+                                        else
+                                        {
+                                            <div class="justify-content-center">
+                                                <h6>@Model[i].NotificationType.Name</h6>
+                                                <p class="mb-1">@Model[i].NotificationType.Label</p>
+                                                <input type="hidden" asp-for="@Model[i].ID">
+                                                <input type="hidden" asp-for="@Model[i].UserId">
+                                                <input type="hidden" asp-for="@Model[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model[i].NotificationTypeId">
+                                                <input type="hidden" asp-for="@Model[i].DateCreated">
+                                                <div class="size-filter">
+                                                    <div class="btn-group w-100" role="group"
+                                                 aria-label="Basic radio toggle button group">
+                                                        <input type="radio" id="radioInstant@(i)" class="btn-check visually-hidden"
+                                                       asp-for="@Model[i].Status" value="3"
+                                                       checked="@(Model[i].Status == @UserNotification.NotificationStatus.Instant ? true : false)">
+                                                        <label for="radioInstant@(i)" class="btn btn-outline-primary">
+                                                            Instant
+                                                        </label>
+                                                        <input type="radio" id="radioDaily@(i)" class="btn-check visually-hidden"
+                                                       asp-for="@Model[i].Status" value="4"
+                                                       checked="@(Model[i].Status == @UserNotification.NotificationStatus.Daily ? true : false)">
+                                                        <label for="radioDaily@(i)" class="btn btn-outline-primary no-left-border">
+                                                            Daily
+                                                        </label>
+                                                        <input type="radio" id="radioNone@(i)" class="btn-check visually-hidden"
+                                                       asp-for="@Model[i].Status" value="5"
+                                                       checked="@(Model[i].Status == @UserNotification.NotificationStatus.None ? true : false)">
+                                                        <label for="radioNone@(i)" asp-for="@Model[i].Status" class="btn btn-outline-primary no-left-border">
+                                                            None
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr class="hr" />
+                                        }
+                                    }
+                                </div>
+                                <div class="mb-2">
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        Update
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/profile/updaeUsernNotificationSettings.js"></script>
+

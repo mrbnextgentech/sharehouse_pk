@@ -1,0 +1,48 @@
+﻿@using Gharshare.Models
+@model PropertyListingVM
+@{
+    ViewData["Title"] = "Enquire about this room";
+    Layout = "_Layout4Popups";
+    //Layout = "_Layoutmain";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        @*<h4 class="text-center mb-3">
+                            What's great about living in this property?
+                        </h4>*@
+                        <form id="frmMessage">
+                            <div class="col-lg-12 mb-2">
+                                <div class="mb-3">
+                                    <label class="text-label form-label">Room enquiry</label>
+                                    <div class="form-inline">
+                                        <textarea id="txtMessage" rows="4" style="height: 100px;" asp-for="@Model.Enquiry.Message"
+                                                  placeholder="Type your message... "></textarea>
+                                        <span id="spanMessage" class="text-danger"></span>
+                                        <input type="hidden" asp-for="@Model.Enquiry.Enquirytype" value="@Enquiry.EnquriyType.aboutproperty">
+                                        @*<input type="hidden" asp-for="@Model.Enquiry.FromUserID" value="@userId">*@
+                                        <input type="hidden" asp-for="@Model.Enquiry.ToUserID" value="@Model.Property.Owner.Id">
+                                        <input type="hidden" asp-for="@Model.Enquiry.Enquirystatus" value="@Enquiry.EnquiryStatus.unread">
+                                        <input type="hidden" asp-for="@Model.Enquiry.PropertyID" value="@Model.Property.ID">
+                                        <input type="hidden" asp-for="@Model.Enquiry.CreatedOn" value="@DateTime.UtcNow">
+                                        <input type="hidden" asp-for="@Model.Enquiry.DateReceived" value="@DateTime.UtcNow">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Send Message 
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/listings/updatePropertydescription.js"></script>

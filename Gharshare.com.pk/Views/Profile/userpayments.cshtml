@@ -1,0 +1,70 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model List<UserPayment>
+@{
+    Layout = "_Layout4Popups";
+    ViewData["Title"] = "Transaction History";
+    Pager pager = new Pager();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="col-lg-12">
+    <div class="card m-5">
+        <div class="card-header">
+            <h4 class="card-title">Transaction History</h4>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div id="planlist" class="table-responsive">
+                    <table class="table table-responsive-md text-center">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">
+                                    <strong>No</strong>
+                                </th>
+                                <th><strong>Name</strong></th>
+                                <th><strong>Plan name</strong></th>
+                                <th><strong>Amount paid</strong></th>
+                                <th><strong>Date</strong></th>
+                                <th><strong>Status</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Count(); i++)
+                            {
+                                var payment = Model[i];
+                                var sno = @i + 1;
+                                <tr>
+                                    <td>@sno</td>
+                                    <td>@payment.User.Name</td>
+                                    <td>
+                                        @payment.Plan.Title
+                                    </td>
+                                    <td>Rs @Utility.Format(@payment.Amount)</td>
+                                    <td>@Utility.ConvertToShortDateFormat(@payment.Paidon)</td>
+                                    <td>                                         
+                                            <i class="fa fa-circle text-success me-1"></i> Paid
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <partial name="_Pager" model="@pager" />
+            }
+            else
+            {
+                <div id="noplan" class="row text-center p-3">
+                    <h4>There are no transactions.</h4>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,105 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>501aaa18-c4fe-4075-8ec3-b3b1a72dbcc9</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\admin\Views\message\**" />
+    <Compile Remove="wwwroot\css\final\**" />
+    <Compile Remove="wwwroot\images\**" />
+    <Compile Remove="wwwroot\plugins\**" />
+    <Content Remove="Areas\admin\Views\message\**" />
+    <Content Remove="wwwroot\css\final\**" />
+    <Content Remove="wwwroot\images\**" />
+    <Content Remove="wwwroot\plugins\**" />
+    <EmbeddedResource Remove="Areas\admin\Views\message\**" />
+    <EmbeddedResource Remove="wwwroot\css\final\**" />
+    <EmbeddedResource Remove="wwwroot\images\**" />
+    <EmbeddedResource Remove="wwwroot\plugins\**" />
+    <None Remove="Areas\admin\Views\message\**" />
+    <None Remove="wwwroot\css\final\**" />
+    <None Remove="wwwroot\images\**" />
+    <None Remove="wwwroot\plugins\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\admin\Controllers\MessageController.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\js\jSignature\signature.js" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="wwwroot\dist\css\adminlte.css.map" />
+    <None Include="wwwroot\dist\css\adminlte.min.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.components.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.components.min.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.core.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.core.min.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.extra-components.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.extra-components.min.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.pages.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.pages.min.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.plugins.css.map" />
+    <None Include="wwwroot\dist\css\alt\adminlte.plugins.min.css.map" />
+    <None Include="wwwroot\dist\js\adminlte.js" />
+    <None Include="wwwroot\dist\js\adminlte.js.map" />
+    <None Include="wwwroot\dist\js\adminlte.min.js" />
+    <None Include="wwwroot\dist\js\adminlte.min.js.map" />
+    <None Include="wwwroot\dist\js\demo.js" />
+    <None Include="wwwroot\dist\js\pages\dashboard.js" />
+    <None Include="wwwroot\dist\js\pages\dashboard2.js" />
+    <None Include="wwwroot\dist\js\pages\dashboard3.js" />
+    <None Include="wwwroot\img\service\x1.svg" />
+    <None Include="wwwroot\img\service\x2.svg" />
+    <None Include="wwwroot\img\service\x3.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="IronPdf" Version="2022.11.10347" />
+    <PackageReference Include="IronPdf.Slim" Version="2022.11.10347" />
+    <PackageReference Include="itext7" Version="7.2.4" />
+    <PackageReference Include="itext7.pdfhtml" Version="4.0.4" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="6.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.16" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client.Core" Version="7.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.12" />
+    <PackageReference Include="signaturepad" Version="1.5.3" />
+    <PackageReference Include="Twilio" Version="6.2.4" />
+  </ItemGroup>
+
+  <ItemGroup>   
+    <ProjectReference Include="..\CommonHelper\CommonHelper.csproj" />   
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />   
+    <ProjectReference Include="..\Models\Models.csproj" />
+
+    <PackageReference Include="AspNetCore.SEOHelper" Version="1.0.1" />    
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.8" />
+    <PackageReference Include="Microsoft.Azure.Management.Storage" Version="25.0.0" />
+    <PackageReference Include="Microsoft.Azure.Management.Storage.Fluent" Version="1.38.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUPKG" Version="1.0.0" />
+    <PackageReference Include="ServiceStack.Text.Core" Version="6.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\img\profile\" />
+    <Folder Include="wwwroot\assets\PropertyImages\" />
+    <Folder Include="wwwroot\js\cms\" />
+    <Folder Include="wwwroot\js\glightbox\js\" />
+    <Folder Include="wwwroot\js\smartwizard-multi-step\" />
+  </ItemGroup>
+
+</Project>

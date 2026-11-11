@@ -1,0 +1,278 @@
+﻿@using Gharshare.Models
+@model Property
+@{
+    ViewData["Title"] = "Add New Property | Gharshare";
+    Layout = "_LayoutLandlord";
+}
+@section Style {
+            <style>
+                input[type="radio"] {
+                    display: none;
+                }
+                /*input[type="radio"]:hover {
+                    display:inline-block;
+                }*/
+                label {
+                    display: inline-block;
+                    cursor: pointer;
+                    border: 2px solid transparent;
+                }
+
+                    label:hover {
+                        border-color: #ccc;
+                    }
+
+                input[type="radio"]:checked + label {
+                    border-color: #FF005D
+                }
+            </style>
+}
+            <div class="container-fluid">
+                <!-- row -->
+                <div class="row">
+                    <div class="col-xl-12 col-xxl-12">
+                        <div class="cards">
+                            <form id="addProperty" asp-action="add" asp-controller="property">
+                                <div class="card-body">                                
+                                    <div id="smartwizard">
+                                        <ul class="nav">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#step-1">
+                                                    <span class="num">1</span>
+                                                    Property Type
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#step-2">
+                                                    <span class="num">2</span>
+                                                    Tenant Status
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#step-3">
+                                                    <span class="num">3</span>
+                                                    Address
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                                <section class="wrapper mt-50">
+                                                    <div class="container">
+                                                        <div>
+                                                            <br><br>
+                                                            <h3 class="text-center">
+                                                                What <span class="text-primary"> type of property </span> do
+                                                                you have?
+                                                            </h3>
+                                                            <br>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xl-6">
+                                                                <div class="card">
+                                                                    <div class="card-header  border-0 pb-0">
+                                                                        <h3 class="card-title ">
+                                                                            <span class="text-primary">Residential</span>
+                                                                            Property
+                                                                        </h3>
+                                                                    </div>
+                                                                    <div class="card-body text-center">
+                                                                        <p class="card-text">
+                                                                            (house, appartment etc.)
+                                                                        </p>
+                                                                @Html.RadioButtonFor(m => m.Propertytype,
+                                                                (int)Property.PropertyType.Flat,
+                                                            new { 
+                                                                id = "residential", 
+                                                                name = "propertyType",                                                                 
+                                                                @required = "required",
+                                                                data_msg_required = "Please select a property type"
+                                                            })
+                                                                        <label for="residential">
+                                                                            <img src="~/img/landlord/home1.png" />
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="card-footer border-0 pt-0">
+                                                                        <div class="card-footer border-0 pt-0">
+                                                                            <p class="hover hidden text-center"></p>
+                                                                            <span class="fas fa-arrow-right"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xl-6">
+                                                                <div class="card">
+                                                                    <div class="card-header  border-0 pb-0">
+                                                                        <h3 class="card-title ">
+                                                                            <span class="text-primary">Commercial</span>
+                                                                            Property
+                                                                        </h3>
+                                                                    </div>
+                                                                    <div class="card-body text-center">
+                                                                        <p class="card-text">
+                                                                            (office, shop, warehouse etc.)
+                                                                        </p>
+                                                                @Html.RadioButtonFor(m => m.Propertytype,
+                                                                    (int)Property.PropertyType.Flat,
+                                                                    new {
+                                                                    id = "commercial",
+                                                                    name = "propertyType",                                                                     
+                                                                    @required = "required",
+                                                                    data_msg_required = "Please select a property type"
+                                                                    })
+                                                                        <label for="commercial">
+                                                                            <img src="~/img/landlord/home2.png" />
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="card-footer border-0 pt-0">
+                                                                        <p class="hover hidden text-center"></p>
+                                                                        <span class="fas fa-arrow-right"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+                                                <section class="wrapper mt-50">
+                                                    <div class="container">
+                                                        <div>
+                                                            <br><br>
+                                                            <h3 class="text-center">
+                                                                Do you <span class="text-primary">need to find</span> tenant?
+                                                            </h3>
+                                                            <br>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-xl-6">
+                                                                <div class="card">
+                                                                    <div class="card-header  border-0 pb-0">
+                                                                        <h3 class="card-title ">
+                                                                            <span class="text-primary">Yes,</span> I need to
+                                                                            find a tenant
+                                                                        </h3>
+                                                                    </div>
+                                                                    <div class="card-body text-center">
+                                                                @Html.RadioButtonFor(m => m.PlanId, 6,
+                                                            new { 
+                                                                id = "needTenant", 
+                                                                name = "tenant",
+                                                                @required = "required",
+                                                                 data_msg_required = "Please select an option"                                                                 
+                                                                 })
+                                                                        <label for="needTenant">
+                                                                            <img src="~/img/landlord/need-tenant-min.png"
+                                                                     width="250" height="220"
+                                                                     alt="Responsive image" />
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="card-footer border-0 pt-0">
+                                                                        <span class="fas fa-arrow-right"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-xl-6">
+                                                                <div class="card">
+                                                                    <div class="card-header  border-0 pb-0">
+                                                                        <h3 class="card-title ">
+                                                                            <span class="text-primary">No,</span> i Have a
+                                                                            tenant
+                                                                        </h3>
+                                                                    </div>
+                                                                    <div class="card-body text-center">
+                                                                @Html.RadioButtonFor(m => m.PlanId, 7,
+                                                            new { 
+                                                                id = "haveTenant", 
+                                                                name = "tenant",
+                                                                @required = "required",
+                                                                data_msg_required = "Please select an option"                                                                
+                                                            })
+                                                                        <label for="haveTenant">
+                                                                            <img src="~/img/landlord/have-tenant.png" width="250"
+                                                                     height="250" />
+                                                                        </label>
+                                                                    </div>
+                                                                    <div class="card-footer border-0 pt-0">
+                                                                        <span class="fas fa-arrow-right"></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                            <div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+                                                <section class="wrapper mt15">
+                                                    <div class="container">
+                                                        <div>
+                                                            <h3 class="text-center">
+                                                                What’s the <span class="text-primary"> address </span>of this
+                                                                property?
+                                                            </h3>
+                                                        </div>
+                                                        <div>
+                                                            <div class="form-group">
+                                                                <select required class="nice-select form-control" asp-for="Propertytype">
+                                                                    <option selected value="">--select category--</option>
+                                                                    <option value="1">House</option>
+                                                                    <option value="2">Room</option>
+                                                                    <option value="3">Apartment</option>
+                                                                    <option value="4">Hostel</option>
+                                                                    <option value="5">Hostel Room</option>
+                                                                    <option value="6">Shop</option>
+                                                                    <option value="7">Office</option>
+                                                                    <option value="8">Luxury Villa</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <select required class="nice-select form-control" asp-for="CityID" asp-items=@ViewBag.Cities>
+                                                                    <option selected value="">--select city--</option>
+                                                                </select>
+                                                                <span asp-validation-for="CityID" class="text-danger"></span>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input required asp-for="Address" class="form-control" id="address"
+                                                           placeholder="Property Address"> 
+                                                               <input type="hidden" asp-for="OwnerId" />
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input name="email" required asp-for="Owneremail" type="email" class="form-control" id="email"
+                                                           placeholder="email@example.com">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input required asp-for="Ownermobile" oninput="formatMobileNumber(this)"
+                                                           placeholder="Phone Number" class="form-control" maxlength="15">
+                                                                <span asp-validation-for="Ownermobile" class="text-danger"></span>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <button type="submit" class="btn btn-primary">
+                                                                    Save
+                                                                    Property
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        </div>
+
+                                        <!-- Include optional progressbar HTML -->
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>        
+    @*<partial name="_ValidationScriptsPartial" />*@
+            <script src="~/js/PopulateDropdownList.js" type="text/javascript"></script>
+            <script src="~/js/formatmobilenum.js"></script>
+            <script src="~/js/property/addProperty.js"></script>
+    @section Scripts
+    {
+
+    }

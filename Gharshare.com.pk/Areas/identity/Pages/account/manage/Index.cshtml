@@ -1,0 +1,104 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<div class="row" style="margin-top:10px;padding-left:10px;">
+    <partial name="_StatusMessage" for="StatusMessage" />
+</div>
+<div class="row">
+    <div class="col-md-1 text-center"></div>
+    <div class="col-md-6" style="margin-top:20px;">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+</div>
+<form id="profile-form" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <div class="col-md-1 text-center">
+        </div>
+        <div class="col-md-6 text-center">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input type="hidden" id="Id" asp-for="Input.Id" class="form-control m-1" />
+            </div>
+            <div class="form-floating">
+                <input type="hidden" id="usertype" asp-for="Input.UserType" class="form-control m-1" />
+            </div>
+            <div class="form-floating">
+                <input asp-for="Username" class="form-control m-1" disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.SurName" class="form-control m-1" />
+                <label asp-for="Input.SurName" class="form-label"></label>
+                <span asp-validation-for="Input.SurName" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.Name" class="form-control m-1" />
+                <label asp-for="Input.Name" class="form-label"></label>
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PhoneNumber" class="form-control m-1" />
+                <label asp-for="Input.PhoneNumber" class="form-label"></label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating m-1">
+                <select id="state" asp-for="Input.StateID" asp-items=@Model.States class="dropdown dl">
+                    <option selected="selected" value="">--Select state--</option>
+                </select>
+                <span asp-validation-for="Input.StateID" class="text-danger"></span>
+            </div>
+            <div class="form-floating m-1">
+                <select id="city" asp-for="Input.CityID" asp-items=@Model.Cities class="dropdown dl">
+                    <option disabled value="">--Select city--</option>
+                </select>
+                <span asp-validation-for="Input.CityID" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.Address" class="form-control m-1" />
+                <label asp-for="Input.Address" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.PostalCode" class="form-control m-1" />
+                <label asp-for="Input.PostalCode" class="form-label"></label>
+                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+            </div>
+            <button id="update-profile-button" type="submit" class="btn btn-lg btn-primary m-1">Save</button>
+            @if (HttpContext.Session.GetString("_UserType") == "Admin")
+            {
+                <button id="Cancel-Delete-button" type="submit" asp-area="Admin" asp-controller="User" asp-action="Index" asp-route-id="All" class="btn btn-lg btn-secondary m-1">Cancel</button>
+            }
+            else
+            {
+                <button id="Cancel-Delete-button" type="submit" asp-area="" asp-controller="Home" asp-action="Index" class="btn btn-lg btn-secondary m-1">Cancel</button>
+            }
+
+        </div>
+        <div class="col-md-3 text-center">
+            <input type="hidden" asp-for="Input.ProfilePicture" />
+            @if (Model.Input.ProfilePicture == null)
+            {
+                <img style="height:310px; width:310px;" src="~/assets/img/default-profile-icon-.jpg" class="img-thumbnail" alt="No image found" />
+            }
+            else
+            {
+                <img style="height:310px; width:310px;" src=@Model.Input.ProfilePicture class="img-thumbnail" alt="No image found" />
+
+            }
+
+            <div style="margin-left:30px; margin-top:5px;">
+                <input id="file" type="file" name="file" class="custom-file-input pb-2" />
+            </div>
+        </div>
+    </div>
+</form>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/PopulateDropdownList.js" type="text/javascript"></script>
+

@@ -1,0 +1,91 @@
+﻿@using Gharshare.Models
+@model PersonListingVM
+@{
+    ViewData["Title"] = "";
+    Layout = "_Layout4Popups";
+    //Layout = "_Layoutmain";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmaccommodationtypes">
+                            <input id="txtintroPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                            <div class="row justify-content-center">
+                                <div class="col-sm-12 mb-2">
+                                    <div class="text-center row mb-3">
+                                        <h4>I'm interested in these accommodation types</h4>
+                                    </div>
+                                    <div class="row">
+                                        @if (Model.DesiredAccommodations != null)
+                                        {
+                                            @for (int i = 0; i < Model.DesiredAccommodations.Count(); i++)
+                                            {
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input type="hidden" asp-for="@Model.DesiredAccommodations[i].personListingid">
+                                                            <input type="hidden" asp-for="@Model.DesiredAccommodations[i].propertytypeid">
+                                                            <input type="hidden" asp-for="@Model.DesiredAccommodations[i].CreatedOn">
+                                                            <input type="hidden" asp-for="@Model.DesiredAccommodations[i].CreatedbyUserID">
+                                                            <input type="hidden" asp-for="@Model.DesiredAccommodations[i].id">
+                                                            <input type="hidden" asp-for="@Model.DesiredAccommodations[i].UId">
+                                                            <input class="type radio-input" type="checkbox"
+                                                           asp-for="@Model.DesiredAccommodations[i].isSelected">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <img style="height:50px;widht:50x;" src="@Model.DesiredAccommodations[i].PropertyType.iconPath" />
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>@Model.DesiredAccommodations[i].PropertyType.Title</p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="row Teamsup m-3">
+                                        <div class="row m-2">
+                                            <div class="Teamsupheader">
+                                                <div>
+                                                    <input type="checkbox" id="TeamsUp" asp-for="@Model.PersonListing.TeamsUp">
+                                                    <label role="button" for="TeamsUp">Teamups</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex">
+                                            <svg class="mt-3" width="32" height="23" label="" style="margin-left:20px;">
+                                                <path d="M18.254 17.165c.645.222 1.175.98 1.175 1.683v3.194H4.572v-3.194c0-.704.529-1.46 1.174-1.683l3.49-1.2c.733.739 1.718 1.211 2.764 1.211 1.047 0 2.031-.472 2.764-1.211l3.49 1.2zM12 6.708c2.005 0 3.376 1.67 3.046 3.712l-.5 3.091C14.35 14.737 13.204 15.74 12 15.74c-1.204 0-2.348-1.002-2.546-2.228l-.5-3.091C8.622 8.378 9.993 6.708 12 6.708zm11.143 1.198v1.917h-1.857v1.917h-1.858V9.823h-1.857V7.906h1.857V5.99h1.858v1.916h1.857zM8.538 6.87c-.672.819-1.023 1.872-1.019 2.978-.89-.313-1.626-1.126-1.78-2.085l-.5-3.092C4.908 2.628 6.278.958 8.285.958c2.005 0 3.375 1.67 3.046 3.712l-.108.672a4.385 4.385 0 0 0-2.686 1.527zm-3.234 8.932a2.894 2.894 0 0 0-.87.49H.858v-3.193c0-.704.53-1.46 1.176-1.683l3.488-1.2a4.042 4.042 0 0 0 2.172 1.145l.386 2.387c.056.35.173.678.315.993l-3.09 1.061z" fill="#2F3A4A" fill-rule="evenodd"></path>
+                                            </svg>
+                                            <p style="margin-left:2px;">
+                                                Teamups are when you get together with others who are looking for accommodation and start a new share house together.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    @*<span class="icon">
+                                    <svg width="24" height="23" label="">
+                                    <path d="M18.254 17.165c.645.222 1.175.98 1.175 1.683v3.194H4.572v-3.194c0-.704.529-1.46 1.174-1.683l3.49-1.2c.733.739 1.718 1.211 2.764 1.211 1.047 0 2.031-.472 2.764-1.211l3.49 1.2zM12 6.708c2.005 0 3.376 1.67 3.046 3.712l-.5 3.091C14.35 14.737 13.204 15.74 12 15.74c-1.204 0-2.348-1.002-2.546-2.228l-.5-3.091C8.622 8.378 9.993 6.708 12 6.708zm11.143 1.198v1.917h-1.857v1.917h-1.858V9.823h-1.857V7.906h1.857V5.99h1.858v1.916h1.857zM8.538 6.87c-.672.819-1.023 1.872-1.019 2.978-.89-.313-1.626-1.126-1.78-2.085l-.5-3.092C4.908 2.628 6.278.958 8.285.958c2.005 0 3.375 1.67 3.046 3.712l-.108.672a4.385 4.385 0 0 0-2.686 1.527zm-3.234 8.932a2.894 2.894 0 0 0-.87.49H.858v-3.193c0-.704.53-1.46 1.176-1.683l3.488-1.2a4.042 4.042 0 0 0 2.172 1.145l.386 2.387c.056.35.173.678.315.993l-3.09 1.061z" fill="#2F3A4A" fill-rule="evenodd"></path>
+                                    </svg>
+                                    </span>*@
+                                    @*<p>
+                                    Teamups are when you get together with others who are looking for accommodation and start a new share house together.
+                                    </p>*@
+
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" class="btn btn-primary w-50">
+                                            Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/listings/findplace/updateAccommodationtypes.js"></script>

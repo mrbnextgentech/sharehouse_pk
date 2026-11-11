@@ -1,0 +1,731 @@
+﻿@using Gharshare.CommonHelper
+@using Gharshare.Models
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model PropertyListingVM
+@{
+    //Layout = "_Layout4Listings";
+    Layout = "_Layoutmain";
+    ViewData["Title"] = "Place Listing Details";
+    var session = HttpContextAccessor.HttpContext.Session;
+    var userId = session.GetString("_UserId");
+}
+
+<div class="container">
+    <input type="hidden" id="txtPlaceListingId" asp-for="@Model.Property.ID" />
+    <!-- row -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-5">
+                                @if (Model.Property.Images.Any())
+                                {
+                                    @if (Model.Property.Images.Count() == 1)
+                                    {
+                                        <div class="text-center;">
+                                            <img src="@Model.Property.Images.ToList()[0].ImagePath"
+                                                 style="height:300px;width:100%; border-radius:10px;" />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        var Images = Model.Property.Images.OrderBy(img => img.order);
+                                        <div class="image-gallery owl-carousel" id="lightgallery">
+                                            @foreach (var img in Images)
+                                            {
+                                                <a href="@img.ImagePath" data-exthumbimage="@img.ImagePath"
+                                                   data-src="@img.ImagePath"
+                                                   class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6">
+                                                    <img src="@img.ImagePath" alt="" class="img-fluid">
+                                                </a>
+                                            }
+
+                                        </div>
+                                    }}
+                                @if (Model.Property.Images.Any())
+                                {
+                                    if (userId != @Model.Property.Owner.Id)
+                                    {
+                                        <a class="btn btn-primary Shortlist"
+                                           onclick="shortPlacelisting('@Model.Property.ID','@userId')">
+                                            <span class="me-2">
+                                                <i class="fa fa-star"></i>
+                                            </span>Shortlist
+                                        </a>
+                                    }
+                                    @*<button class="btn btn-primary social-share">
+                                Share <span class="me-2">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-envelope"></i></a>
+                                </span>
+                                </button>*@
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 order-lg-2 mb-4 h-50">
+                            <div class="card" style="background-color: #f8f8f9;">
+                                <div class="card-body p-4 text-black">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="flex-shrink-0">
+                                            @if (@Model.Property.Owner.ProfilePicture != "")
+                                            {
+                                                <img src="@(Model.Property.Owner.ProfilePicture ?? "/img/user-image.png")"
+                                                     alt="Generic placeholder image"
+                                                     class="img-fluid rounded-circle border border-dark border-3"
+                                                     style="width: 100px;">
+                                            }
+                                            @* else
+                                            {
+                                            <img src="/img/user-image.png"
+                                            alt="Generic placeholder image"
+                                            class="img-fluid rounded-circle border border-dark border-3"
+                                            style="width: 100px;">
+                                            } *@
+                                        </div>
+                                        <div class="flex-grow-1 text-center">
+                                            <div class="mb-2">
+                                                <h4 class="text-center">
+                                                    Message
+                                                    @Utility.shortusername(Model.Property.Owner.Name, 10)
+                                                </h4>
+                                                <p>Online @Utility.GetOnlineDate(Model.Property.Owner.Lastloggedin)</p>
+                                            </div>
+                                            <div class="mb-2">
+                                                <button type="button"
+                                                        class="btn btn-outline-primary btn-rounded btn-sm"
+                                                        data-mdb-ripple-color="dark">
+                                                    Response rate: <strong>
+                                                        @{
+                                                            int responseRateInteger = (int)Math.Floor(Model.Property.Owner.Responserate);
+                                                        }
+                                                        @responseRateInteger%
+
+                                                    </strong>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <form id="frmMessage">
+                                        <div class="row mb-2 flex">
+                                            @if (userId != "")
+                                            {
+                                                <textarea id="txtMessage" rows="4" style="height: 100px;" asp-for="@Model.Enquiry.Message"
+                                                          placeholder="Type your message... "></textarea>
+                                                <span id="spanMessage" class="text-danger"></span>
+                                                <input type="hidden" asp-for="@Model.Enquiry.Enquirytype" value="@Enquiry.EnquriyType.aboutproperty">
+                                                <input type="hidden" asp-for="@Model.Enquiry.FromUserID" value="@userId">
+                                                <input type="hidden" asp-for="@Model.Enquiry.ToUserID" value="@Model.Property.Owner.Id">
+                                                <input type="hidden" asp-for="@Model.Enquiry.Enquirystatus" value="@Enquiry.EnquiryStatus.unread">
+                                                <input type="hidden" asp-for="@Model.Enquiry.PropertyID" value="@Model.Property.ID">
+                                                <input type="hidden" asp-for="@Model.Enquiry.CreatedOn" value="@DateTime.UtcNow">
+                                                <input type="hidden" asp-for="@Model.Enquiry.DateReceived" value="@DateTime.UtcNow">
+                                            }
+                                            else
+                                            {
+                                                <textarea rows="4" style="height: 100px;" asp-for="@Model.Enquiry.Message"
+                                                          placeholder="Login or signup to message... "></textarea>
+                                                <span id="spanMessage" class="text-danger"></span>
+                                            }
+                                        </div>
+                                        @if (Model.RoomsSelectList.Any())
+                                        {
+                                            <div class="row mb-4">
+                                                <select id="ddlSelect" class="nice-select wide w-100" asp-for="@Model.Enquiry.RoomId"
+                                                        asp-items="@Model.RoomsSelectList">
+                                                    <option value="">Please select the room</option>
+                                                </select>
+                                                <span id="spanRoom" class="text-danger"></span>
+                                            </div>
+                                        }
+                                        <div class="row mb-2 text-center">
+                                            @if (userId != null && userId != "")
+                                            {
+                                                if (userId != @Model.Property.Owner.Id && @Model.Property.Owner.FreetoMessage == true)
+                                                {
+                                                    <div class="mb-2">
+                                                        <button type="submit" id="btnMessage" class="btn btn-primary">Send message to @Utility.shortusername(Model.Property.Owner.Name, 10)</button>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="mb-2">
+                                                        <button disabled type="submit" id="btnMessage" class="btn btn-primary">Send message to @Utility.shortusername(Model.Property.Owner.Name, 10)</button>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <div class="mb-2 text-center">
+                                                    <a class="btn btn-primary" asp-area="identity" asp-page="/account/login">
+                                                        Login to message @Utility.shortusername(Model.Property.Owner.Name, 10)
+                                                    </a>
+                                                </div>
+                                            }
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            @*<div class="card" style="background-color: #f8f8f9;">
+                            <div class="card-body p-4 text-black">
+                            <div class="d-flex align-items-center mb-4">
+                            <div class="flex-grow-1 text-center">
+                            <div class="mb-2">
+                            <h4 class="text-center">Social media verifications</h4>
+                            <a href="#">
+                            <button class="btn btn-danger" type="button">
+                            <i class="lab la-facebook-f"></i>
+                            </button>
+                            </a>
+                            <a href="#">
+                            <button class="btn btn-danger" type="button">
+                            <i class="lab la-twitter"></i>
+                            </button>
+                            </a>
+                            <a href="#">
+                            <button class="btn btn-danger" type="button">
+                            <i class="lab la-instagram"></i>
+                            </button>
+                            </a>
+                            <a href="#">
+                            <button class="btn btn-primary" type="button">
+                            <i class="lab la-linkedin"></i>
+                            </button>
+                            </a>
+
+                            </div>
+                            <div>
+                            <button type="button"
+                            class="btn btn-outline-primary btn-rounded btn-sm"
+                            data-mdb-ripple-color="dark">
+                            Edit verifications
+                            </button>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>*@
+                        </div>
+                        <div class="col-lg-8 order-lg-1">
+                            <div class="row">
+                                <div class="col-md-12 d-flex">
+                                    <h3 id="address">@Utility.RemoveStreetHouse(Model.Property.Address)</h3>
+                                    <input id="txtAddress" type="hidden"
+                                           value="@Utility.RemoveStreetHouse(Model.Property.Address)" />
+                                    @if (@Model.Property.Owner.FreetoMessage)
+                                    {
+                                        <span class="free2Message">Free to Message</span>
+                                    }
+                                </div>
+                            </div>
+                            @if (@Model.Property.Accommodationtype != @Property.AccType.WholeProperty)
+                            {
+                                <h5>
+                                    @* <span class="badge badge-primary badge-lg">Early Bird</span>*@
+                                    @Model.Property.RoomsForRent
+                                    @if (@Model.Property.Accommodationtype != null)
+                                    {
+                                        @Utility.GetEnumDisplayName(@Model.Property.Accommodationtype)
+                                    }
+                                </h5>
+                            }
+                            else
+                            {
+                                <h5>
+                                    @*@Model.Property.Bed*@
+                                    @*<span class="badge badge-primary badge-lg">Early Bird</span>*@
+                                    @if (@Model.Property.Accommodationtype > 0)
+                                        @Utility.GetEnumDisplayName(@Model.Property.Propertytype)
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                </h5>
+                            }
+                            <hr>
+                            @if (@Model.Property.Accommodationtype == @Property.AccType.WholeProperty)
+                            {
+                                <a href="#">
+                                    <span class="btn btn-outline-primary ">
+                                        Rs.@Utility.Format(@Model.Property.Rent)/month<br>
+                                        @if (@Model.Property.Bill != null)
+                                            @Utility.GetEnumDisplayName(@Model.Property.Bill)
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                    </span>
+                                </a>
+                            }
+                            else
+                            {
+                                foreach (var room in @Model.Property.Rooms)
+                                {
+                                    <a href="#">
+                                        <span class="btn btn-outline-primary ">
+                                            Rs.@Utility.Format(room.Rent)/month<br>
+                                            @if (@room.Billstatus > 0)
+                                                @Utility.GetEnumDisplayName(room.Billstatus)
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        </span>
+                                    </a>
+                                }
+                            }
+                            <div class="col-md-12 mt-3">
+                                <span>
+                                    <img src="/img/icons/detail/bed.png" style="height:35px;width:35px;" />
+                                    <span class="h3">
+                                        @Model.Property.Bed
+                                        @*@if (@Model.Property.Accommodationtype == @Property.AccType.WholeProperty)
+                                        {
+                                        @Model.Property.Bed
+                                        }
+                                        else
+                                        {
+                                        @Model.Property.RoomsForRent
+                                        }*@
+                                    </span>
+                                </span>
+                                <span>
+                                    <img src="/img/icons/detail/bath-tub.png" style="height:32px;width:32px;" />
+                                    <span class="h3">@Model.Property.Bathroom</span>
+                                </span>
+                                @if (@Model.Property.Accommodationtype != @Property.AccType.WholeProperty)
+                                {
+                                    <span>
+                                        <img src="/img/icons/detail/men.png" style="height:35px;width:35px;" />
+
+                                        <span class="h3">@Model.Property.Totalflatmates</span>
+                                    </span>
+                                }
+                            </div>
+                            <hr>
+                            <h3>About the property</h3>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <p id="description">
+                                        @Model.Property.Description
+                                    </p>
+                                </div>
+                            </div>
+
+                            @if (Model.PropertyAcceptings.Any())
+                            {
+                                <h3>Property Accepting</h3>
+                                <div class="row">
+                                    <div id="divacceptings" class="col-md-10">
+                                        @foreach (var pa in Model.PropertyAcceptings)
+                                        {
+                                            <span class="mt-3 btn btn-outline-primary">
+                                                <img src="/img/icons/detail/tick.svg" style="width:20px;height:14px;" />
+                                                @pa.Accepting.Title
+                                            </span>
+                                        }
+                                    </div>
+                                    <div class="col-md-2 mt-4">
+                                    </div>
+                                </div>
+                            }
+                            @if (userId != null && userId != "")
+                            {
+                                if (userId != @Model.Property.Owner.Id)
+                                {
+                                    <div class="inspectiondiv">
+                                        <div class="row mb-3">
+                                            <h4>
+                                                <i class="fa fa-mobile" aria-hidden="true"></i>
+                                                Message @Model.Property.Owner.Name to request an inspection
+                                            </h4>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-md-8">
+                                                <p>
+                                                    To inspect this property,send a message
+                                                    introducing yourself and ask to see their
+                                                    inspection times.
+                                                </p>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <a class="btn btn-primary" onclick="inspectionPopup(@Model.Property.ID)"
+                                                   style="width:200px;" data-bs-toggle="modal" data-bs-target="#basicModal">
+                                                    Request inspection
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            <hr>
+                            @if (@Model.Property.Accommodationtype != @Property.AccType.WholeProperty
+                            && @Model.Property.Rooms.Any())
+                            {
+                                foreach (var room in @Model.Property.Rooms)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-10 mt-2">
+                                            <h3>@room.Name</h3>
+                                        </div>
+                                    </div>
+                                    <h4>Details</h4>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/Rs.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                <h5 id="roomrent" class="mb-0">@room.Rent?.ToString("#,##0") monthly rent</h5>
+                                                                @{
+                                                                    var bondAmount = @room.Rent * @Convert.ToInt32(room.BondType);
+                                                                }
+                                                                <p id="roombond" class="mb-0">@bondAmount?.ToString("#,##0")  bond</p> @* or need to include bondvalue field in room model*@
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/Bill.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.Billstatus > 0) //Billsatatus
+                                                                {
+                                                                    <h5 id="roombillstatus" class="mb-0">@Utility.GetEnumDisplayName(room.Billstatus)</h5>
+                                                                }
+                                                                @if (@Model.Property.InternetStatus != null)
+                                                                {
+                                                                    <p class="mb-0">@Utility.GetEnumDisplayName(@Model.Property.InternetStatus)</p>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/room.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.RoomType > 0)
+                                                                {
+                                                                    <h5 class="mb-0">@Utility.GetEnumDisplayName(room.RoomType)</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/bath-tub.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.BathroomType > 0)
+                                                                {
+                                                                    <h5 class="mb-0">
+                                                                        @Utility.GetEnumDisplayName(room.BathroomType)
+                                                                    </h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/calendar.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.MinStay > 0)
+                                                                {
+                                                                    <h5 id="roomstay" class="mb-0">
+                                                                        @Utility.GetEnumDisplayName(room.MinStay)
+                                                                        -@Utility.GetEnumDisplayName(room.MaxStay)
+                                                                    </h5>
+                                                                }
+                                                                <p id="roomavailable" class="mb-0">Available @Utility.ConvertToShortDateFormat(@room.AvailableFrom)</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/man.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.PreferredFlatmate > 0)
+                                                                {
+                                                                    <h5 class="mb-0">@Utility.GetEnumDisplayName(room.PreferredFlatmate)</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/bed.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.Furnishing > 0)
+                                                                {
+                                                                    <h5 class="mb-0">@Utility.GetEnumDisplayName(room.Furnishing)</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/car.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (Model.Property.Parkingtype != null)
+                                                                {
+                                                                    <h5 class="mb-0">@Utility.GetEnumDisplayName(Model.Property.Parkingtype)</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                @* <tr>
+                                        <td class="w-50">
+                                        <div class="media">
+                                        <img src="/img/icons/detail/calendar.png" style="height:35px;width:35px;" />
+                                        <div class="ms-2">
+                                        @if (room.AvailableFrom != null)
+                                        {
+                                        <h5 class="mb-0">
+                                        @Utility.ConvertToCustomDateFormat(room.AvailableFrom) (available from)
+                                        </h5>
+                                        }
+                                        </div>
+                                        </div>
+                                        </td>
+                                        </tr>*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @if (room.RoomFurnishings.Any()) // room features & furnishings
+                                    {
+                                        <h4>Features</h4>
+                                        <div id="roomfeatures" class="row">
+                                            @foreach (var roomfurnishing in room.RoomFurnishings)
+                                            {
+                                                if (roomfurnishing.isSelected == true)
+                                                {
+                                                    <div class="col-6 mb-3">
+                                                        <div class="media" style="margin-left:5px;">
+                                                            <img src="@roomfurnishing.Furnishing.Svgd"
+                                                                 style="height:35px;width:35px;" />
+                                                            <div class="ms-2 mt-2">
+                                                                <h5 class="mb-0">@roomfurnishing.Furnishing.Title</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                    @if (userId != null && userId != "" && userId != @Model.Property.Owner.Id)
+                                    {
+                                        <div class="row">
+                                            <a class="btn btn-primary w-50" id="@room.ID" onclick="roomEnquiryPopup(this.id,@room.PropertyId)"
+                                               data-bs-toggle="modal" data-bs-target="#basicModal">
+                                                Enquire about this room
+                                            </a>
+                                        </div>
+                                    }
+                                    else if (userId == null || userId == "")
+                                    {
+                                        <div class="row">
+                                            <a class="btn btn-primary w-50" asp-area="identity"
+                                               asp-page="/account/login">
+                                                Log in to enquire about this room
+                                            </a>
+                                        </div>
+                                    }
+                                    <hr>
+                                }
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <h4>Details</h4>
+                                    </div>
+                                    <div class="col-md-2">
+                                    </div>
+                                </div>
+                                /// whole property details
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <img src="/img/icons/detail/Rs.png" style="height:35px;width:35px;" />
+                                                        <div class="ms-2">
+                                                            <h5 id="rent" class="mb-0">Rs @Utility.Format(Model.Property.Rent)/month rent</h5>
+                                                            @{
+                                                                var bondAmount = @Model.Property.Rent * @Convert.ToInt32(@Model.Property.Bond);
+                                                            }
+                                                            <p id="bond" class="mb-0">Rs @Utility.Format(bondAmount) bond</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <img src="/img/icons/detail/Bill.png" style="height:35px;width:35px;" />
+                                                        <div class="ms-2">
+                                                            @if (@Model.Property.Bill > 0) //Billsatatus
+                                                            {
+                                                                <h5 id="billstatus" class="mb-0">@Utility.GetEnumDisplayName(@Model.Property.Bill)</h5>
+                                                            }
+                                                            @if (@Model.Property.InternetStatus != null)
+                                                            {
+                                                                <p id="internetstatus" class="mb-0">@Utility.GetEnumDisplayName(@Model.Property.InternetStatus)</p>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24"
+                                                             xmlns:xlink="http://www.w3.org/1999/xlink" label="">
+                                                            <g fill="none" fill-rule="evenodd">
+                                                                <path d="M21.108 23H20v-3h3v1.195C23 22.224 22.187 23 21.108 23zM1 21.195V20h3v3H2.737C1.714 23 1 22.258 1 21.195zM20 11h3V8h-3v3zm0 4h3v-3h-3v3zm0 4h3v-3h-3v3zm-5 0h4v-3h-4v3zm0 4h4v-3h-4v3zm-5 0h4v-3h-4v3zm-5 0h4v-3H5v3zm0-4h4v-3H5v3zm-4 0h3v-3H1v3zm0-4h3v-3H1v3zm0-4h3V8H1v3zm4 0h4V8H5v3zm5 0h4V8h-4v3zm5 0h4V8h-4v3zm0 4h4v-3h-4v3zM5 15h4v-3H5v3zm5 4h4v-3h-4v3zm0-4h4v-3h-4v3zM2.737 1h18.37C22.188 1 23 1.759 23 2.765V7H1V2.765C1 1.709 1.698 1 2.737 1zm18.37-1H2.738C1.15 0 0 1.163 0 2.765v18.43C0 22.82 1.15 24 2.737 24h18.37C22.73 24 24 22.768 24 21.195V2.765C24 1.188 22.757 0 21.108 0z"
+                                                                      fill="#2E3A4B"></path>
+                                                                <path d="M7.642 3.232a.333.333 0 1 1 0 .666.333.333 0 0 1 0-.666m0 1.665c.735 0 1.333-.598 1.333-1.332 0-.735-.598-1.333-1.333-1.333-.734 0-1.332.598-1.332 1.333 0 .734.598 1.332 1.332 1.332M16.358 3.232a.333.333 0 1 1 0 .665.333.333 0 0 1 0-.665m0 1.665c.734 0 1.332-.598 1.332-1.332 0-.735-.598-1.333-1.332-1.333-.735 0-1.333.598-1.333 1.333 0 .734.598 1.332 1.333 1.332"
+                                                                      fill="#2E3A4B"></path>
+                                                            </g>
+                                                        </svg>
+                                                        <div class="ms-2">
+                                                            <h5 class="mb-0">
+                                                                @if (@Model.Property.MinStay > 0)
+                                                                {
+                                                                    <span id="pminstay">@Utility.GetEnumDisplayName(@Model.Property.MinStay)</span>
+                                                                }
+                                                                @if (@Model.Property.MaxStay > 0)
+                                                                {
+                                                                    <span id="pmaxstay">-@Utility.GetEnumDisplayName(@Model.Property.MaxStay)</span>
+                                                                }
+                                                            </h5>
+                                                            <p id="pavailable" class="mb-0">Available @Utility.ConvertToShortDateFormat(Model.Property.AvailableFrom)</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <svg width="24" height="23" label="">
+                                                            <g stroke="#000" fill="none" fill-rule="evenodd"
+                                                               stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="M13.795 13.997c-.462-.323-.765-.622-.844-.88v-1.034c.668-.7 1.196-1.674 1.507-2.816.75-.54.935-1.648.316-2.43V4.525c0-2.388-1.3-4.024-4.272-4.024C7.607.5 6.23 2.136 6.23 4.524v2.315a1.7 1.7 0 0 0 .315 2.428c.312 1.142.84 2.117 1.507 2.816v1.034c-.299.984-3.875 2.566-7.095 3.84a.737.737 0 0 0-.456.688v1.089M22.101 14.547a4.288 4.288 0 1 0-6.063 6.064 4.288 4.288 0 0 0 6.063-6.064zM18.332 19.313l2.752-2.941M18.332 19.313l-1.277-1.366">
+                                                                </path>
+                                                            </g>
+                                                        </svg>
+                                                        <div class="ms-2">
+                                                            @if (@Model.Property.Flatmatepreference > 0)
+                                                            {
+                                                                <h5 class="mb-0">@Utility.GetEnumDisplayName(@Model.Property.Flatmatepreference)</h5>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <svg width="24" height="21"
+                                                             xmlns:xlink="http://www.w3.org/1999/xlink" label="">
+                                                            <g fill="none" fill-rule="evenodd">
+                                                                <g transform="translate(0 -.5)">
+                                                                    <path d="M0 .5v20a.5.5 0 0 0 1 0v-19h22v19a.5.5 0 0 0 1 0V.5H0z"
+                                                                          fill="#2E3A4B"></path>
+                                                                </g>
+                                                                <path d="M20.064 10.23l-.262.038a.508.508 0 0 0-.346.264.527.527 0 0 0-.02.446c.108.27.346 2.064.502 3.517V17H4.075l-.002-2.455c.159-1.503.396-3.294.498-3.551a.499.499 0 0 0-.36-.724l-.263-.04c-.152-.021-.406-.052-.425-.036l-.031-.53h1.8c.378.836 1.412 1.336 2.393 1.336h8.643c.985 0 2.02-.503 2.396-1.342l1.752-.032.041.507c-.063.043-.309.076-.454.096zM19.602 19h-1.276a.329.329 0 0 1-.335-.322V18h1.947v.677c0 .179-.15.323-.335.323zm-13.578-.322c0 .179-.15.323-.335.323H4.413a.329.329 0 0 1-.336-.323V18h1.947v.677zm.923-12.511C7.06 5.603 7.466 5 8.264 5h7.488c.8 0 1.205.6 1.325 1.203l.803 2.837c-.052.553-.841.96-1.55.96H7.686c-.712 0-1.5-.392-1.553-.96l.813-2.874zm13.56 2.499h-1.693L18.05 5.97C17.813 4.774 16.912 4 15.752 4H8.262c-1.135 0-2.058.79-2.288 1.93l-.773 2.736h-1.71a.966.966 0 0 0-.969.96v.569c0 .685.542.893.99.98-.167.865-.334 2.332-.435 3.32v4.183c0 .73.599 1.323 1.336 1.323h1.275c.736 0 1.335-.593 1.335-1.323V18h9.967v.677c0 .73.599 1.323 1.335 1.323h1.276a1.33 1.33 0 0 0 1.335-1.323v-1.174-.003-.004l-.003-3.054c-.1-.95-.265-2.407-.431-3.27.442-.087.974-.296.974-.978v-.568a.966.966 0 0 0-.97-.961z"
+                                                                      fill="#2E3A4B"></path>
+                                                                <path d="M14 15h-4a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1M14 13h-4a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1M17.508 15.126a.639.639 0 0 1-.646-.63c0-.347.29-.629.646-.629a.64.64 0 0 1 .646.63.64.64 0 0 1-.646.63m0-2.26a1.64 1.64 0 0 0-1.646 1.63c0 .898.738 1.63 1.646 1.63a1.64 1.64 0 0 0 1.646-1.63 1.64 1.64 0 0 0-1.646-1.63M6.507 15.126a.639.639 0 0 1-.646-.63c0-.347.29-.629.646-.629a.64.64 0 0 1 .646.63.64.64 0 0 1-.646.63m0-2.26a1.64 1.64 0 0 0-1.646 1.63c0 .898.738 1.63 1.646 1.63a1.64 1.64 0 0 0 1.646-1.63 1.64 1.64 0 0 0-1.646-1.63M10.979 6.528h2.063a.5.5 0 0 0 0-1h-2.063a.5.5 0 0 0 0 1"
+                                                                      fill="#2E3A4B"></path>
+                                                            </g>
+                                                        </svg>
+                                                        <div class="ms-2">
+                                                            @if (Model.Property.Parkingtype != null)
+                                                            {
+                                                                <h5 class="mb-0">@Utility.GetEnumDisplayName(Model.Property.Parkingtype)</h5>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            @if (Model.Property.AboutFlatmates != null)
+                            {
+                                <h4>About the flatmates</h4>
+                                <p class="mb-2">@Model.Property.AboutFlatmates</p>
+                            }
+
+                            @if (Model.Property.VideoURL != null)
+                            {
+                                <h4>Video Tour</h4>
+                                <div class="mb-3" style="width:100%; height:300px;">
+                                    @{
+                                        string videoId = Model.Property.VideoURL;
+                                        string embeddedUrl = $"https://www.youtube.com/embed/{videoId}";
+                                    }
+                                    <iframe title="video-tour" src="@embeddedUrl" style="width:100%; height:300px;"
+                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture
+                                    fullscreen" allowfullscreen="" frameborder="0"></iframe>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                    </div>
+                    <h4>Location Map</h4>
+                    <div class="row mt-3">
+                        <div class="col-lg-12" id="map" style="height: 300px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/message/sendMessage.js"></script>
+<script src="~/js/listings/loadRoominPopup.js"></script>
+<script src="~/js/Message/roomEnquiryPopup.js"></script>
+<script src="~/js/Message/inspectionRequestPopup.js"></script>
+<script src="~/js/shortlist/shortlistPlace.js"></script>
+<script src="~/js/commonfunctions/createGooglemap.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyQhihensPLJP3qiNAT0_b-SbtD1jbrOs&callback=initMap&libraries=&v=weekly" defer"></script>
+
+

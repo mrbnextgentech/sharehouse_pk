@@ -1,0 +1,58 @@
+﻿@page "/confirmemail"
+@using Gharshare.Models
+@using Microsoft.AspNetCore.Identity
+@model ConfirmEmailModel
+@inject SignInManager<ApplicationUser> _signInManager
+@inject UserManager<ApplicationUser> _userManager
+@{
+    ViewData["Title"] = "Confirm email";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="~/img/favicon.png" type="image/x-icon" />
+    <link href="~/css/admin/style.css" rel="stylesheet">
+</head>
+<body>
+    @if (_signInManager.IsSignedIn(User))
+    {
+        var user = await _userManager.GetUserAsync(User);
+        HttpContext.Session.SetString("_UserId", user.Id);
+        HttpContext.Session.SetString("_UserType",user.UserType.ToString());
+        HttpContext.Session.SetString("ownerEmail", user.Email);
+    }
+
+    <div class="vh-100">
+        <div class="authincation h-100">
+            <div class="container h-100">
+                <div class="row justify-content-center h-100 align-items-center">
+                    <div class="col-md-6">
+                        <div class="authincation-content">
+                            <div class="row no-gutters">
+                                <div class="col-xl-12">
+                                    <div class="auth-form">
+                                        <h1>@ViewData["Title"]</h1>
+                                        <div class="row mb-3">
+                                            <partial name="_StatusMessage" model="Model.StatusMessage" />
+                                        </div>
+                                        <div class="row mb-3">
+                                            <a class="btn btn-primary btn-block"
+                                               asp-area="" asp-action="index" asp-controller="home">
+                                                Go to home page
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

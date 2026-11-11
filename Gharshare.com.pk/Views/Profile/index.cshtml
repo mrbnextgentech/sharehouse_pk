@@ -1,0 +1,44 @@
+﻿@page "Gharshare.com.pk.Views.Profile"; 
+@using Gharshare.Models
+@model string
+@{
+    ViewData["Title"] = "send OTP to Verify your mobile number";
+    Layout = "_Layoutmain";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <h4 class="text-center mb-2">
+                            Verify your mobile number
+                        </h4>
+                        <div class="mb-2">
+                            <p>
+                                To keep our community nice and secure and to let other flatmates 
+                                know you’re for real, you’ll need to verify your mobile number.
+                            </p>
+                        </div>
+                        <form id="sendOTPForm">
+                            <div>
+                                <label><strong>Mobile number</strong></label>
+                                <div class="form-inline">
+                                    <input id="txtMobile" oninput="formatMobileNumber(this)" 
+                                        type="text" class="form-control" maxlength="15">
+                                    <span id="spanMobile" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Send SMS Code
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  

@@ -1,0 +1,42 @@
+﻿@using Gharshare.Models
+@model Property
+@{
+    ViewData["Title"] = "Edit Property Details";
+    Layout = "_Layout4Popups";
+    //Layout = "_Layoutmain";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <h4 class="text-center mb-3">
+                           What's great about living in this property?
+                        </h4>
+                        <form id="frmPropertydescription">
+                            <input id="txtPropertyId" type="hidden" asp-for="ID" />
+                            <div class="col-lg-12 mb-2">
+                                <div class="mb-3">
+                                <label class="text-label form-label">About Property</label>
+                                <div class="form-inline">
+                                    <textarea id="txtdescription" rows="20" style="height:200px;"   class="form-control" 
+                                    asp-for="Description"></textarea>
+                                    <span id="spandescription" class="text-danger"></span>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 text-center">
+                                <button type="submit" class="btn btn-primary w-50">
+                                    Update
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial"/>
+<script src="~/js/listings/updatePropertydescription.js"></script>

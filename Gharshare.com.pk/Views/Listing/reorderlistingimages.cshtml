@@ -1,0 +1,62 @@
+﻿@using Gharshare.Models
+@model PropertyVM
+@{
+    ViewData["Title"] = "Reorder listing images";
+    Layout = "_Layout4Popups";     
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <h4 class="text-center mb-3">
+                            Reorder Photos
+                        </h4>
+                        <p class="text-center mb-3">
+                            Drag and drop your photos to change the order. The 
+                            first image will be used as cover for the listing.
+                        </p>
+                        <form id="frmListingimages">
+                            <input id="txtPropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                            <div id="images" class="row mb-2 text-center">
+                                @if (Model.PropertyImages.Any())
+                                {
+                                    @for (int i=0;i<Model.PropertyImages.Count();i++)
+                                    {
+                                        var img = Model.PropertyImages[i];
+                                        <div class="col-md-2 mb-2">
+                                            <img src="@img.ImagePath" style="height:100px; width:100%"
+                                         alt="" class="img-a img-fluid">
+                                         <input type="hidden" asp-for="@Model.PropertyImages[i].ID">
+                                         <input type="hidden" asp-for="@Model.PropertyImages[i].PropertyID">
+                                         <input type="hidden" asp-for="@Model.PropertyImages[i].ImagePath">
+                                         <input type="hidden" asp-for="@Model.PropertyImages[i].IsActive">
+                                         <input type="hidden" asp-for="@Model.PropertyImages[i].CreatedOn"> 
+                                         <input type="hidden" asp-for="@Model.PropertyImages[i].CreatedbyUserId">                                          
+                                         <input type="hidden" class="order" asp-for="@Model.PropertyImages[i].order">                                         
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="text-center mb-3">
+                                        no photo of the property is saved.
+                                    </p>
+                                }
+                            </div>
+                            <div class="mb-3 text-center">
+                                <button type="submit" class="btn btn-primary w-25">
+                                    Save and close
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/commonfunctions/reOrderImages.js"></script>
+<script src="~/js/listings/saveImagesnewOrder.js"></script>

@@ -1,0 +1,110 @@
+﻿@using Gharshare.CommonHelper
+@using Gharshare.Models
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model cmsVm
+@{
+    ViewData["Title"] = @Model.pageTitle + " |";
+    Layout = "_Layoutmain";
+    Pager pager = new Pager();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="ltn__breadcrumb-area text-left bg-overlay-white-30 bg-image " data-bs-bg="/img/bg/14.jpg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="ltn__breadcrumb-inner text-center">
+                    <h1 class="page-title">
+                        @Model.pageTitle <span class="ltn__secondary-color-3"></span>
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="ltn__blog-area ltn__blog-item-3-normal mt-5">
+    <div class="container">
+        <div class="row">
+            @* <h2 class="mb-3">@Model.pageTitle</h2> *@
+            <div class="col-lg-8">
+                @if (Model.contents.Any())
+                {
+                    int count = 0;
+                    foreach (var article in Model.contents)
+                    {
+                        if (count == 0)
+                        {
+                            string title = @article.Heading.Replace(" ", "_");
+                            <a asp-action="detail" asp-route-id=@article.UId asp-route-title="@title">
+                                @if (@article.Imagepath != null)
+                                {
+                                    <img src="@article.Imagepath" alt="image" class="mb-3" 
+                                    style="width:100%;height:400px">
+                                }
+                                <h3 class="animated fadeIn">@article.Heading</h3>
+                                <p>
+                                    @article.Topsection
+                                </p>
+                            </a>
+                            <hr>
+                        }
+                        else
+                        {
+                            string title = @article.Heading.Replace(" ", "_");
+                            <a asp-action="detail" asp-route-id=@article.UId asp-route-title=@title>
+                                <div class="media pt-3 pb-3">
+                                    @if (@article.Imagepath != null)
+                                    {
+                                        <img src="@article.Imagepath" style="width: 260px;height: 170px;border:2px solid #D6DCDE;border-radius:5%;" alt="image" class="me-3">
+                                    }
+                                    else
+                                    {
+                                        <img src="@article.Imagepath" style="width: 260px;height: 170px;border:2px solid #D6DCDE;border-radius:5%;" alt="image" class="me-3">
+                                    }
+                                    <div class="media-body">
+                                        <p class="m-b-5 h5">
+                                            @article.Heading
+                                        </p>
+                                        <p class="mb-0">
+                                            @article.Topsection
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                            <hr />
+                        }
+                        count += 1;
+                    }
+                    <partial name="_Pager" model="@pager" />
+                }
+            </div>
+             <div class="col-lg-4">
+                <div class="styles__moreArticles___z_by6" role="presentation" style="margin-top:0px;">
+                    <div class="styles__headingBox___3VIO9">
+                        <p class="styles__heading___35MAP">@Model.pageTitle</p>
+                    </div>
+                    <div class="styles__articlesContainer___2bulR styles__collapse___2SWaI">
+                        <div class="styles__divider___TaUM6"></div>
+                        @if (Model.contents.Any())
+                        {
+                            foreach (var article in Model.contents)
+                            {
+                                string title = @article.Heading.Replace(" ", "_");
+                                <a asp-action="detail" asp-route-id=@article.UId asp-route-title=@title>
+                                    <p class="styles__articleText___3d7bZ">
+                                        @article.Heading
+                                    </p>
+                                    <div class="styles__divider___TaUM6"></div>
+                                </a>
+                            }
+                        }                         
+                    </div></div>            
+                     </div>
+    </div>
+</div>
+

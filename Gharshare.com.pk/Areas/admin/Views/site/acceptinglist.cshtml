@@ -1,0 +1,52 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model List<Accepting>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Accepting List";
+}
+<div class="row justify-content-center">
+    <div class="col-lg-12">
+        <div class="card m-5">
+            <div class="card-header">
+                <h4 class="card-title">Accepting List</h4>
+            </div>
+            <div class="card-body">
+                <div class="row m-2">
+                    <div class="col-md-12">
+                        <a onclick="addAccepting()"
+                           data-bs-toggle="modal" data-bs-target="#basicModal"
+                           class="btn btn-primary">
+                            <i class="fa fa-plus"></i>
+                            Create New Accepting
+                        </a>
+                    </div>
+                </div>
+                <hr />
+                @if (Model.Any())
+                {
+                    <div class="row m-3">
+                        @foreach (var accepting in Model)
+                        {
+                            <div class="col-md-3 col-sm-6">                                
+                                <div class="text-center mt-3">
+                                    <label href="#" data-bs-toggle="modal" data-bs-target="#basicModal"
+                                        onclick="addAccepting('@accepting.ID');">
+                                        <input type="hidden" asp-for="@accepting.ID">
+                                        <span class="radio-tile">
+                                            <span class="radio-icon">
+                                                <img src="@accepting.iconpath">
+                                            </span>
+                                        </span>
+                                    </label><p>@accepting.Title</p>
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/site/openAddacceptingview.js"></script>

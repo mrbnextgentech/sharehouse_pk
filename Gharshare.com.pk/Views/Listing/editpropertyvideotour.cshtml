@@ -1,0 +1,72 @@
+﻿@using Gharshare.Models
+@model PropertyListingVM
+@{
+    ViewData["Title"] = "Edit property video tour";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        @*<h4 class="text-center mb-3">
+                        Add a video tour
+                        </h4>*@
+                        <p>
+                            Adding a video tour is a great way to reduce the number of in-person
+                            inspections required. A video tour helps potential flatmates view your home
+                            and get to know your current flatmates, without having to meet in person.
+                        </p>
+                        <form id="frmvideotour">
+                            <input id="txtListingId" type="hidden"
+                                   asp-for="@Model.Property.ID" />
+                            <div class="col-lg-12 mb-2">
+                                <div class="mb-3">
+                                    <label class="text-label form-label">
+                                        YouTube link to your video tour
+                                    </label>
+                                    <div class="form-inline">
+                                        @{
+                                            string videoUrl = null;
+                                            if (@Model.Property.VideoURL != null && @Model.Property.VideoURL != "")
+                                            {
+                                                videoUrl = "https://www.youtube.com/embed/" + @Model.Property.VideoURL;
+                                            }
+                                        }
+                                        <input id="txtvideourl" class="form-control" type="text"
+                                               asp-for="@Model.Property.VideoURL" required value="@videoUrl"
+                                               placeholder="Enter a link to your video tour" />
+                                        <span id="spanvideourl" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Save video tour
+                                </button>
+                            </div>
+                            <div class="mb-3">
+                                <a class="btn btn-secondary btn-block" href="@Url.Action("propertyinspection",
+                                "listing", new { listingid = @Model.Property.ID })">
+                                    Set up in person inspections
+                                </a>
+                            </div>
+                            <div class="mb-3 text-center">
+                                @if (@Model.Property.VideoURL != null && @Model.Property.VideoURL != "")
+                                {
+                                    <button id="delete" type="submit" class="btn btn-primary w-50">
+                                        Delete video tour
+                                    </button>
+                                }
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/listings/updatePropertyTour.js"></script>
+<script src="~/js/listings/deleteVideotour.js"></script>

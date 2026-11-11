@@ -1,0 +1,605 @@
+﻿@using Gharshare.Models
+@using Microsoft.AspNetCore.Identity
+@model PersonListingVM
+@inject UserManager<ApplicationUser> _userManager
+@{
+    ViewData["Title"] = "Find a place";
+    Layout = "_Layout4Listings";
+    var user = await _userManager.GetUserAsync(User);
+}
+<div class="container-fluid">
+    <!-- row -->
+    <div class="row">
+        <div class="col-xl-12 col-xxl-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title">DESCRIBE YOUR IDEAL PLACE</h4>
+                </div>
+                <div class="card-body">
+                    <div id="smartwizard">
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#accommodationtype">
+                                    <span class="num">Accommodation Type</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#area">
+                                    <span class="num">Preferred Area</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#rent">
+                                    <span class="num">Rent and timing</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#preferences">
+                                    <span class="num">Property preferences</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#intro">
+                                    <span class="num">About you</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#employmentstatus">
+                                    <span class="num">Employment status</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#Lifestyle">
+                                    <span class="num">Life style</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#preview">
+                                    <span class="num">Preview</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="accommodationtype" class="tab-pane" role="tabpanel">
+                                <form id="frmaccommodationtypestep">
+                                    <input id="txtacctypePersonId" type="hidden"
+                                           asp-for="@Model.PersonListing.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4>
+                                                What type of accommodation are you
+                                                looking for?
+                                            </h4>
+                                            <input id="txtaccommodationtype" type="hidden" value="wholeproperty" />
+                                            <div class="row mt-3">
+                                                @if (Model.PropertyTypes.Any())
+                                                {
+                                                    @for (int i = 0; i < Model.PropertyTypes.Count(); i++)
+                                                    {
+                                                        <div class="col-lg-3 col-sm-6 col-6">
+                                                            <div class="text-center mt-3">
+                                                                <label>
+                                                                    <input type="hidden" asp-for="@Model.PropertyTypes[i].ID">
+                                                                    <input class="type radio-input" type="checkbox" asp-for="@Model.PropertyTypes[i].isSelected">
+                                                                    <span class="radio-tile">
+                                                                        <span class="radio-icon">
+                                                                            <img src="@Model.PropertyTypes[i].iconPath" />
+                                                                        </span>
+                                                                    </span>
+                                                                </label>
+                                                                <p>@Model.PropertyTypes[i].Title</p>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="Teamsup">
+                                                    <div class="Teamsupheader">
+                                                        <div>
+                                                            <input type="checkbox" id="TeamsUp" asp-for="@Model.PersonListing.TeamsUp">
+                                                            <label role="button" for="TeamsUp">Teamups</label>
+                                                        </div>
+                                                        <span class="icon">
+                                                            <svg width="24" height="23" label="">
+                                                                <path d="M18.254 17.165c.645.222 1.175.98 1.175 1.683v3.194H4.572v-3.194c0-.704.529-1.46 1.174-1.683l3.49-1.2c.733.739 1.718 1.211 2.764 1.211 1.047 0 2.031-.472 2.764-1.211l3.49 1.2zM12 6.708c2.005 0 3.376 1.67 3.046 3.712l-.5 3.091C14.35 14.737 13.204 15.74 12 15.74c-1.204 0-2.348-1.002-2.546-2.228l-.5-3.091C8.622 8.378 9.993 6.708 12 6.708zm11.143 1.198v1.917h-1.857v1.917h-1.858V9.823h-1.857V7.906h1.857V5.99h1.858v1.916h1.857zM8.538 6.87c-.672.819-1.023 1.872-1.019 2.978-.89-.313-1.626-1.126-1.78-2.085l-.5-3.092C4.908 2.628 6.278.958 8.285.958c2.005 0 3.375 1.67 3.046 3.712l-.108.672a4.385 4.385 0 0 0-2.686 1.527zm-3.234 8.932a2.894 2.894 0 0 0-.87.49H.858v-3.193c0-.704.53-1.46 1.176-1.683l3.488-1.2a4.042 4.042 0 0 0 2.172 1.145l.386 2.387c.056.35.173.678.315.993l-3.09 1.061z" fill="#2F3A4A" fill-rule="evenodd"></path>
+                                                            </svg>
+                                                        </span>
+                                                    </div>
+                                                    <p>
+                                                        Teamups are when you get together with others who are looking for accommodation and start a new share house together.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="area" class="tab-pane" role="tabpanel">
+                                <form id="frmareastep">
+                                    <input id="txtareaPersonId" type="hidden"
+                                           asp-for="@Model.PersonListing.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4> Where would you like to live?</h4>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Suburb</label>
+                                                <input id="txtSuburb" type="text" class="op form-control"
+                                                       required asp-for="@Model.PersonListing.Suburb"
+                                                       placeholder="Search for a suburb">
+                                                <p>We recommend entering at least 4 locality separting each with semi-colon ';'.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="rent" class="tab-pane" role="tabpanel">
+                                <form id="frmrentstep">
+                                    <input id="txtrentPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <div class="mb-3">
+                                                <h4>Rent and timing</h4>
+                                                <label class="text-label form-label">Monthly budget</label>
+                                                <input id="txtrent" type="text" asp-for="@Model.PersonListing.MonthlyBudget"
+                                                       required class="ag form-control" placeholder="Rs.">
+                                                <span asp-validation-for="@Model.PersonListing.MonthlyBudget" class="text-danger"></span>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Preferred move date</label>
+                                                <div class="input-group">
+                                                    <input type="text" id="txtMovedate" asp-for="@Model.PersonListing.MoveDate" class="datepicker form-control"
+                                                           required readonly placeholder="Select a date">
+                                                    <span asp-validation-for="@Model.PersonListing.MoveDate" class="text-danger"></span>
+                                                    <div id="divCalenderIcon" class="input-group-text fa fa-calendar"></div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">
+                                                    Preferred length of
+                                                    stay
+                                                </label>
+                                                <select class="mb-4 nice-select wide w-100" required asp-for="@Model.PersonListing.Length">
+                                                    <option value="@PersonListing.Stay.Unlimited" selected>No limit</option>
+                                                    <option value="@PersonListing.Stay.OneMonth">One month</option>
+                                                    <option value="@PersonListing.Stay.TwoMonths">Two months</option>
+                                                    <option value="@PersonListing.Stay.ThreeMonths">Three months</option>
+                                                    <option value="@PersonListing.Stay.SixMonths">Six months</option>
+                                                    <option value="@PersonListing.Stay.NineMonths">Nine months</option>
+                                                    <option value="@PersonListing.Stay.Plus12Months">12+ months</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="preferences" class="tab-pane" role="tabpanel">
+                                <form id="frmpreferencestep">
+                                    <input id="txtpreferencePersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <div class="mb-2">
+                                                <h4>Property preferences</h4>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Room furnishings</label>
+                                                <div class="btn-group w-100" role="group"
+                                                     aria-label="Basic radio toggle button group">
+                                                    <input type="radio" class="btn-check"
+                                                           asp-for="@Model.PersonListing.FurnishingType"
+                                                           id="radioflexible" value="@PersonListing.RoomFurnishing.Flexible">
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radioflexible">Flexible</label>
+                                                    <input type="radio" class="btn-check" id="radiofurnished"
+                                                           asp-for="@Model.PersonListing.FurnishingType" checked
+                                                           value="@PersonListing.RoomFurnishing.Furnished">
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radiofurnished">Furnished</label>
+                                                    <input type="radio" class="btn-check" id="radioUnfurnished"
+                                                           asp-for="@Model.PersonListing.FurnishingType" value="@PersonListing.RoomFurnishing.UnFurnished">
+                                                    <label class="btn btn-outline-primary"
+                                                           for="radioUnfurnished">Not required</label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Internet</label>
+                                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                                    <input asp-for="@Model.PersonListing.InternetStatus" value="@PersonListing.Internet.Flexible"
+                                                           type="radio" class="btn-check" id="Int_Flexible" checked>
+                                                    <label class="btn btn-outline-primary" for="Int_Flexible">Flexible</label>
+                                                    <input asp-for="@Model.PersonListing.InternetStatus" value="@PersonListing.Internet.Required"
+                                                           type="radio" class="btn-check" id="Int_Required">
+                                                    <label class="btn btn-outline-primary" for="Int_Required">required</label>
+                                                    <input asp-for="@Model.PersonListing.InternetStatus" value="@PersonListing.Internet.Notrquired"
+                                                           type="radio" class="btn-check" id="Int_notRequired">
+                                                    <label class="btn btn-outline-primary" for="Int_notRequired">Not required</label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Bathroom type</label>
+                                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                                    <input asp-for="@Model.PersonListing.Type" value="@PersonListing.Bath.Flexible"
+                                                           type="radio" class="btn-check" id="Bathroom_Flexible">
+                                                    <label class="btn btn-outline-primary" for="Bathroom_Flexible">Flexible</label>
+                                                    <input asp-for="@Model.PersonListing.Type" value="@PersonListing.Bath.Ensuite" checked
+                                                           type="radio" class="btn-check" id="Ensuite">
+                                                    <label class="btn btn-outline-primary" for="Ensuite">
+                                                        Ensuite
+                                                        or
+                                                        own required
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Parking</label>
+                                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                                    <input asp-for="@Model.PersonListing.ParkingType" value="@PersonListing.Parking.Flexible"
+                                                           type="radio" class="btn-check" id="Parking_Flexible" checked>
+                                                    <label class="btn btn-outline-primary" for="Parking_Flexible">Flexible</label>
+                                                    <input asp-for="@Model.PersonListing.ParkingType" value="@PersonListing.Parking.Offstree"
+                                                           type="radio" class="btn-check" id="Off_Street">
+                                                    <label class="btn btn-outline-primary" for="Off_Street">Off-street required</label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">
+                                                    Max number of
+                                                    flatmates
+                                                </label>
+                                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                                    <input asp-for="@Model.PersonListing.MaxNo" value="@PersonListing.Flatmates.Flexible" checked
+                                                           type="radio" class="btn-check" id="Max_Flexible">
+                                                    <label class="btn btn-outline-primary" for="Max_Flexible">Flexible</label>
+                                                    <input asp-for="@Model.PersonListing.MaxNo" value="@PersonListing.Flatmates.OneOther"
+                                                           type="radio" class="btn-check" id="1_Other">
+                                                    <label class="btn btn-outline-primary" for="1_Other">
+                                                        1
+                                                        other
+                                                    </label>
+                                                    <input asp-for="@Model.PersonListing.MaxNo" value="@PersonListing.Flatmates.TwoOthers"
+                                                           type="radio" class="btn-check" id="2_Other">
+                                                    <label class="btn btn-outline-primary" for="2_Other">
+                                                        2
+                                                        other
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="intro" class="tab-pane " role="tabpanel">
+                                <form id="frmintrostep" enctype="multipart/form-data">
+                                    <input id="txtintroPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                                    <input id="txtUserId" type="hidden" value="@user.Id" />
+                                    <input id="txtListingUserId" type="hidden" asp-for="@Model.PersonListing.User.Id" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4>About you </h4>
+                                            <div class="mt-3 mb-3 text-center">
+                                                <h4>Your profile picture</h4>
+                                                <div class="rounded-image mb-3 mt-3 text-center">
+                                                    <div id="profilePic">
+                                                        @if (user.ProfilePicture == null || user.ProfilePicture == "")
+                                                        {
+                                                            <img src="~/img/user-image.png" alt="Rounded Image"
+                                                             onclick="document.getElementById('file-upload').click();" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@user.ProfilePicture" alt="Rounded Image"
+                                                             onclick="document.getElementById('file-upload').click();" />
+                                                        }
+                                                    </div>
+                                                    <input id="file-upload" type="file" accept="image/*" style="display: none;"
+                                                           onchange="validateAndUploadImage(this);" />
+                                                </div>
+                                                <p>You can add or change your listing picture by changing profile picture</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">This place is for</label>
+                                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                                    <input id="radioMe" asp-for="@Model.PersonListing.PlaceFor" value="@PersonListing.Purpose.Me"
+                                                           type="radio" class="btn-check" id="radioMe" checked>
+                                                    <label class="btn btn-outline-primary" for="radioMe">Me</label>
+                                                    <input id="radioCouple" asp-for="@Model.PersonListing.PlaceFor" value="@PersonListing.Purpose.Couple"
+                                                           type="radio" class="btn-check">
+                                                    <label class="btn btn-outline-primary" for="radioCouple">couples</label>
+                                                    <input id="radioGroup" asp-for="@Model.PersonListing.PlaceFor" value="@PersonListing.Purpose.Group"
+                                                           type="radio" class="btn-check">
+                                                    <label class="btn btn-outline-primary" for="radioGroup">Group</label>
+                                                </div>
+                                            </div>
+                                            <div id="divgroup" style="display:none;" class="mb-3">
+                                                <label class="text-label form-label">
+                                                    Total Person in the group?
+                                                </label>
+                                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                                    <input asp-for="@Model.PersonListing.Totalpersons" value="@PersonListing.TotalPersons.One"
+                                                           type="radio" class="tp btn-check" id="rdoone">
+                                                    <label class="btn btn-outline-primary" for="rdoone">1</label>
+                                                    <input asp-for="@Model.PersonListing.Totalpersons" value="@PersonListing.TotalPersons.Two"
+                                                           type="radio" class="tp btn-check" id="rdo2">
+                                                    <label class="btn btn-outline-primary" for="rdo2">
+                                                        2
+                                                    </label>
+                                                    <input asp-for="@Model.PersonListing.Totalpersons" value="@PersonListing.TotalPersons.Three"
+                                                           type="radio" class="tp btn-check" id="rdo3">
+                                                    <label class="btn btn-outline-primary" for="rdo3">
+                                                        3
+                                                    </label>
+                                                    <input asp-for="@Model.PersonListing.Totalpersons" value="@PersonListing.TotalPersons.Four"
+                                                           type="radio" class="tp btn-check" id="rdo4">
+                                                    <label class="btn btn-outline-primary" for="rdo4">
+                                                        4
+                                                    </label>
+                                                    <input asp-for="@Model.PersonListing.Totalpersons" value="@PersonListing.TotalPersons.Five"
+                                                           type="radio" class="btn-check" id="rdo5">
+                                                    <label class="tp btn btn-outline-primary" for="rdo5">
+                                                        5
+                                                    </label>
+                                                    <input asp-for="@Model.PersonListing.Totalpersons" value="@PersonListing.TotalPersons.Six"
+                                                           type="radio" class="btn-check" id="rdo6">
+                                                    <label class="tp btn btn-outline-primary" for="rdo6">
+                                                        6
+                                                    </label>
+                                                    <input asp-for="@Model.PersonListing.Totalpersons" value="@PersonListing.TotalPersons.Seven"
+                                                           type="radio" class="btn-check" id="rdo7">
+                                                    <label class="tp btn btn-outline-primary" for="rdo7">
+                                                        7
+                                                    </label>
+                                                    <input asp-for="@Model.PersonListing.Totalpersons" value="@PersonListing.TotalPersons.Eight"
+                                                           type="radio" class="btn-check" id="rdo8">
+                                                    <label class="tp btn btn-outline-primary" for="rdo8">
+                                                        8
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Your first name</label>
+                                                <input type="text" id="txtmyname" asp-for="@Model.PersonListing.FirstName" required
+                                                       value="@user.Name" readonly class="op form-control" placeholder="Enter First Name">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">
+                                                    City
+                                                </label>
+                                                <div id="dvCitylist">
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Your age</label>
+                                                <input type="text" asp-for="@Model.PersonListing.User.Age" class="ag form-control" id="txtmyage"
+                                                       placeholder="Enter Your age" required>
+                                            </div>
+                                            <label class="text-label form-label">
+                                                The gender you identify as
+                                            </label>
+                                            <div class="mb-3">
+                                                <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                                    <input asp-for="@Model.PersonListing.User.Gender" value="@ApplicationUser.gender.female"
+                                                           type="radio" class="gender btn-check" id="Woman">
+                                                    <label class="btn btn-outline-primary" for="Woman">Female</label>
+                                                    <input asp-for="@Model.PersonListing.User.Gender" value="@ApplicationUser.gender.male"
+                                                           type="radio" class="gender btn-check" id="Man">
+                                                    <label class="btn btn-outline-primary" for="Man">Male</label>
+                                                    <input asp-for="@Model.PersonListing.User.Gender" value="@ApplicationUser.gender.transgender"
+                                                           type="radio" class="gender btn-check" id="Non_Binary">
+                                                    <label class="btn btn-outline-primary" for="Non_Binary">Transgender</label>
+                                                    <input asp-for="@Model.PersonListing.User.Gender" value="@ApplicationUser.gender.undisclosed" checked
+                                                           type="radio" class="gender btn-check" id="Gender_Diverse">
+                                                    <label class="btn btn-outline-primary" for="Gender_Diverse">Undisclosed</label>
+                                                    @*<input asp-for="@Model.PersonListing.gender" value="@PersonListing.Gender.Woman"
+                                                    type="radio" class="gender btn-check" id="Woman">
+                                                    <label class="btn btn-outline-primary" for="Woman">Woman</label>
+                                                    <input asp-for="@Model.PersonListing.gender" value="@PersonListing.Gender.Man"
+                                                    type="radio" class="gender btn-check" id="Man">
+                                                    <label class="btn btn-outline-primary" for="Man">Man</label>
+                                                    <input asp-for="@Model.PersonListing.gender" value="@PersonListing.Gender.Transgender"
+                                                    type="radio" class="gender btn-check" id="Non_Binary">
+                                                    <label class="btn btn-outline-primary" for="Non_Binary">Transgender</label>
+                                                    <input asp-for="@Model.PersonListing.gender" value="@PersonListing.Gender.Undisclosed" checked
+                                                    type="radio" class="gender btn-check" id="Gender_Diverse">
+                                                    <label class="btn btn-outline-primary" for="Gender_Diverse">Undisclosed</label>*@
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">Introduce Yourself</label>
+                                                <textarea class="form-control" rows="4"
+                                                          asp-for="PersonListing.Introduction" required
+                                                          id="myintro" style="height: 100px;"
+                                                          placeholder="Say something about yourself...">                                                   
+                                                </textarea>
+                                                <p>
+                                                    Tell your potential flatmate a little about yourself and
+                                                    the other flatmates living in the home. Describe what you do
+                                                    for work, where you're all from and what you do for fun.
+                                                </p>
+                                            </div>
+                                            <div id="divotherPerson">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="employmentstatus" class="tab-pane" role="tabpanel">
+                                <form id="frmemploymentstatusstep">
+                                    <input id="txtempstatusPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4>Employment status</h4>
+                                            <div id="divEmploymentStatus" class="row mt-3">
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="radio-input" type="checkbox" name="features">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                                                                        <path d="M208 64a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM9.8 214.8c5.1-12.2 19.1-18 31.4-12.9L60.7 210l22.9-38.1C99.9 144.6 129.3 128 161 128c51.4 0 97 32.9 113.3 81.7l34.6 103.7 79.3 33.1 34.2-45.6c6.4-8.5 16.6-13.3 27.2-12.8s20.3 6.4 25.8 15.5l96 160c5.9 9.9 6.1 22.2 .4 32.2s-16.3 16.2-27.8 16.2H288c-11.1 0-21.4-5.7-27.2-15.2s-6.4-21.2-1.4-31.1l16-32c5.4-10.8 16.5-17.7 28.6-17.7h32l22.5-30L22.8 246.2c-12.2-5.1-18-19.1-12.9-31.4zm82.8 91.8l112 48c11.8 5 19.4 16.6 19.4 29.4v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V405.1l-60.6-26-37 111c-5.6 16.8-23.7 25.8-40.5 20.2S-3.9 486.6 1.6 469.9l48-144 11-33 32 13.7z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>Working full-time</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input checked="" class="radio-input" type="checkbox" name="features">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                                                        <path d="M184 48H328c4.4 0 8 3.6 8 8V96H176V56c0-4.4 3.6-8 8-8zm-56 8V96H64C28.7 96 0 124.7 0 160v96H192 320 512V160c0-35.3-28.7-64-64-64H384V56c0-30.9-25.1-56-56-56H184c-30.9 0-56 25.1-56 56zM512 288H320v32c0 17.7-14.3 32-32 32H224c-17.7 0-32-14.3-32-32V288H0V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V288z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
+
+                                                        </label>
+                                                        <p>Working part-time</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="radio-input" type="checkbox" name="features">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512">
+                                                                        <path d="M256 64A64 64 0 1 0 128 64a64 64 0 1 0 128 0zM152.9 169.3c-23.7-8.4-44.5-24.3-58.8-45.8L74.6 94.2C64.8 79.5 45 75.6 30.2 85.4s-18.7 29.7-8.9 44.4L40.9 159c18.1 27.1 42.8 48.4 71.1 62.4V480c0 17.7 14.3 32 32 32s32-14.3 32-32V384h32v96c0 17.7 14.3 32 32 32s32-14.3 32-32V221.6c29.1-14.2 54.4-36.2 72.7-64.2l18.2-27.9c9.6-14.8 5.4-34.6-9.4-44.3s-34.6-5.5-44.3 9.4L291 122.4c-21.8 33.4-58.9 53.6-98.8 53.6c-12.6 0-24.9-2-36.6-5.8c-.9-.3-1.8-.7-2.7-.9z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>Working holiday</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="radio-input" type="checkbox" name="features">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">
+                                                                        <path d="M272 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm-8 187.3l47.4 57.1c11.3 13.6 31.5 15.5 45.1 4.2s15.5-31.5 4.2-45.1l-73.7-88.9c-18.2-22-45.3-34.7-73.9-34.7H177.1c-33.7 0-64.9 17.7-82.3 46.6l-58.3 97c-9.1 15.1-4.2 34.8 10.9 43.9s34.8 4.2 43.9-10.9L120 256.9V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352h16V480c0 17.7 14.3 32 32 32s32-14.3 32-32V235.3zM352 376c0-4.4 3.6-8 8-8s8 3.6 8 8V488c0 13.3 10.7 24 24 24s24-10.7 24-24V376c0-30.9-25.1-56-56-56s-56 25.1-56 56v8c0 13.3 10.7 24 24 24s24-10.7 24-24v-8z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>Retired </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="Lifestyle" class="tab-pane" role="tabpanel">
+                                <form id="frmLifestylestep">
+                                    <input id="txtLifestylePersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                                    <div class="row justify-content-center">
+                                        <div class="col-sm-6 mb-2">
+                                            <h4>Lifestyle</h4>
+                                            <div id="divLifestyles" class="row mt-3">
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="radio-input" type="checkbox" name="features">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 640 512">
+                                                                        <path d="M448 32V43c0 38.2 15.2 74.8 42.2 101.8l21 21c21 21 32.8 49.5 32.8 79.2v11c0 17.7-14.3 32-32 32s-32-14.3-32-32V245c0-12.7-5.1-24.9-14.1-33.9l-21-21C405.9 151.1 384 98.1 384 43V32c0-17.7 14.3-32 32-32s32 14.3 32 32zM576 256V245c0-38.2-15.2-74.8-42.2-101.8l-21-21c-21-21-32.8-49.5-32.8-79.2V32c0-17.7 14.3-32 32-32s32 14.3 32 32V43c0 12.7 5.1 24.9 14.1 33.9l21 21c39 39 60.9 91.9 60.9 147.1v11c0 17.7-14.3 32-32 32s-32-14.3-32-32zM0 416c0-35.3 28.7-64 64-64H416c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32H64c-35.3 0-64-28.7-64-64V416zm224 0v32H384V416H224zm288-64c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V384c0-17.7 14.3-32 32-32zm96 0c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V384c0-17.7 14.3-32 32-32z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
+
+                                                        </label>
+                                                        <p>Smoker</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input checked="" class="radio-input" type="checkbox" name="features">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512">
+                                                                        <path d="M64 64V352H576V64H64zM0 64C0 28.7 28.7 0 64 0H576c35.3 0 64 28.7 64 64V352c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V64zM128 448H512c17.7 0 32 14.3 32 32s-14.3 32-32 32H128c-17.7 0-32-14.3-32-32s14.3-32 32-32z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>LGBTQIA+</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="radio-input" type="checkbox" name="features">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                                                                        <path d="M320 192h17.1c22.1 38.3 63.5 64 110.9 64c11 0 21.8-1.4 32-4v4 32V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V339.2L280 448h56c17.7 0 32 14.3 32 32s-14.3 32-32 32H192c-53 0-96-43-96-96V192.5c0-16.1-12-29.8-28-31.8l-7.9-1c-17.5-2.2-30-18.2-27.8-35.7s18.2-30 35.7-27.8l7.9 1c48 6 84.1 46.8 84.1 95.3v85.3c34.4-51.7 93.2-85.8 160-85.8zm160 26.5v0c-10 3.5-20.8 5.5-32 5.5c-28.4 0-54-12.4-71.6-32h0c-3.7-4.1-7-8.5-9.9-13.2C357.3 164 352 146.6 352 128v0V32 12 10.7C352 4.8 356.7 .1 362.6 0h.2c3.3 0 6.4 1.6 8.4 4.2l0 .1L384 21.3l27.2 36.3L416 64h64l4.8-6.4L512 21.3 524.8 4.3l0-.1c2-2.6 5.1-4.2 8.4-4.2h.2C539.3 .1 544 4.8 544 10.7V12 32v96c0 17.3-4.6 33.6-12.6 47.6c-11.3 19.8-29.6 35.2-51.4 42.9zM432 128a16 16 0 1 0 -32 0 16 16 0 1 0 32 0zm48 16a16 16 0 1 0 0-32 16 16 0 1 0 0 32z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>Pets</p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input class="radio-input" type="checkbox" name="features">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 640 512">
+                                                                        <path d="M160 0a64 64 0 1 1 0 128A64 64 0 1 1 160 0zM88 480V400H70.2c-10.9 0-18.6-10.7-15.2-21.1l31.1-93.4L57.5 323.3c-10.7 14.1-30.8 16.8-44.8 6.2s-16.8-30.7-6.2-44.8L65.4 207c22.4-29.6 57.5-47 94.6-47s72.2 17.4 94.6 47l58.9 77.7c10.7 14.1 7.9 34.2-6.2 44.8s-34.2 7.9-44.8-6.2l-28.6-37.8L265 378.9c3.5 10.4-4.3 21.1-15.2 21.1H232v80c0 17.7-14.3 32-32 32s-32-14.3-32-32V400H152v80c0 17.7-14.3 32-32 32s-32-14.3-32-32zM480 0a64 64 0 1 1 0 128A64 64 0 1 1 480 0zm-8 384v96c0 17.7-14.3 32-32 32s-32-14.3-32-32V300.5L395.1 321c-9.4 15-29.2 19.4-44.1 10s-19.4-29.2-10-44.1l51.7-82.1c17.6-27.9 48.3-44.9 81.2-44.9h12.3c33 0 63.7 16.9 81.2 44.9L619.1 287c9.4 15 4.9 34.7-10 44.1s-34.7 4.9-44.1-10L552 300.5V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V384H472z"></path>
+                                                                    </svg>
+                                                                </span>
+                                                            </span>
+                                                        </label>
+                                                        <p>Children</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div id="preview" class="tab-pane" role="tabpanel">
+                                <input id="txtpreviewPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                                <div class="row justify-content-center">
+                                    <div class="col-sm-6 mt-5">
+                                        <h3 class="text-center">Show me what my listing will look like</h3>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <img src="~/img/illustration-preview-PNG.png" alt="" width="150">
+                                        <h4 class="mt-3">Preview Listing</h4>
+                                        <a class="btn btn-primary w-25 btn-primary"
+                                           onclick="location.href='@Url.Action("findplacepreview", "findplace")?listingId=' + encodeURIComponent(document.getElementById('txtpreviewPersonId').value)">
+                                            Preview
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/listings/findplace/createFindplacelisting.js"></script>
+<script src="~/js/listings/findplace/showHideStepElements.js"></script>
+<script src="~/js/listings/findplace/uploadPic4Listing.js"></script>
+<script src="~/js/commonfunctions/fileUploadLimit.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyQhihensPLJP3qiNAT0_b-SbtD1jbrOs&libraries=places"></script>
+<script src="~/js/googleAutocompleteAddresses.js"></script>
+<script>
+    function closeListPlace() {
+        // alert("Are you sure you want to close? Doing so will delete the listing you are creating.");
+    }
+
+</script>

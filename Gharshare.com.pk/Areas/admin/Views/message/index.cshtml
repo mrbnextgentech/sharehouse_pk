@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Gharshare.Models.Message>
+@using System.Globalization;
+@using Gharshare.CommonHelper;
+@{
+    ViewData["Title"] = "Messages";
+    Layout = "~/Views/Shared/_Layout_1.cshtml";
+    Pager pager = new Pager();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div style="padding:60px;">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Message List</h1>
+        </div>
+        <div class="col-md-6 text-end">
+            <a asp-area="Admin" class="float-right btn btn-primary" asp-controller="Message" asp-action="Reply" style="width:200px;"><i class="bi bi-plus-circle"></i> Send Message</a>
+        </div>
+        <hr />
+    </div>
+    <div class="row">
+        <div class="text-end col-md-6 p-2 ">
+        </div>
+        <div class="text-end col-md-6 p-2 ">
+            <partial name="_Pager" model="@pager" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered table-striped text-wrap table-responsive">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col" class="col-2">From</th>
+                        <th scope="col" class="col-1">Subject</th>
+                        <th scope="col" class="col-4">Message</th>
+                        <th scope="col" class="col-2">Phone</th>
+                        <th scope="col" class="col-1">Date</th>
+                        <th scope="col" class="col-2 text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var count = 1;
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <th scope="row">@count</th>
+                                <td>@item.SenderName</td>
+                                <td>@item.Subject</td>
+                                <td>@item.Messagebody</td>
+                                <td>@item.Phone</td>
+                                @*<td>@item.Created.ToString(new CultureInfo("en-au").DateTimeFormat.ShortDatePattern)</td>*@
+                                <td>@item.Created.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <div class="btn-group text-end" role="group">
+                                        <a asp-action="Reply" asp-route-id=@item.ID class="btn btn-primary mx-1" style="width:90px;"><i class="bi bi-pencil-square"></i>Reply</a>
+                                        <a asp-action="Reply" class="btn btn-danger mx-1" style="width:93px;"><i class="bi bi-trash-fill"></i>Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            count = count + 1;
+                        }
+                    }
+                </tbody>
+            </table>
+            <partial name="_Pager" model="@pager" />
+        </div>
+    </div>
+    <div>
+        @if (@Model.Count() == 0)
+        {
+            <p>There is no message.</p>
+        }
+    </div>
+</div>

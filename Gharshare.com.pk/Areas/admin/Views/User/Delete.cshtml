@@ -1,0 +1,64 @@
+﻿@using Gharshare.Models
+@model ApplicationUser
+@{
+    ViewData["Title"] = "Delete User";
+}
+<div class="row" style="margin-top:10px;padding-left:10px;">
+@*<partial name="_StatusMessage" for="StatusMessage" />*@
+</div>
+<div class="row">
+    <div class="col-md-3 text-center"></div>
+    <div class="col-md-6"  style="margin-top:20px;">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3 text-center"></div>
+    <div class="col-md-6 text-center">
+        <form id="profile-form" method="post" asp-action="DeleteUser">
+            <div class="form-floating">
+                <input type="hidden" id="Id" asp-for="Id" class="form-control m-1" />
+                </div>
+                <div class="form-floating">
+                <input type="hidden" id="usertype" asp-for="UserType" class="form-control m-1" />
+                </div>
+            <div class="form-floating">
+                <input asp-for="SurName"  class="form-control m-1" />
+                <label asp-for="SurName" class="form-label"></label>
+               
+            </div>
+            <div class="form-floating">
+                <input asp-for="Name"  class="form-control m-1" />
+                <label asp-for="Name" class="form-label"></label>
+                
+            </div>
+            <div class="form-floating">
+                <input asp-for="PhoneNumber" class="form-control m-1" />
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                
+            </div>
+            <div class="form-floating">
+                <input asp-for="City" class="form-control m-1" />
+                <label asp-for="City" class="form-label"></label>                
+            </div>
+            <div class="form-floating">
+                <input asp-for="State" class="form-control m-1" />
+                <label asp-for="State" class="form-label"></label>
+                
+            </div>
+            <div class="form-floating">
+                <input asp-for="Address" class="form-control m-1" />
+                <label asp-for="Address" class="form-label"></label>                
+            </div>
+            <div class="form-floating">
+                <input asp-for="PostalCode" class="form-control m-1" />
+                <label asp-for="PostalCode" class="form-label"></label>                
+            </div>            
+            <button id="btnDelete" type="submit" onclick="confirm('Are you sure to delete this user?');" class="btn btn-lg btn-danger m-1">Delete</button>            
+            <button id="Cancel-Delete-button" type="submit" asp-area="Admin" asp-controller="User" asp-action="Index" asp-route-id="All" class="btn btn-lg btn-secondary m-1">Cancel</button>
+            </form>
+    </div>
+</div>
+
+
+

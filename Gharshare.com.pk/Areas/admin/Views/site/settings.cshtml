@@ -1,0 +1,115 @@
+﻿@using Gharshare.Models
+@model Sitesetting
+@{
+    ViewData["Title"] = "Site settings";
+    Layout = "_LayoutAdmin";
+}
+<div class="row card m-5 justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="row no-gutters m-5">
+            <div class="col-xl-12">
+                <form method="post" asp-action="settings">
+                    <input type="hidden" asp-for="ID" />
+                    <input type="hidden" asp-for="UId" />
+                    <input type="hidden" asp-for="CreatedOn" />
+                    <input type="hidden" asp-for="CreatedbyUserId" />
+                    <h2 class="text-center mb-3">Site settings</h2>
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Contact us</label>
+                            <div class="flex">
+                                <input id="txtemail" asp-for="Email" type="email" class="form-control"
+                                  required placeholder="Enter email...">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Phone</label>
+                            <div class="flex">
+                                <input asp-for="Phone" maxlength="14" type="number" class="form-control"
+                                 required  placeholder="Enter phone number ...">
+                                       <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-sm-12">
+                            <label class="text-label form-label">Address</label>
+                            <div class="flex">
+                                <input asp-for="Address" number type="text" class="form-control"
+                                       placeholder="Enter address...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Facebook</label>
+                            <div class="flex">
+                                <input id="txtprice" asp-for="Facebook" type="text" class="form-control"
+                                       placeholder="Enter facebook id...">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Twitter</label>
+                            <div class="flex">
+                                <input id="txtdays" asp-for="Twitter" type="text" class="form-control"
+                                       placeholder="Enter twitter id ...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Youtube</label>
+                            <div class="flex">
+                                <input id="txtprice" asp-for="Youtube" number type="text" class="form-control"
+                                       placeholder="Enter youtube channel id...">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Linkedin</label>
+                            <div class="flex">
+                                <input id="txtdays" asp-for="Linkedin" type="text" class="form-control"
+                                       placeholder="Enter Linkedin ...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Insta</label>
+                            <div class="flex">
+                                <input id="txtprice" asp-for="Insta" number type="text" class="form-control"
+                                       required placeholder="Enter Insta id...">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Tiktok</label>
+                            <div class="flex">
+                                <input id="txtdays" asp-for="Tiktok" type="text" class="form-control"
+                                       placeholder="Enter Tiktok id ...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center mb-3">
+                        <div class="col-sm-6">
+                            <label class="text-label form-label">Support email</label>
+                            <div class="flex">
+                                <input id="txtsupport" asp-for="Supportemail" number type="text" class="form-control"
+                                       required placeholder="Enter support email...">
+                            <span asp-validation-for="Supportemail" class="text-danger"></span>
+                                   </div>
+                        </div>
+                        <div class="col-sm-6"></div>
+                    </div>
+                    <div class="row justify-content-center mb-2">
+                        <button type="submit" class="btn btn-primary w-50">
+                            Save site settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+
+

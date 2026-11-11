@@ -1,0 +1,500 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model PlanserviceVM
+@{
+    ViewData["Title"] = "Upgrade account by subscribing a plan";
+    Layout = "_Layout4Listings";
+}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-sm-6">
+            <h4 class="text-center">
+                I am looking for a
+            </h4>
+            <div class="mb-4">
+                <div class="card-action coin-tabs review-tabs-1">
+                    <ul class="nav nav-tabs justify-content-center" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#Flatmate" role="tab" aria-selected="true">Flatmate</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#Room" role="tab" aria-selected="false">Room</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-content">
+        <div class="tab-pane fade active show" id="Flatmate">
+            <div class="col-xl-12">
+                <div class="container p-5">
+                    <div class="row">
+                        <div class="text-center">
+                            <h2>Upgrade now to find a flatmate faster</h2>
+                            <p>Don't miss out on your dream flatmate. Upgrade now</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="width:20%;" class="col-md-12 mb-4"></div>
+                        @if (Model.Landlordplans.Any())
+                        {
+                            foreach (var landlordplan in Model.Landlordplans)
+                            {
+                                <div style="width:20%;" class="col-md-12 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="text-center">
+                                                <h5 class="card-title text-primary">@landlordplan.Title</h5>
+                                                <h2>Rs. <span>@Utility.Format(landlordplan.Price)</span></h2>
+
+                                                <strong>@landlordplan.Tagline</strong>
+
+                                                <p class="card-text">
+                                                    @Utility.shortText(landlordplan.Description,90)
+                                                </p>
+                                                @{
+                                                    var userPlan = Model.userPlans.SingleOrDefault(p => p.PlanId == landlordplan.ID
+                                                    && p.UserId == Model.userId && p.Status == UserPlan.status.Active);
+                                                    if (userPlan != null)
+                                                    {
+                                                        if (userPlan.PlanId == landlordplan.ID)
+                                                        {
+                                                            <button disabled class="btn btn-outline-primary btn-md w-100">Current Plan</button>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (landlordplan.PlanType == Plan.Plantype.forboth)
+                                                        {
+                                                            <button disabled class="btn btn-outline-primary btn-md w-100">Free Plan</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a data-planid="@landlordplan.ID" class="subscribe btn btn-primary btn-md w-100"
+                                               data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                                                Get @landlordplan.Title
+                                                            </a>
+                                                        }
+                                                    }
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 mb-4">
+                            <div class="table-responsive" style="background-color:white;">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        @if (Model.allservices.Any())
+                                        {
+                                            foreach (var service in Model.allservices)
+                                            {
+                                                <tr>
+                                                    <td style="width:20%;">@service.title</td>
+
+                                                    @foreach (var plan in Model.Landlordplans)
+                                                    {
+                                                        var planService = Model.Landlordplanservices.SingleOrDefault(s => s.ServiceID == service.id && s.PlanID == plan.ID);
+                                                        if (planService != null)
+                                                        {
+                                                            if (planService.listingsize != null)
+                                                            {
+                                                                var value = planService.listingsize;
+                                                                if (planService.listingsize == PlanService.Listingsize.free)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <rect y="22" width="30" height="8" rx="2" fill="#6D7580"></rect>
+                                                                            <rect width="30" height="18" rx="2" fill="#D5D7DB">
+                                                                            </rect>
+                                                                        </svg>
+                                                                    </td>
+                                                                }
+                                                                else if (planService.listingsize == PlanService.Listingsize.None)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">N/A</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <rect y="22" width="30" height="8" rx="2" fill="#D5D7DB"></rect>
+                                                                            <rect width="30" height="18" rx="2" fill="#6D7580">
+                                                                            </rect>
+                                                                        </svg>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                            else if (planService.searchranking != null)
+                                                            {
+                                                                var value = planService.searchranking;
+                                                                if (planService.searchranking == PlanService.Searchranking.free)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <svg width="100%" height="36" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg"><svg x="2" y="14"><path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#6D7580" stroke="white" stroke-width="2"></path></svg><svg x="2" y="7"><path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#D5D7DB" stroke="white" stroke-width="2"></path></svg><svg x="2" y="0"><path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#D5D7DB" stroke="white" stroke-width="2"></path></svg></svg>
+                                                                    </td>
+                                                                }
+                                                                else if (planService.searchranking == PlanService.Searchranking.None)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">N/A</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <svg width="100%" height="36" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <svg x="2" y="14">
+                                                                                <path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#D5D7DB" stroke="white" stroke-width="2"></path>
+                                                                            </svg>
+                                                                            <svg x="2" y="7">
+                                                                                <path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#6D7580" stroke="white" stroke-width="2"></path>
+                                                                            </svg>
+                                                                            <svg x="2" y="0">
+                                                                                <path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#D5D7DB" stroke="white" stroke-width="2"></path>
+                                                                            </svg>
+                                                                        </svg>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                            else if (planService.topsearch != null)
+                                                            {
+                                                                var value = Utility.GetEnumDisplayName(planService.topsearch);
+                                                                <td style="width:20%;" class="text-center">@value</td>
+                                                            }
+                                                            else if (planService.livepropertylisting != null)
+                                                            {
+                                                                var value = planService.livepropertylisting;
+                                                                <td style="width:20%" class="text-center">@value</td>
+                                                            }
+                                                            else if (planService.livepersonlisting != null)
+                                                            {
+                                                                var value = planService.livepersonlisting;
+                                                                <td style="width:20%;" class="text-center">@value</td>
+                                                            }
+                                                            else if (planService.sendreceivemessage != null)
+                                                            {
+                                                                var value = planService.sendreceivemessage;
+                                                                if (value == true)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-check" aria-hidden="true" style="color: #13d0ab;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        Free to Message listings only
+                                                                    </td>
+                                                                }
+                                                            }
+                                                            else if (planService.seemobilenumber != null)
+                                                            {
+                                                                var value = planService.seemobilenumber;
+                                                                if (value == true)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-check" aria-hidden="true" style="color: #13d0ab;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-times" aria-hidden="true" style="color: #cb104b;"></i>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                            else if (planService.thirtydayguarantee != null)
+                                                            {
+                                                                var value = planService.thirtydayguarantee;
+                                                                if (value == true)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-check" aria-hidden="true" style="color: #13d0ab;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-times" aria-hidden="true" style="color: #cb104b;"></i>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <ul>
+                            <li>
+                                *To qualify for the guarantee you must have at least one listing on the site
+                                during your plan.
+                            </li>
+                            <li class="payment-link">
+                                <a href="/info/terms" target="_blank">
+                                    Terms and
+                                    Conditions of Use
+                                </a><span class="styles__linkSeparator___2Anml">
+                                    |
+                                </span><a href="/info/new-payment-terms-and-conditions" target="_blank">Payment Terms and Conditions</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="Room">
+            <div class="col-xl-12">
+                <div class="container p-5">
+                    <div class="row">
+                        <div class="text-center">
+                            <h2>Upgrade now to find a place faster</h2>
+                            <p>Don't miss out on your dream place. Upgrade now</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div style="width:25%;" class="col-md-12 mb-4"></div>
+                        @if (Model.Tenantplans.Any())
+                        {
+                            foreach (var plan in Model.Tenantplans)
+                            {
+                                <div style="width:25%;" class="col-md-12 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <div class="text-center">
+                                                <h5 class="card-title text-primary">@plan.Title</h5>
+                                                <h2>Rs. <span>@Utility.Format(plan.Price)</span></h2>
+
+                                                <strong>@plan.Tagline</strong>
+
+                                                <p class="card-text">
+                                                    @Utility.shortText(plan.Description,90)
+                                                </p>
+                                                @{
+                                                    var userPlan = Model.userPlans.SingleOrDefault(p => p.PlanId == plan.ID
+                                                    && p.UserId == Model.userId && p.Status == UserPlan.status.Active);
+                                                    if (userPlan != null)
+                                                    {
+                                                        if (userPlan.PlanId == plan.ID)
+                                                        {
+                                                            <button disabled class="btn btn-outline-primary btn-md w-100">Current Plan</button>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        @if (plan.PlanType == Plan.Plantype.forboth)
+                                                        {
+                                                            <button disabled class="btn btn-outline-primary btn-md w-100">Free Plan</button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a data-planid="@plan.ID" class="subscribe btn btn-primary btn-md w-100"
+                                               data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                                                Get @plan.Title
+                                                            </a>
+                                                        }
+                                                    }
+                                                }
+                                                @*@{
+                                        var userPlan = Model.userPlans.SingleOrDefault(p => p.PlanId == plan.ID
+                                        && p.UserId == Model.userId);
+                                        }
+
+                                        @if (userPlan.ID == plan.ID)
+                                        {
+                                        <button disabled class="btn btn-outline-primary btn-md w-100">Current Plan</button>
+                                        }
+                                        else
+                                        {
+                                        <a data-planid="@plan.ID" class="subscribe btn btn-primary btn-md w-100"
+                                        data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                        Get @plan.Title
+                                        </a>
+                                        }*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 mb-4">
+                            <div class="table-responsive" style="background-color:white;">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        @if (Model.allservices.Any())
+                                        {
+                                            foreach (var service in Model.allservices)
+                                            {
+                                                <tr>
+                                                    <td style="width:20%;">@service.title</td>
+
+                                                    @foreach (var plan in Model.Tenantplans)
+                                                    {
+                                                        var planService = Model.Tenantplanservices.SingleOrDefault(s => s.ServiceID == service.id && s.PlanID == plan.ID);
+                                                        if (planService != null)
+                                                        {
+                                                            if (planService.listingsize != null)
+                                                            {
+                                                                var value = planService.listingsize;
+                                                                if (planService.listingsize == PlanService.Listingsize.free)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <rect y="22" width="30" height="8" rx="2" fill="#6D7580"></rect>
+                                                                            <rect width="30" height="18" rx="2" fill="#D5D7DB">
+                                                                            </rect>
+                                                                        </svg>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <rect y="22" width="30" height="8" rx="2" fill="#D5D7DB"></rect>
+                                                                            <rect width="30" height="18" rx="2" fill="#6D7580">
+                                                                            </rect>
+                                                                        </svg>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                            else if (planService.searchranking != null)
+                                                            {
+                                                                var value = planService.searchranking;
+                                                                if (planService.searchranking == PlanService.Searchranking.free)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <svg width="100%" height="36" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg"><svg x="2" y="14"><path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#6D7580" stroke="white" stroke-width="2"></path></svg><svg x="2" y="7"><path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#D5D7DB" stroke="white" stroke-width="2"></path></svg><svg x="2" y="0"><path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#D5D7DB" stroke="white" stroke-width="2"></path></svg></svg>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <svg width="100%" height="36" viewBox="0 0 44 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <svg x="2" y="14">
+                                                                                <path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#D5D7DB" stroke="white" stroke-width="2"></path>
+                                                                            </svg>
+                                                                            <svg x="2" y="7">
+                                                                                <path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#6D7580" stroke="white" stroke-width="2"></path>
+                                                                            </svg>
+                                                                            <svg x="2" y="0">
+                                                                                <path d="M20.7992 0.846784C20.4173 0.729775 20.0092 0.729774 19.6273 0.846783L1.71226 6.33625C-0.152148 6.90753 -0.180249 9.53673 1.67149 10.1478L19.5865 16.0594C19.9936 16.1937 20.433 16.1937 20.84 16.0594L38.755 10.1478C40.6068 9.53671 40.5786 6.90752 38.7142 6.33624L20.7992 0.846784Z" fill="#D5D7DB" stroke="white" stroke-width="2"></path>
+                                                                            </svg>
+                                                                        </svg>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                            else if (planService.topsearch != null)
+                                                            {
+                                                                var value = Utility.GetEnumDisplayName(planService.topsearch);
+                                                                <td style="width:20%;" class="text-center">@value</td>
+                                                            }
+                                                            else if (planService.livepropertylisting != null)
+                                                            {
+                                                                var value = planService.livepropertylisting;
+                                                                if (value == 3)
+                                                                {
+                                                                    <td style="width:20%" class="text-center">@value+</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%" class="text-center">@value</td>
+                                                                }
+                                                            }
+                                                            else if (planService.livepersonlisting != null)
+                                                            {
+                                                                var value = planService.livepersonlisting;
+                                                                <td style="width:20%;" class="text-center">@value</td>
+                                                            }
+                                                            else if (planService.sendreceivemessage != null)
+                                                            {
+                                                                var value = planService.sendreceivemessage;
+                                                                if (value == true)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-check" aria-hidden="true" style="color: #13d0ab;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        Free to Message listings only
+                                                                    </td>
+                                                                }
+
+                                                            }
+                                                            else if (planService.seemobilenumber != null)
+                                                            {
+                                                                var value = planService.seemobilenumber;
+                                                                if (value == true)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-check" aria-hidden="true" style="color: #13d0ab;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-times" aria-hidden="true" style="color: #cb104b;"></i>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                            else if (planService.thirtydayguarantee != null)
+                                                            {
+                                                                var value = planService.thirtydayguarantee;
+                                                                if (value == true)
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-check" aria-hidden="true" style="color: #13d0ab;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td style="width:20%;" class="text-center">
+                                                                        <i class="fa fa-times" aria-hidden="true" style="color: #cb104b;"></i>
+                                                                    </td>
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <ul>
+                            <li>
+                                *To qualify for the guarantee you must have at least one listing on the site
+                                during your plan.
+                            </li>
+                            <li class="payment-link">
+                                <a href="/info/terms" target="_blank">
+                                    Terms and
+                                    Conditions of Use
+                                </a><span class="styles__linkSeparator___2Anml">
+                                    |
+                                </span><a href="/info/new-payment-terms-and-conditions" target="_blank">Payment Terms and Conditions</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/Profile/subscribeplan.js"></script>

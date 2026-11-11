@@ -1,0 +1,77 @@
+﻿@using Gharshare.Models
+@*@model ApplicationUser*@
+@{
+    ViewData["Title"] = "send OTP to Verify your mobile number";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <div class="mb-2">
+                            <p>
+                                To keep our community nice and secure and to let other flatmates
+                                know you’re for real, you’ll need to verify your mobile number.
+                            </p>
+                        </div>
+                        <div id="divSendOTP" class="row">
+                            <form>
+                                <label><strong>Enter Mobile number</strong></label>
+                                <div class="form-inline">
+                                    <input type="text" id="number" placeholder="Enter mobile number..."
+                                      oninput="formatMobileNumber(this)" class="form-control" maxlength="15">
+                                    <span id="spanMobile" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3 mt-3">
+                                    <div id="recaptcha-container"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <button id="sendOTP" type="button" class="btn btn-primary btn-block">
+                                        Verify mobile number
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div id="divVerifyOTP" class="row" style="display:none;">
+                            <form id="frmVerifyMobilenum">
+                                <label><strong>Enter OTP to Verify</strong></label>
+                                <div class="form-inline mb-2">
+                                    <input type="number" id="otpInput" placeholder="Enter 6-digit OTP..."
+                                    maxlength="15" class="form-control">
+                                    <span id="spanOtp" class="text-danger"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <button type="button" id="btnVerify" class="btn btn-primary btn-block">
+                                        Verify Mobile number
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        @*<form id="sendOTPForm">
+                        <div>
+                        <label><strong>Mobile number</strong></label>
+                        <div class="form-inline">
+                        <input id="txtMobile" oninput="formatMobileNumber(this)"
+                        type="text" class="form-control" maxlength="15">
+                        <span id="spanMobile" class="text-danger"></span>
+                        </div>
+                        </div>
+                        <div class="mb-3">
+                        <button type="submit" class="btn btn-primary btn-block">
+                        Send SMS Code
+                        </button>
+                        </div>
+                        </form>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="/js/profile/sendOtpOnMobile.js"></script>
+<script src="/js/profile/formatmobilenum.js"></script>
+<script src="/js/profile/checkMobilenumStatus.js"></script>
+<script type="module" src="/js/commonfunctions/sendOTP2VerifyCellbyModularFirebaseAPI.js"></script> 

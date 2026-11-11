@@ -1,0 +1,168 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model PlanserviceVM
+@{
+    ViewData["Title"] = "Add service to plan";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmplanservice">
+                            <input type="hidden" asp-for="@Model.planservice.PlanID" />
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Plan</label>
+                                    <div>
+                                        <strong>@Model.plan.Title</strong>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">For</label>
+                                    <div>
+                                        <strong>@Utility.GetEnumDisplayName(@Model.plan.PlanType)</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">Service</label>
+                                    <div class="d-flex">
+                                        <select id="ddlservicetype" asp-items="@Model.services"
+                                                asp-for="@Model.planservice.ServiceID"
+                                                class="nice-select w-100">
+                                            <option value="" selected>select service</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dvListingsize" style="display:none;" class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">Listing size</label>
+                                    <div class="d-flex">
+                                        <select id="ddltype" asp-for="@Model.planservice.listingsize" class="nice-select w-100">
+                                            <option value="" selected>select listing size</option>
+                                            <option value="1">Free</option>
+                                            <option value="2">Basic</option>
+                                            <option value="3">Full</option>
+                                            <option value="4">Pro</option>
+                                            <option value="5">None</option>                                             
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dvSearchranking" style="display:none;" class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">Search ranking</label>
+                                    <div class="flex">
+                                        <select id="ddlstatus" asp-for="@Model.planservice.searchranking" class="nice-select w-100">
+                                            <option value="" selected>select search ranking</option>
+                                            <option value="1">Free</option>
+                                            <option value="2">Basic</option>
+                                            <option value="3">Full</option>
+                                            <option value="4">Pro</option>
+                                            <option value="5">None</option>                                             
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dvTopsearch" style="display:none;" class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">Listing will appear in top search</label>
+                                    <div class="flex">
+                                        <select id="ddlstatus" asp-for="@Model.planservice.topsearch" class="nice-select w-100">
+                                            <option value="" selected>select search ranking</option>
+                                            <option value="1">No</option>
+                                            <option value="2">Every 5 days</option>
+                                            <option value="3">Every 7 days</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dvPropertylisting" style="display:none;" class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">No of live property listing</label>
+                                    <div class="flex">
+                                        <input asp-for="@Model.planservice.livepropertylisting" type="text" class="form-control"
+                                               placeholder="Enter no of live property listing...">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dvPersonlisting" style="display:none;" class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">No of live person listing</label>
+                                    <div class="flex">
+                                        <input asp-for="@Model.planservice.livepersonlisting" type="text" class="form-control"
+                                                placeholder="Enter no of person listing...">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dvSendmessage" style="display:none;" class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">Send and receive instant messages?</label>
+                                    <div class="form-check custom-checkbox ms-1 ">
+                                        <input type="checkbox" value="true"
+                                               @(Model.planservice.sendreceivemessage == true ? "checked" : "")
+                                               id="planservice.sendreceivemessage" name="planservice.sendreceivemessage"
+                                               class="form-check-input" />
+                                               <div id="sendmessagehidden">                                               
+                                               </div>
+                                        <label class="form-check-label">
+                                            Yes! can send and receive instant messages
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dvSeemobile" style="display:none;" class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">See mobile numbers?</label>
+                                    <div class="form-check custom-checkbox ms-1 ">
+                                        <input type="checkbox" value="true"
+                                               @(Model.planservice.seemobilenumber == true ? "checked" : "")
+                                               id="planservice.seemobilenumber" name="planservice.seemobilenumber"
+                                               class="form-check-input" />
+                                               <div id="seemobilehidden"> @*belwo input is being dynamically created onchange of ddl*@
+                                               @*<input type="hidden" name="planservice.seemobilenumber" value="false" />*@
+                                               </div>
+                                        <label class="form-check-label">
+                                            Yes! can see mobile number, if allowed
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="dv30day" style="display:none;" class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">30 day guarantee</label>
+                                    <div class="form-check custom-checkbox ms-1 ">
+                                        <input type="checkbox" value="true"
+                                               @(Model.planservice.thirtydayguarantee == true ? "checked" : "") 
+                                               id="planservice.thirtydayguarantee" name="planservice.thirtydayguarantee"
+                                               class="form-check-input" />
+                                               <div id="30dayhidden"></div>
+                                               @*<input type="hidden" name="planservice.thirtydayguarantee" value="false" />*@
+                                        <label class="form-check-label">
+                                            Yes! this service gives 30 day success guarantee
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>                           
+                            <div class="row justify-content-center mb-2">
+                                <button type="submit" class="btn btn-primary w-50">
+                                    Save
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<partial name="_dtpPartial" />
+<script src="~/js/service/saveService.js"></script>
+<script src="~/js/service/showHideserviceRows.js"></script>
+<script src="~/js/plan/savePlanservice.js"></script>

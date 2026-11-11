@@ -1,0 +1,12 @@
+﻿@using Gharshare.Views.Shared.Components.SearchBar
+@model Search
+@{
+}
+<div>
+<form asp-controller="@Model.Controller" asp-action="@Model.Action" method="post">
+    <span class="btn-group">
+        <input type="text" class="form-control" name="SearchText" placeholder="Search Key" value="@Model.SearchText" />
+        <input class="p-1 ml-2 btn btn-primary" type="submit" value="Search" />
+    </span>
+</form>
+</div>

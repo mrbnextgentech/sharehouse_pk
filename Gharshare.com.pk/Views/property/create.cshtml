@@ -1,0 +1,283 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Gharshare.Models
+@using Gharshare.CommonHelper
+@inject UserManager<ApplicationUser> userManager;
+@model PropertyVM
+@{
+    ViewData["Title"] = "Create Property";
+    if (User.IsInRole(WebSiteRoles.Role_Admin))
+    {
+        Layout = "_Layout_1";
+    }
+    else if (User.IsInRole(WebSiteRoles.Role_FreeUser))
+    {
+        Layout = "_LayoutLandlord";
+    }
+}
+
+<div class="container" style="padding:60px;">
+    <div class="col-md-12">
+        <h1>Create Your Ad</h1>
+    </div>
+    <form method="Post" asp-action="Create" enctype="multipart/form-data">
+        <strong class="text-center">Property Address</strong><hr />
+        <div class="row">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (User.IsInRole(WebSiteRoles.Role_Admin) )
+            {
+            <div class="form-floating">
+                <select id="ddllandlord" asp-for="Landlord.Id" asp-items="Model.Landlords" class="dropdown dl">
+                    @if (User.IsInRole(WebSiteRoles.Role_Admin))
+                    {
+                        <option value="">--Select Landlord--</option>
+                    }
+                </select>
+                <input type="hidden" id="Id" asp-for="Landlord.Id" class="form-control m-1" />
+            </div>
+        }
+        </div>
+        <div class="row">             
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" readonly asp-for="Property.Street" class="form-control" aria-required="true" />
+                <label asp-for="Property.Street">Street</label>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" readonly asp-for="Property.Suburb" class="form-control" aria-required="true" />
+                <label asp-for="Property.Suburb">Suburb</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 form-floating p-1">
+                <select disabled id="state" asp-for="Property.StateID" asp-items="Model.States" class="dropdown dl">
+                    <option selected="selected" value="">--Select Province--</option>
+                </select>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <select disabled id="city" class="dropdown dl" asp-for="Property.CityID">
+                    <option selected="selected" value="">--Select city--</option>
+                </select>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" readonly asp-for="Property.PostalCode" class="form-control" aria-required="true" />
+                <label asp-for="Property.PostalCode">PostalCode</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="custom-file p-1 col-md-12">
+                @Html.CheckBoxFor(m =>m.Property.HideAddress)
+                <label>Check this box if you wish to hide your address, and display suburb only</label>
+            </div>
+        </div>
+        <strong class="text-center">Property Details</strong><hr />
+        <div class="row">
+            <div class="col-md-4 form-floating p-1">
+                <select disabled id="propertytype" class="dropdown dl" asp-for="Property.Propertytype">
+                    <option selected="selected" value="">--Select type--</option>
+                    <option value="Apartment">--Apartment--</option>
+                    <option value="House">--House--</option>
+                    <option value="Studio">--Studio--</option>
+                    <option value="Terrace/Semi">--Terrace/Semi --</option>
+                    <option value="Townhouse">--Townhouse --</option>
+                    <option value="Unit">--Unit--</option>
+                    <option value="Villa">--Villa--</option>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.Bed" class="form-control" required="" aria-required="true" />
+                <label asp-for="Property.Bed">Bed Room</label>
+                <span asp-validation-for="Property.Bed" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.Bathroom" class="form-control" required="" autocomplete="Name" aria-required="true" />
+                <label asp-for="Property.Bathroom">Bathroom</label>
+                <span asp-validation-for="Property.Bathroom" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.TotalArea" class="form-control" aria-required="true" />
+                <label asp-for="Property.TotalArea">Total Area(m<sup>2</sup>)</label>
+                <span asp-validation-for="Property.TotalArea" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 form-floating p-1">
+                @*<input type="text" asp-for="Property.ParkingType" class="form-control" required="" aria-required="true" />
+                <label asp-for="Property.ParkingType">Parking Type</label>
+                <span asp-validation-for="Property.ParkingType" class="text-danger"></span>*@
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.TotalParkings" class="form-control" aria-required="true" />
+                <label asp-for="Property.TotalParkings">TotalParkings</label>
+                <span asp-validation-for="Property.TotalParkings" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" id="datepicker" readonly asp-for="Property.AvailableFrom" class="form-control datepicker" aria-required="true" />
+                <label asp-for="Property.AvailableFrom">Available From</label>
+                <span asp-validation-for="Property.AvailableFrom" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.Rent" class="form-control" required="" aria-required="true" />
+                <label asp-for="Property.Rent">Weekly Rent</label>
+                <span asp-validation-for="Property.Rent" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.BondValue" class="form-control" required="" aria-required="true" />
+                <label asp-for="Property.BondValue">Bond Value</label>
+                <span asp-validation-for="Property.BondValue" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                @*<input type="text" asp-for="Property.MinimumStay." class="form-control" required="" aria-required="true" />
+                <label asp-for="Property.MinimumStay">Minimum Stay in Week(s)</label>
+                <span asp-validation-for="Property.MinimumStay" class="text-danger"></span>*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="custom-file p-1">
+                @Html.CheckBoxFor(m =>m.Property.HidePrice)
+                <label>Hide price and display "Contact for Price"</label>
+            </div>
+        </div>
+        <div clas="row">
+            <div class="form-floating p-1">
+                <input type="text" asp-for="Property.GoogleMapEmbedAPIURL" class="form-control" aria-required="true" />
+                <label asp-for="Property.GoogleMapEmbedAPIURL">Google map embed code</label>
+            </div>
+            <div class="form-floating p-1">
+            </div>
+            @if (User.IsInRole(WebSiteRoles.Role_Admin))
+            {
+                <div class="custom-file p-1">
+                    @Html.CheckBoxFor(m => m.Property.IsActive)
+                    <label>Show on public site?</label>
+                </div>
+            }
+            <div class="custom-file p-1">
+                @Html.CheckBoxFor(m => m.Property.IsRented)
+                <label>Is rented out?</label>
+            </div>
+            <div class="custom-file p-1">
+                @Html.CheckBoxFor(m =>m.Property.RoomAvailable)
+                <label>Room Avilable?</label>
+            </div>
+            <div class="custom-file p-1">
+                @Html.CheckBoxFor(m =>m.Property.HideAddress)
+                <label>Hide Address?</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-floating p-1">
+                @*<textarea id="Description" asp-for="Property.Features" class="form-control" cols="45" rows="16" placeholder="Description" required="" style="Height:100px;"></textarea>
+                <label asp-for="Property.Description">Features</label>
+                <span asp-validation-for="Property.Features" class="text-danger"></span>*@
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-floating p-1">
+                <input type="text" asp-for="Property.AdTitle" class="form-control" aria-required="true" />
+                <label>Advertisement Title</label>
+                <span asp-validation-for="Property.AdTitle" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-floating p-1">
+                <textarea id="Description" asp-for="Property.Description" class="form-control" cols="45" rows="16" placeholder="Description" required="" style="Height:235px;"></textarea>
+                <label asp-for="Property.Description">About the property</label>
+                <span asp-validation-for="Property.Description" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-floating p-1">
+                <input id="filecoverImage" type="file" name="filecoverImage" class="pb-2" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 form-floating p-1">
+                <input id="files" multiple type="file" name="files" class="pb-2" />
+            </div>
+        </div>
+        <strong class="text-center">Property Viewing inspection times</strong><hr />
+        <div class="row">
+            <div class="col-md-12 form-floating p-1">
+            </div>
+        </div>
+        <strong class="text-center">Your Details</strong><hr />
+        <div class="row">
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.OwnerName" class="form-control" required="" aria-required="true" />
+                <label asp-for="Property.OwnerName">Owner Name</label>
+                <span asp-validation-for="Property.OwnerName" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.Owneremail" class="form-control" required="" aria-required="true" />
+                <label asp-for="Property.Owner">Owner Email</label>
+                <span asp-validation-for="Property.Owneremail" class="text-danger"></span>
+            </div>
+            <div class="col-md-4 form-floating p-1">
+                <input type="text" asp-for="Property.Ownermobile" class="form-control" required="" aria-required="true" />
+                <label asp-for="Property.Ownermobile">Owner Mobile</label>
+                <span asp-validation-for="Property.Ownermobile" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            If someone calls RentBetter about your property:
+        </div>
+        <div class="row">
+            <div class="custom-file p-1">
+                @Html.RadioButtonFor(m =>m.Property.SharePhone,true)
+                <label>Please give them my phone number and ask them to contact me"</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="custom-file p-1">
+                @Html.RadioButtonFor(m =>m.Property.SharePhone,false)
+                <label>Please capture their name and number and email me their details</label>
+            </div>
+        </div>
+        <div class="row">
+            <span>Acknowledgement</span>
+            <div class="custom-file p-1">
+                @Html.CheckBoxFor(m =>m.Property.IsOnwnerOrAuthorized)
+                <label>I acknowledge that I am the owner or am authorized to rent out this property and can provide evidence if required.</label>
+            </div>
+            <div class="custom-file p-1">
+                @Html.CheckBoxFor(m =>m.Property.IsAdlive)
+                <label>I am ready for my ads to go live on the property sites which will appear in the public domain</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <button type="submit" onclick="return Validate()" class="w-100 btn btn-primary">Create Property</button>
+            </div>
+            <div class="col-md-6">
+                <a asp-action="Index" class="w-50 btn btn-secondary">Cancle</a>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_dtpPartial" />
+    <partial name="_GoogleAutocompAddPartial" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/PopulateDropdownList.js" type="text/javascript"></script>
+
+    @*<script type="text/javascript">
+        function Validate() {
+            if (document.getElementById("filecoverImage").value == "" || document.getElementById("files").value == "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Validation Error',
+                    text: 'Must select one image for property front & at least one other image of the property!',
+                    //footer: '<a href="">Why do I have this issue?</a>'
+                })
+                return false;
+            }
+            return true;
+        }
+    </script>*@
+
+}

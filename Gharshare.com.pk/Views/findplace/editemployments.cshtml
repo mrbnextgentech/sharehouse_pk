@@ -1,0 +1,62 @@
+﻿@using Gharshare.Models
+@model PersonListingVM
+@{
+    ViewData["Title"] = "";
+    Layout = "_Layout4Popups";
+    //Layout = "_Layoutmain";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmemployments">
+                            <input id="txtintroPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                            <div class="row justify-content-center">
+                                <div class="col-sm-12 mb-2">
+                                    <div class="text-center row mb-3">
+                                        <h4>My features</h4>
+                                        @if (Model.Employments != null)
+                                        {
+                                            @for (int i = 0; i < Model.Employments.Count(); i++)
+                                            {
+                                                <div class="col-lg-3 col-sm-6 col-6">
+                                                    <div class="text-center mt-3">
+                                                        <label>
+                                                            <input type="hidden" asp-for="@Model.Employments[i].PersonListingID">
+                                                            <input type="hidden" asp-for="@Model.Employments[i].EmploymentID">
+                                                            <input type="hidden" asp-for="@Model.Employments[i].CreatedOn">
+                                                            <input type="hidden" asp-for="@Model.Employments[i].CreatedbyUserID">                                                             
+                                                            <input type="hidden" asp-for="@Model.Employments[i].ID">
+                                                            <input type="hidden" asp-for="@Model.Employments[i].UId">
+                                                            <input class="radio-input" type="checkbox"
+                                                            asp-for="@Model.Employments[i].isSelected">
+                                                            <span class="radio-tile">
+                                                                <span class="radio-icon">
+                                                                    <img src="@Model.Employments[i].Employment.IconPath" />
+                                                                </span>
+                                                            </span>                                                            
+                                                        </label>
+                                                        <p>@Model.Employments[i].Employment.Title</p>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" class="btn btn-primary w-50">
+                                            Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" /> 
+<script src="~/js/listings/findplace/updateEmployments.js"></script>

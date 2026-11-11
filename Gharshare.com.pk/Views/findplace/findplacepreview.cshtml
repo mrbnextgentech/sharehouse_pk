@@ -1,0 +1,459 @@
+﻿@using Gharshare.CommonHelper
+@using Gharshare.Models
+@inject IHttpContextAccessor accessor
+@model PersonListingVM
+@{    
+    Layout = "_Layoutmain";
+    ViewData["Title"] = "Find Place Preview";
+    ApplicationUser.usertype userType;
+    Enum.TryParse(accessor.HttpContext.Session
+    .GetString("_UserType"), out userType);     
+}
+<div class="container">
+    <input type="hidden" id="txtpreviewPersonId" asp-for="@Model.PersonListing.ID" />   
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                     @if (Model.PersonListing.listingstatus == PersonListing.Status.blocked)
+                {
+                    var message = "";
+                    if (userType == ApplicationUser.usertype.landlord || userType == ApplicationUser.usertype.freeuser)
+                        message = "Alert! This listing has been blocked. Please contact program administrator for further information.";
+                    else
+                        message = "This listing has been blocked by program administrator. Click on 'activate' button to activate.";
+                    <div class="row mb-4" style="margin-right:10px;">
+                        <div class="alert alert-danger solid alert-dismissible fade show m-3">
+                            <div class="d-flex">
+                                <svg viewBox="0 0 24 24" width="24 " height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                @message
+                                @*<a style="color:white;" asp-controller="profile"
+                           asp-action="plans">@message</a>*@
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+                            </button>
+                        </div>
+                    </div>
+                }
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="mb-5">
+                                @*<div class="image-gallery owl-carousel" id="lightgallery">
+                                <a href="@Model.PersonListing.Profilepic" data-exthumbimage="@Model.PersonListing.Profilepic"
+                                data-src="@Model.PersonListing.Profilepic"
+                                class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-12">
+                                <img src="@Model.PersonListing.Profilepic" alt="" class="img-fluid lg-object-fit" style="width:100%;">
+                                </a>
+                                </div>*@
+                                <div class="parent-div" style="display: flex; justify-content: center; align-items: center;">
+                                    <div class="text-center">
+                                        @*<a href="@Model.PersonListing.Profilepic" data-exthumbimage="@Model.PersonListing.Profilepic" data-src="@Model.PersonListing.Profilepic"
+                                        class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-12">*@
+                                        @{var picPath = "";}
+                                        @if (Model.PersonListing.User.ProfilePicture == null)
+                                        {
+                                            picPath = "../img/user-image.png";
+                                        }
+                                        else
+                                        {
+                                            picPath = Model.PersonListing.User.ProfilePicture; 
+                                        }
+                                        <img src=@picPath  alt="" class="img-fluid lg-object-fit" style="width: 100%; border-radius: 5%;">
+                                        @*</a>*@
+                                    </div>
+                                </div>
+
+                                @*<button class="btn btn-primary Shortlist">
+                                    <span class="me-2">
+                                        <i class="fa fa-star"></i>
+                                    </span>Shortlist
+                                </button>*@
+                                @*<button class="btn btn-primary social-share">
+                                Share <span class="me-2">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-envelope"></i></a>
+                                </span>
+                                </button>*@
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 order-lg-2 mb-4 h-50">
+                            <div class="card" style="background-color: #f8f8f9;">
+                                <div class="card-body p-4 text-black">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="flex-shrink-0">
+                                            <img src=@picPath
+                                                 alt="Generic placeholder image"
+                                                 class="img-fluid rounded-circle border border-dark border-3"
+                                                 style="width: 100px;">
+                                        </div>
+                                        <div class="flex-grow-1 text-center">
+                                            <div class="mb-2">
+                                                <h4 class="text-center">Message 
+                                                    @Utility.shortusername(Model.PersonListing.User.Name,10)</h4>
+                                                <p>Online Today</p>
+                                            </div>
+                                            <div>
+                                                <button type="button"
+                                                        class="btn btn-outline-primary btn-rounded btn-sm"
+                                                        data-mdb-ripple-color="dark">                                                     
+                                                        Response rate: <strong>
+                                                        @{
+                                                            var responseRate = (int)Math.Floor(Model.PersonListing.User.Responserate);
+                                                        }
+                                                        @responseRate%                                                         
+                                                    </strong>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="card" style="background-color: #f8f8f9;">
+                                <div class="card-body p-4 text-black">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="flex-grow-1 text-center">
+                                            <div class="mb-2">
+                                                <h4 class="text-center">Social media verifications</h4>
+                                                <a href="#">
+                                                    <button class="btn btn-outline-primary" type="button">
+                                                        <i class="lab la-facebook-f"></i>
+                                                    </button>
+                                                </a>
+                                                <a href="#">
+                                                    <button class="btn btn-outline-primary" type="button">
+                                                        <i class="lab la-twitter"></i>
+                                                    </button>
+                                                </a>
+                                                <a href="#">
+                                                    <button class="btn btn-outline-primary" type="button">
+                                                        <i class="lab la-instagram"></i>
+                                                    </button>
+                                                </a>
+                                                <a href="#">
+                                                    <button class="btn btn-outline-primary" type="button">
+                                                        <i class="lab la-linkedin"></i>
+                                                    </button>
+                                                </a>
+
+                                            </div>
+                                            <div>
+                                                <button type="button"
+                                                        class="btn btn-outline-primary btn-rounded btn-sm"
+                                                        data-mdb-ripple-color="dark">
+                                                    Edit verifications
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                            <div>
+                                @if (@Model.PersonListing.isActive)
+                                {
+                                    <button id="btndeactivate" class="btn btn-primary w-100">
+                                        Deactivate Listing
+                                    </button>
+                                }
+                                else if (Model.PersonListing.listingstatus == PersonListing.Status.blocked &&
+                                userType == ApplicationUser.usertype.admin ||
+                                userType == ApplicationUser.usertype.superadmin)
+                                {
+                                    <button id="btnActivateListing" class="btn btn-primary w-100">
+                                        Activate Listing
+                                    </button>
+
+                                }
+                                else if(Model.PersonListing.listingstatus != PersonListing.Status.blocked)
+                                {
+                                    <button id="btnActivateListing" class="btn btn-primary w-100">
+                                        Activate Listing
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-lg-8 order-lg-1">
+                            <div class="row">
+                                <div class="col-md-10 mt-2">
+                                    <h2>@Model.PersonListing.User.Name</h2>
+                                    <h5>
+                                        @*<span class="badge badge-primary badge-lg">Early Bird</span>*@
+                                        @Utility.GetEnumDisplayName(@Model.PersonListing.User.Gender)  (@Model.PersonListing.User.Age)
+                                        @if (@Model.PersonListing.Mates.Any())
+                                        {
+                                            string gender_Age = "";
+                                            foreach (var flatmate in @Model.PersonListing.Mates)
+                                            {
+                                                if (gender_Age != "")
+                                                    gender_Age += ",";
+                                                gender_Age +=@Utility.GetEnumDisplayName(flatmate.gender) + " (" + flatmate.Age + ")";
+                                            }
+                                            @if (@gender_Age != null)
+                                            {
+                                                <span><br /></span> @gender_Age <br />
+                                            }
+                                        }
+                                    </h5>
+                                </div>
+                                <div class="col-md-2 mt-3">
+                                    <a href="#" onclick="loadlisting('edittenant')"
+                                       data-bs-toggle="modal" data-bs-target="#AccountModal">                                        
+                                            <i class="fa fa-pencil"></i>&nbsp;
+                                            Edit
+                                    </a>
+                                </div>
+                                <input id="txtPersonlistingId" type="hidden" asp-for="@Model.PersonListing.ID">
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="w-25">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/Rs.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                <h5 id="rent" class="mb-0">@Utility.Format(@Model.PersonListing.MonthlyBudget)/month</h5>
+                                                                <p class="mb-0">Budget</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-25">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/calendar.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                <h5 id="stay" class="mb-0">@Utility.GetEnumDisplayName(@Model.PersonListing.Length)</h5>
+                                                                <p class="mb-0">stay length</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-25">
+                                                        <div class="media">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" label=""><g fill="none" fill-rule="evenodd" stroke="#2F3A4A" stroke-linecap="round" stroke-linejoin="round"><path fill="#C9F8EE" d="M11.307 3.826a6.234 6.234 0 0 1 0 8.814 6.232 6.232 0 0 1-8.814 0 6.232 6.232 0 0 1 0-8.814 6.232 6.232 0 0 1 8.814 0z"></path><path d="M8.777 6.354L6.9 8.234 3.896 5.228M2.86 16.177v9.391h.81v2.607h1.935m22.64.065h2.648v-5.416c0-.44-.219-.854-.583-1.102l-2.403-1.635-2.269-3.847h-4.079M10.816 28.258h12.215m2.607 2.523a2.61 2.61 0 0 0 2.607-2.607 2.608 2.608 0 0 0-2.607-2.605 2.608 2.608 0 0 0-2.607 2.605 2.61 2.61 0 0 0 2.607 2.607zm-17.427 0a2.61 2.61 0 0 0 2.605-2.607 2.608 2.608 0 0 0-2.605-2.605 2.608 2.608 0 0 0-2.607 2.605 2.61 2.61 0 0 0 2.607 2.607zm-4.54-5.212h27.206m-9.317 0V12.314h-6.744"></path></g></svg>
+                                                            <div class="ms-2">
+                                                                <h5 id="moveDate" class="mb-0">
+                                                                    @Utility.ConvertToShortDateFormat(@Model.PersonListing.MoveDate)
+                                                                </h5>
+                                                                <p class="mb-0">Move date</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 mt-2">
+                                    <a href="#" onclick="loadlisting('editrent')"
+                                       data-bs-toggle="modal" data-bs-target="#AccountModal">                                         
+                                            <i class="fa fa-pencil"></i>&nbsp;
+                                            Edit
+                                    </a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-10 mt-2">
+                                    <h3>About</h3>
+                                    <p id="introduction" class="pt-3">@Model.PersonListing.Introduction</p>
+                                </div>
+                                <div class="col-md-2 mt-2">
+                                    <a href="#" onclick="loadlisting('editintroduction')"
+                                       data-bs-toggle="modal" data-bs-target="#AccountModal">                                         
+                                            <i class="fa fa-pencil"></i>&nbsp;
+                                            Edit
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 mt-2">
+                                    <h3>My Features</h3>
+                                    @if (@Model.Employments != null)
+                                    {
+                                        @foreach (var employmentstatus in @Model.Employments)
+                                        {
+                                            <a href="#">
+                                                <span class="btn btn-outline-primary mb-2">
+                                                    <img src="/img/icons/detail/tick.svg" style="width:20px;height:20px;" />
+                                                    @employmentstatus.Employment.Title
+                                                </span>
+                                            </a>
+                                        }
+                                    }
+                                </div>
+                                <div class="col-md-2 mt-2">
+                                    <a href="#" onclick="loadlisting('editemployments')"
+                                       data-bs-toggle="modal" data-bs-target="#AccountModal">                                         
+                                            <i class="fa fa-pencil"></i>&nbsp;
+                                            Edit                                         
+                                    </a>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-10 mt-2">
+                                    <h3>Property preferences</h3>
+                                    <p>DETAILS</p>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/room.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                Furnished room
+                                                                <h5 class="mb-0">
+                                                                    @Utility.GetEnumDisplayName(@Model.PersonListing.FurnishingType)
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/bath-tub.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                Bathroom
+                                                                <h5 class="mb-0">
+                                                                    @Utility.GetEnumDisplayName(Model.PersonListing.Type)
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/man.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                Max no. of flatmates  <h5 class="mb-0">@Utility.GetEnumDisplayName(Model.PersonListing.MaxNo)</h5>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <svg width="24" height="23" label="">
+                                                                <g stroke="#000" fill="none" fill-rule="evenodd"
+                                                                   stroke-linecap="round" stroke-linejoin="round">
+                                                                    <path d="M13.795 13.997c-.462-.323-.765-.622-.844-.88v-1.034c.668-.7 1.196-1.674 1.507-2.816.75-.54.935-1.648.316-2.43V4.525c0-2.388-1.3-4.024-4.272-4.024C7.607.5 6.23 2.136 6.23 4.524v2.315a1.7 1.7 0 0 0 .315 2.428c.312 1.142.84 2.117 1.507 2.816v1.034c-.299.984-3.875 2.566-7.095 3.84a.737.737 0 0 0-.456.688v1.089M22.101 14.547a4.288 4.288 0 1 0-6.063 6.064 4.288 4.288 0 0 0 6.063-6.064zM18.332 19.313l2.752-2.941M18.332 19.313l-1.277-1.366">
+                                                                    </path>
+                                                                </g>
+                                                            </svg>
+                                                            <div class="ms-2">
+                                                                Internet
+                                                                <h5 class="mb-0">
+                                                                    @if (Model.PersonListing.InternetStatus != null)
+                                                                        @Utility.GetEnumDisplayName(@Model.PersonListing.InternetStatus)
+
+                                                                    </h5>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="w-50">
+                                                            <div class="media">
+                                                                <img src="/img/icons/detail/car.png" style="height:35px;width:35px;" />
+                                                                <div class="ms-2">
+                                                                    Parking
+                                                                    <h5 class="mb-0">
+                                                                        @Utility.GetEnumDisplayName(@Model.PersonListing.ParkingType)
+                                                                    </h5>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 mt-2">
+                                        <a href="#" onclick="loadlisting('editpreferences')"
+                                       data-bs-toggle="modal" data-bs-target="#AccountModal">                                             
+                                                <i class="fa fa-pencil"></i>&nbsp;
+                                                Edit                                             
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10 mt-2">
+                                        @if (Model.PersonListing.DesiredAccommodations != null)
+                                    {
+                                        <h3>Preferred accommodation types</h3>
+                                        foreach (var accommodation in Model.PersonListing.DesiredAccommodations)
+                                        {
+                                            if (accommodation.PropertyType != null)
+                                            {
+                                                <span class="btn btn-outline-primary mb-2">
+                                                    <img src="@accommodation.PropertyType.iconPath" style="width:30px;height:30px;" />
+                                                    @accommodation.PropertyType.Title
+                                                </span>
+                                            }
+                                        }
+                                    }
+                                </div>
+                                <div class="col-md-2 mt-4">
+                                    <a href="#" onclick="loadlisting('editaccommodationtypes')"
+                                       data-bs-toggle="modal" data-bs-target="#AccountModal">                                         
+                                            <i class="fa fa-pencil"></i>&nbsp;
+                                            Edit                                         
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-10 mt-2">
+                                    <h3 class="mt-3">Preferred locations</h3>
+                                    <a href="#">
+                                        <span class="btn btn-outline-primary">
+                                            <img src="/img/icons/detail/tick.svg" style="width:20px;height:14px;" />
+                                            <span id="location">@Model.PersonListing.Suburb</span>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div class="col-md-2 mt-4">
+                                    <a href="#" onclick="loadlisting('editlocations')"
+                                       data-bs-toggle="modal" data-bs-target="#AccountModal">                                         
+                                            <i class="fa fa-pencil"></i>&nbsp;
+                                            Edit                                        
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/listings/findplace/activatePersonListing.js"></script>
+<script src="~/js/listings/findplace/deactivatePersonListing.js"></script>
+<script src="~/js/listings/findplace/loadListinginPopup.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#lightgallery').lightGallery({
+            responsive: {
+                0: {
+                    items: 1 // Set the number of items to 1 for all screen sizes
+                }
+            },
+            onInitialized: function() {
+                // Find the active item and set its width to 100%
+                //setTimeout(function() {
+                //    $('.owl-item.active', this.$stage).css('width', '100%');
+                //    this.$stage.parent().css('width', '100%');
+                //}, 2000);
+            }
+        });
+        setTimeout(function() {
+            $('.owl-stage').css('width', '100%');
+            //$('.owl-stage').css('min-height', '400px');
+            $('.owl-item.active').css('width', '100%');
+            // $('.owl-item.active').css('height', '100%');
+        }, 1000);
+    });
+</script>

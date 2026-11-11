@@ -1,0 +1,99 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model List<City>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "List of Cities";
+    Pager pager = new Pager();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card m-5">
+            <div class="card-header">
+                <h4 class="card-title">City List</h4>
+            </div>
+            <div class="card-body">
+                <div class="row m-2">
+                    <div class="col-md-8">
+                        <a onclick="addCity()" href="#"
+                           class="btn btn-primary" data-bs-toggle="modal"
+                           data-bs-target="#basicModal">
+                            <i class="fa fa-plus"></i>
+                            Add new city
+                        </a>
+                    </div>
+                </div>
+                @if (Model.Any())
+                {
+                    <div id="planlist">
+                        <table class="table table-responsive-md text-center">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <strong>No</strong>
+                                    </th>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Short name</strong></th>
+                                    <th><strong>Featured city</strong></th>
+                                    <th><strong>Action</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    var city = Model[i];
+                                    var sno = @i + 1;
+                                    <tr>
+                                        <td>@sno</td>
+                                        <td>@city.Name</td>
+                                        <td>@city.Shortname</td>
+                                        <td>
+                                            @if (city.Featured)
+                                            {
+                                                <span>Yes</span>
+                                            }
+                                            else
+                                            {
+                                                <span>No</span>
+                                            }
+                                        </td>
+                                        <td class="">
+                                            <div class="">
+                                                <a onclick="addCity(@city.ID)" href="#" data-bs-toggle="modal"
+                                           data-bs-target="#basicModal"
+                                           class="edit btn btn-danger shadow btn-xs sharp me-1">
+                                                    <i class="fa fa-pen"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-danger shadow btn-xs sharp"
+                                           onclick="openDeleteCityView(@city.ID)" data-bs-toggle="modal"
+                                           data-bs-target="#basicModal">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <partial name="_Pager" model="@pager" />
+                }
+                else
+                {
+                    <div id="noplan" class="row text-center p-3">
+                        <h4>There are no transactions.</h4>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/site/openAddCityview.js"></script>
+<script src="~/js/site/openDeleteCityview.js"></script>

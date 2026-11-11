@@ -1,0 +1,164 @@
+﻿@using Gharshare.Models
+@model PersonListingVM
+@{
+    ViewData["Title"] = "";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmtenant">
+                            <input id="txtintroPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                            <input id="txtUserId" type="hidden" asp-for="@Model.PersonListing.User.Id" />
+                            <div class="row justify-content-center">
+                                <div class="col-sm-12 mb-2">
+                                    <div class=" row mb-3">
+                                        <h4>I am looking for a place for</h4>
+                                        <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                            <input id="radioMe" asp-for="@Model.PersonListing.PlaceFor" value="@PersonListing.Purpose.Me"
+                                                   type="radio" class="btn-check" id="radioMe" checked>
+                                            <label class="btn btn-outline-primary" for="radioMe">Me</label>
+                                            <input id="radioCouple" asp-for="@Model.PersonListing.PlaceFor" value="@PersonListing.Purpose.Couple"
+                                                   type="radio" class="btn-check">
+                                            <label class="btn btn-outline-primary" for="radioCouple">couple</label>
+                                            <input id="radioGroup" asp-for="@Model.PersonListing.PlaceFor" value="@PersonListing.Purpose.Group"
+                                                   type="radio" class="btn-check">
+                                            <label class="btn btn-outline-primary" for="radioGroup">Group</label>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="text-label form-label">Your name</label>
+                                            <input type="text" id="txtmyname" asp-for="@Model.PersonListing.User.Name" required
+                                                   readonly class="name form-control" placeholder="Enter First Name">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="text-label form-label">Your age</label>
+                                            <input type="text" asp-for="@Model.PersonListing.User.Age" class="age form-control" id="txtmyage"
+                                                   placeholder="Enter Your age" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="text-label form-label">
+                                                The gender you identify as
+                                            </label>
+                                            <select id="dllMygender" class="mb-4 nice-select wide w-100" required 
+                                            asp-for="@Model.PersonListing.User.Gender">
+                                               <option value="@ApplicationUser.gender.female">Female</option>
+                                                <option value="@ApplicationUser.gender.male">Male</option>
+                                                <option value="@ApplicationUser.gender.transgender">Transgender</option>
+                                                <option value="@ApplicationUser.gender.undisclosed">Undisclosed</option>
+                                            </select>
+                                        </div>
+                                    </div>                                     
+                                    <div id="divpartner">
+                                        @if (Model.PersonListing.PlaceFor == PersonListing.Purpose.Couple)
+                                        {                                             
+                                            <input type="hidden" asp-for="@Model.Partner.Partner" />                                            
+                                            <div class="row mb-3">
+                                                <div class="col-md-4">
+                                                    <label class="text-label form-label">Your partner name</label>
+                                                    <input type="text" id="txtmypartnername" asp-for="@Model.Partner.Name" required
+                                                       class="name form-control" placeholder="Enter First Name">
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="text-label form-label">Your partner age</label>
+                                                    <input type="text" asp-for="@Model.Partner.Age" class="age form-control" 
+                                                    id="txtmypartnerage"
+                                                       placeholder="Enter Your partner age" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="text-label form-label">
+                                                        Your partner gender
+                                                    </label>
+                                                    <select id="ddlmypartnerGender" class="mb-4 nice-select wide w-100" required asp-for="@Model.Partner.gender">
+                                                        <option value="">--select--</option>
+                                                        <option value="@PersonListing.Gender.Woman">Woman</option>
+                                                        <option value="@PersonListing.Gender.Man">Man</option>
+                                                        <option value="@PersonListing.Gender.Transgender">Transgender</option>
+                                                        <option value="@PersonListing.Gender.Undisclosed">Undisclosed</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div id="divotherPerson">
+                                        @if (Model.PersonListing.Mates.Any())
+                                        {
+                                            @for (int i = 0; i < Model.PersonListing.Mates.Count(); i++)
+                                            {
+                                                <div class="mb-3 frnd">
+                                                    <input type="hidden" asp-for="@Model.PersonListing.Mates[i].ID" />
+                                                    <input type="hidden" asp-for="@Model.PersonListing.Mates[i].Partner" />
+                                                    <input type="hidden" asp-for="@Model.PersonListing.Mates[i].PersonListingId" />
+                                                    <div class="row mb-3">
+                                                        <div class="col-md-4">
+                                                            <label class="text-label form-label">Your friend's name</label>
+                                                            <input type="text" asp-for="@Model.PersonListing.Mates[i].Name" required
+                                                           class="name form-control" placeholder="Enter First Name">
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label class="text-label form-label">Your friend's age</label>
+                                                            <input type="text" asp-for="@Model.PersonListing.Mates[i].Age" 
+                                                            class="age form-control"
+                                                           placeholder="Enter Your partner age" required>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label class="text-label form-label">
+                                                                Your friend's gender
+                                                            </label>
+                                                            <select class="mb-4 nice-select wide w-100" required asp-for="@Model.PersonListing.Mates[i].gender">
+                                                                <option value="@PersonListing.Gender.Woman">Woman</option>
+                                                                <option value="@PersonListing.Gender.Man">Man</option>
+                                                                <option value="@PersonListing.Gender.Transgender">Transgender</option>
+                                                                <option value="@PersonListing.Gender.Undisclosed">Undisclosed</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-12 text-end mb-3">
+                                                            <a href="#" class="delete"><i class="bi bi-trash"></i> Remove</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    @if (Model.PersonListing.PlaceFor == PersonListing.Purpose.Group)
+                                    {
+                                        <div class="mb-3"><a id="addfriend" href="#">Add Friend</a></div>
+                                    }
+                                    else
+                                    {
+                                        <div class="mb-3"><a id="addfriend" href="#" style="display:none;">Add Friend</a></div>
+                                    }
+
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" class="btn btn-primary w-50">
+                                            Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/listings/findplace/updateTenant.js"></script>
+<script src="~/js/listings/findplace/createIntrostepUI.js"></script>
+<script>
+  // Get the select element by its ID
+  var selectElement = document.getElementById("dllMygender");
+
+  // Disable the select element
+  selectElement.disabled = true;
+
+  // Optionally, you can style it to make it look read-only
+  selectElement.style.backgroundColor = "lightgray";
+</script>

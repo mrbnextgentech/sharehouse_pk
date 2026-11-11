@@ -1,0 +1,102 @@
+﻿@using Gharshare.Models
+@model PersonListingVM
+@{
+    ViewData["Title"] = "";
+    Layout = "_Layout4Popups";
+    //Layout = "_Layoutmain";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmpreferences" enctype="multipart/form-data">
+                            <input id="txtintroPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                            <div class="row justify-content-center">
+                                <div class="col-sm-12 mb-2">
+                                    <div class="text-center row mb-3">
+                                        <h4>Property preferences</h4>
+                                        <p>
+                                            To ensure you don't miss out on alerts,
+                                            we suggest being flexible with preferences that aren't required.
+                                        </p>
+                                    </div>                                     
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="text-label form-label">
+                                                Room furnishings
+                                            </label>
+                                            <select class="mb-4 nice-select wide w-100" required asp-for="@Model.PersonListing.FurnishingType">
+                                                <option value="@PersonListing.RoomFurnishing.Flexible">Flexible</option>
+                                                <option value="@PersonListing.RoomFurnishing.Furnished">Furnished</option>
+                                                <option value="@PersonListing.RoomFurnishing.UnFurnished">Un-furnished</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="text-label form-label">
+                                                Internet
+                                            </label>
+                                            <select class="mb-4 nice-select wide w-100" required asp-for="@Model.PersonListing.InternetStatus">
+                                                <option value="@PersonListing.Internet.Flexible">Flexible</option>
+                                                <option value="@PersonListing.Internet.Required">Required</option>
+                                                <option value="@PersonListing.Internet.Notrquired">Not rquired</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="text-label form-label">
+                                                Bathroom type
+                                            </label>
+                                            <select class="mb-4 nice-select wide w-100" required asp-for="@Model.PersonListing.Type">
+                                                <option value="@PersonListing.Bath.Flexible">Flexible</option>
+                                                <option value="@PersonListing.Bath.Ensuite">Ensuite</option>                                                 
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="text-label form-label">
+                                                Parking
+                                            </label>
+                                            <select class="mb-4 nice-select wide w-100" required asp-for="@Model.PersonListing.ParkingType">
+                                                <option value="@PersonListing.Parking.Flexible">Flexible</option>
+                                                <option value="@PersonListing.Parking.Offstree">Off-street</option>
+                                                <option value="@PersonListing.Parking.Onstree">On-street</option>                                                 
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="text-label form-label">
+                                                Maximum number of flatmates
+                                            </label>
+                                            <select class="mb-4 nice-select wide w-100" required asp-for="@Model.PersonListing.MaxNo">
+                                                <option value="@PersonListing.Flatmates.Flexible">Flexible</option>
+                                                <option value="@PersonListing.Flatmates.OneOther">Max 1 other</option>
+                                                <option value="@PersonListing.Flatmates.TwoOthers">Max 2 other</option>
+                                                <option value="@PersonListing.Flatmates.ThreeOthers">Max 3 other</option>
+                                                <option value="@PersonListing.Flatmates.FourOthers">Max 4 other</option>
+                                                <option value="@PersonListing.Flatmates.FiveOthers">Max 5 other</option>
+                                                <option value="@PersonListing.Flatmates.SixOthers">Max 6 other</option>
+                                                <option value="@PersonListing.Flatmates.Seven">Max 7 other</option>
+                                                <option value="@PersonListing.Flatmates.Eight">Max 8 other</option>                                                 
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" class="btn btn-primary w-50">
+                                            Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/listings/findplace/updatePreferences.js"></script>
+ 

@@ -1,0 +1,48 @@
+﻿@using Gharshare.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> _signInManager
+@inject UserManager<ApplicationUser> _userManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     @*<script src="https://www.gstatic.com/firebasejs/8.9.1/firebase.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-analytics.js"></script>*@
+</head>
+<body>     
+    <!-- Body main wrapper start -->
+    @{
+        ApplicationUser user = null;
+        string userName = string.Empty;
+        string userEmail = string.Empty;
+        string name = string.Empty;
+
+        if (_signInManager.IsSignedIn(User))
+        {
+            user = await _userManager.GetUserAsync(User);
+            userName = user.UserName;
+            userEmail = user.Email;
+            name = user.Name;
+            <div><input id="txtUserId" type="hidden" value=@user.Id></div>
+        }
+
+    }
+    <div class="body-wrapper">
+        <div class="ltn__utilize-overlay"></div>         
+        @RenderBody()
+    </div>
+    <!-- Body main wrapper end -->
+    <!-- preloader area start -->
+    <div class="preloader d-none" id="preloader">
+        <div class="preloader-inner">
+            <div class="spinner">
+                <div class="dot1"></div>
+                <div class="dot2"></div>
+            </div>
+        </div>
+    </div>
+    <!--Mandatory script order for jquery datetime picker-->
+    <!--Jquery datetime picker partial control contains all required scripts-->
+    <partial name="_dtpPartial" /> 
+    <script src="~/js/commonfunctions/closePopup.js"></script>    
+</body>
+</html>

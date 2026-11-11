@@ -1,0 +1,107 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model PropertyInspection
+@{
+    ViewData["Title"] = "Edit property inspection schedule";
+    Layout = null;
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmSaveInspection">                            
+                            <div class="row mb-3 inspection">
+                                <div class="col-md-6">
+                                    <label class="text-label form-label">Inspection date</label>
+                                    @{
+                                        var inspectionDate = Utility.ConvertToShortDateFormat(Model.InspectionDate); 
+                                    }
+                                    <input type="hidden" asp-for="@Model.PropertyID" />
+                                    <div class="input-group">
+                                        <input id="txtInspectionDate" type="text" class="datepicker form-control"
+                                               asp-for="InspectionDate" required value="@inspectionDate">
+                                        <div class="input-group-text fa fa-calendar"></div>
+                                        <span class="text-danger field-validation-valid" 
+                                        asp-validation-for="InspectionDate"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="text-label form-label">
+                                        From
+                                    </label>
+                                    <select id="ddlFrom" class="nice-select wide w-100 mb-3" asp-for="From" required >
+                                        <option value="">--Pick time--</option>
+                                        <option value="09:00 am">09:00 am</option>
+                                        <option value="09:30 am">09:30 am</option>
+                                        <option value="10:00 am">10:00 am</option>
+                                        <option value="10:30 am">10:30 am</option>
+                                        <option value="11:00 am">11:00 am</option>
+                                        <option value="11:30 am">11:30 am</option>
+                                        <option value="12:00 pm">12:00 pm</option>
+                                        <option value="12:30 pm">12:30 pm</option>
+                                        <option value="01:00 pm">01:00 pm</option>
+                                        <option value="01:30 pm">01:30 pm</option>
+                                        <option value="02:00 pm">02:00 pm</option>
+                                        <option value="02:30 pm">02:30 pm</option>
+                                        <option value="03:00 pm">03:00 pm</option>
+                                        <option value="03:30 pm">03:30 pm</option>
+                                        <option value="04:00 pm">04:00 pm</option>
+                                        <option value="04:30 pm">04:30 pm</option>
+                                        <option value="05:00 am">05:00 pm</option>
+                                        <option value="05:30 am">05:30 pm</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="From"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="text-label form-label">
+                                        To
+                                    </label>
+                                    <select id="ddlTo" class="nice-select wide w-100 mb-3" asp-for="To" required>
+                                        <option value="">--Pick time--</option>
+                                        <option value="09:30 am">09:30 am</option>
+                                        <option value="10:00 am">10:00 am</option>
+                                        <option value="10:30 am">10:30 am</option>
+                                        <option value="11:00 am">11:00 am</option>
+                                        <option value="11:30 am">11:30 am</option>
+                                        <option value="12:00 pm">12:00 pm</option>
+                                        <option value="12:30 pm">12:30 pm</option>
+                                        <option value="1:00 pm">01:00 pm</option>
+                                        <option value="01:30 pm">01:30 pm</option>
+                                        <option value="02:00 pm">02:00 pm</option>
+                                        <option value="02:30 pm">02:30 pm</option>
+                                        <option value="03:00 pm">03:00 pm</option>
+                                        <option value="03:30 pm">03:30 pm</option>
+                                        <option value="04:00 pm">04:00 pm</option>
+                                        <option value="04:30 pm">04:30 pm</option>
+                                        <option value="05:00 am">05:00 pm</option>
+                                        <option value="05:30 am">05:30 pm</option>
+                                        <option value="06:00 am">06:00 pm</option>
+                                    </select>
+                                    <span class="text-danger" asp-validation-for="To"></span>
+                                </div>                                 
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6 text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        Save Inspection
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <a  class="btn btn-secondary w-50"
+                                            data-bs-dismiss="modal">
+                                        Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<partial name="_dtpPartial" />
+<script src="~/js/listings/saveInspection.js"></script>

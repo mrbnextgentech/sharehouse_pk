@@ -1,0 +1,111 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+.banner{
+    background-image: url(/img/melbourne.jpeg);
+    background-position: center;
+    width: 100%;
+    background-repeat: no-repeat;
+    height: 430px;
+    background-size: cover;
+}
+.col .container .list ul li span{
+    vertical-align: middle;
+    padding: 0px 10px 0px 0px;
+}
+.h1{
+    font-size: 1.75rem;
+    padding: 2.5rem 10% 1.5rem;
+    font-weight: 700;
+    line-height: 2rem;
+}
+.h2{
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.375rem;
+    padding: 0 0 1rem;
+}
+.col-6{
+    margin: 20px 0px !important;
+}
+.bg-white{
+    background-color: rgba(255, 255, 255, 0.616) !important;
+}
+.banner-card{
+    background: hsla(0,0%,100%,.8);
+    padding: 1.5rem 3rem;
+    margin: 0.625rem;
+    text-align: center;
+    border-radius: 8px;
+    width: 320px;
+}
+.banner-card .text h3{
+    color: #2f3a4a;
+    margin-top: 0;
+    font-weight: 600;
+    font-size: 1rem;
+}
+.banner-card .text a{
+    outline: none;
+    width: 100%;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5rem;
+    border: 0.0625rem solid rgb(0, 105, 119);
+    background-color: rgb(0, 105, 119);
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    padding: calc(0.6875rem) 1.5rem;
+    cursor: pointer;
+    
+}
+.banner-card .text a:hover{
+    background-color: rgb(5, 138, 138);
+    border: 0.0625rem solid rgb(5, 138, 138);
+}
+.sliders{
+    padding: 2rem 0 3rem;
+    background-color: #f2f3f4d0;
+    position: relative;
+}
+.sliders .container .header h2{
+    margin-bottom: 24px;
+    font-size: 28px;
+    line-height: 42px;
+    font-weight: 600;
+    color: #313a49;
+    font-family: "OpenSans", "Open Sans", sans-serif;;
+}
+.items{
+    border: 1px solid #afafafb7;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: white;
+    /* width: 185px !important; */
+    margin: 2px;
+    vertical-align: middle;
+}
+.items:hover{
+    background-color: #c9f8ee;
+}
+.slick-slide{
+    height: 80px !important;
+}
+.slick-prev:before, .slick-next:before{
+    color: black !important;
+}
+.items .icon{
+    flex-direction: row;
+    align-items: center;
+    /* height: 78px; */
+    max-width: 34%;
+    width: 150px;
+    /* padding: 0 5% 0 7.5%; */
+}
+.styles__item___LdPgj .styles__title___1o_DZ:hover{
+    color: rgb(29, 27, 27);
+}

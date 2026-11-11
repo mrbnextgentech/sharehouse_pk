@@ -1,0 +1,1582 @@
+﻿@using Gharshare.DataAccessLayer.Data.Infrastructure.IRepository
+@using Gharshare.Models
+@using Gharshare.CommonHelper
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Http
+@inject SignInManager<ApplicationUser> _signInManager
+@inject UserManager<ApplicationUser> _userManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject IHttpContextAccessor Accessor
+@{
+    IUnitofWork _unitOfWork = null;
+    if (Accessor?.HttpContext != null)
+    {
+        _unitOfWork = Accessor.HttpContext.RequestServices.GetService<IUnitofWork>();
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/png" href="~/img/favicon.png">
+    <meta name="description" content="Pakistan biggest share accommodation website.">
+    <title>@ViewData["Title"] | sharehouse.pk</title>
+    <!-- Place favicon.png in the root directory -->
+    <link rel="shortcut icon" href="~/img/favicon.png" type="image/x-icon" />
+    <!-- Font Icons css -->
+    <link rel="stylesheet" href="~/css/font-icons.css">
+    <!-- plugins css -->
+    <link rel="stylesheet" href="~/css/plugins.css">
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="~/css/style.css">
+    <link rel="stylesheet" href="~/css/custom-style.css">
+    <link href="~/theme/vendor/jquery-nice-select/css/nice-select.css" rel="stylesheet">
+    <!-- light gallary  -->
+    <link href="~/theme/vendor/lightgallery/css/lightgallery.min.css" rel="stylesheet">
+    @* <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.12/css/lightgallery.min.css" integrity="sha512-UMUaaaRK/i2ihAzNyraiLZzT8feWBDY+lLnBnhA3+MEfQn4jaNJMGBad6nyklImf7d0Id6n/Jb0ynr7RCpyNPQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />*@
+    <!-- Carousel -->
+    <link href="~/theme/vendor/owl-carousel/owl.carousel.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" />
+    <!-- Responsive css -->
+    @*<link rel="stylesheet" href="~/css/final/responsive.css">*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    @*jquery datetime picker*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css" />
+    @RenderSection("additionalCss", false)
+</head>
+<body>
+    @{
+        ApplicationUser user = null;
+        ApplicationUser defaultAdmin = _unitOfWork.User.Get(u => u.UserType == ApplicationUser.usertype.superadmin
+        && u.DefaultAdmin == true);
+        string defaultAdminId = defaultAdmin.Id;
+        string userName = string.Empty;
+        string userEmail = string.Empty;
+        string name = string.Empty;
+        List<Property> placelist = new List<Property>();
+        List<PersonListing> personListings = new List<PersonListing>();
+        UserPlan userPlan = null;
+        List<PlanService> planServices = new List<PlanService>();
+        Int16 allowedPropertylistings = 100; // set it back to 1 when subscription enabaled
+        //List<City> featureCities = new List<City>();
+        Sitesetting sitesettings = _unitOfWork.Sitesetting.Get(s => s.ID > 0);
+        var featureCities = _unitOfWork.City.GetAll(c => c.Featured == true).ToList().OrderBy(c => c.Shortname);
+        TempData["error"] = Context.Items["Error"] as string;
+
+        if (_signInManager.IsSignedIn(User))
+        {
+            user = await _userManager.GetUserAsync(User);
+            userName = user.UserName;
+            userEmail = user.Email;
+            name = user.Name;
+
+            var session = HttpContextAccessor.HttpContext.Session;
+            session.SetString("_UserId", user.Id);
+            //session.SetString("_UserType", user.UserType);
+            if (userEmail == string.Empty || userEmail == null)
+                userEmail ="NA";
+            session.SetString("ownerEmail", userEmail);
+            placelist = _unitOfWork.Property.GetAll(p => p.OwnerId == user.Id
+            ).ToList();
+            personListings = _unitOfWork.PersonListing.GetAll(p => p.UserId == user.Id
+            ).ToList();
+            session.SetString("personListingcount", personListings.Count().ToString());
+            session.SetString("propertyListingcount", placelist.Count().ToString());
+
+            userPlan = _unitOfWork.UserPlan.Get(p => p.UserId == user.Id
+            && p.Status == UserPlan.status.Active, includeProperties: "Plan");
+
+            if (userPlan != null)
+            {
+                planServices = _unitOfWork.PlanService.GetAll(ps => ps.PlanID == userPlan.PlanId).ToList();
+
+                var livePropertylistingservice = planServices.SingleOrDefault(ps => ps.livepropertylisting != null);
+                allowedPropertylistings = livePropertylistingservice.livepropertylisting.HasValue
+                ? (Int16)livePropertylistingservice.livepropertylisting : (Int16)0;
+
+                session.SetString("allowedPropertylistings", allowedPropertylistings.ToString());
+
+            }
+        }
+    }
+    <!-- Body main wrapper start -->
+    <div class="body-wrapper bg-white">
+        <!-- HEADER AREA START (header-5) -->
+        <header class="ltn__header-area ltn__header-5 ltn__header-transparent--- gradient-color-4---">
+            <!-- ltn__header-top-area start -->
+            @* <div class="ltn__header-top-area section-bg-6 top-area-color-white---">
+            <div class="container">
+            <div class="row">
+            <div class="col-md-7">
+            <div class="ltn__top-bar-menu">
+            <ul>
+            <li>
+            @{
+            string email = sitesettings != null ? (sitesettings.Email ??
+            "info@sharehouse.pk") : "info@sharehouse.pk";
+            }
+            <a href="mailto:@email?Subject=Flower%20greetings%20to%20you">
+            <i class="fa fa-envelope" aria-hidden="true"></i> @email
+            </a>
+            </li>
+            <li>
+            <a href="#">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>
+            @{
+            string address = sitesettings != null ? (sitesettings.Address ??
+            "35 Hali road, Gulburg I, Lahore") :
+            "35 Hali road, Gulburg I, Lahore";
+            }
+            @address
+            </a>
+            </li>
+            </ul>
+            </div>
+            </div>
+            <div class="col-md-5">
+            <div class="top-bar-right text-end">
+            <div class="ltn__top-bar-menu">
+            <ul>
+            <li>
+            <!-- ltn__social-media -->
+            <div class="ltn__social-media">
+            <ul>
+            <li>
+            <a href="@sitesettings.Facebook" title="Facebook" target="_blank">
+            <i class="fab fa-facebook-f"></i>
+            </a>
+            </li>
+            <li>
+            <a href="@sitesettings.Twitter" target="_blank"
+            title="Twitter"><i class="fab fa-twitter"></i></a>
+            </li>
+            <li>
+            <a href="@sitesettings.Insta" title="Instagram" target="_blank">
+            <i class="fab fa-instagram"></i>
+            </a>
+            </li>
+            <li>
+            <a href="@sitesettings.Youtube" title="Youtube" target="_blank">
+            <i class="fab fa-youtube"></i>
+            </a>
+            </li>
+            </ul>
+            </div>
+            </li>
+
+            </ul>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div>
+            </div> *@
+            <!--Basic Modal-->
+            <div class="modal fade" id="basicModal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 id="modalTitle" class="modal-title"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                            </button>
+                        </div>
+                        <div class="modal-body"><div id="modalContainer"></div></div>
+                        @*<div class="modal-footer">
+                        <button type="button" class="btn btn-danger light" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+            <!--Basic Modal End -->
+            <!-- Account setting Model area start  -->
+            <div class="modal fade" id="AccountModal">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 id="Title" class="modal-title"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal">
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="accountSettingsContainer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account setting Model area End  -->
+            <!-- ltn__header-top-area end -->
+            <!-- ltn__header-middle-area start -->
+            <div class="ltn__header-middle-area ltn__header-sticky ltn__sticky-bg-white">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="site-logo-wrap">
+                                <div class="site-logo">
+                                    <a asp-action="index" asp-area="" asp-controller="home">
+                                        <img src="~/img/new/sharehouseLogo.webp" alt="Logo" height="60px;">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 header-menu-column menu-color-black  d-xl-block d-lg-none">
+                            <div class="header-menu d-none d-xl-block">
+                                <form id="frmsearch" asp-controller="search" asp-action="index" class="ltn__car-dealer-form-box row">
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-md-12 m-0">
+                                        <div class="nice-select" tabindex="0">
+                                            <span class="current d-flex justify-content-between align-items-center">
+                                                <div class="search-box d-flex align-items-center justify-content-between pt-3">
+                                                    <i class="fas fa-search"></i>
+                                                    <p style="margin-left:10px;">Search listings..</p>
+                                                </div>
+                                                <a id="btnfilter" class="filter-btn d-flex d-none">
+                                                    <i class="fa-solid fa-sliders"></i>
+                                                    <h6>Filters</h6>
+                                                    <span>1</span>
+                                                </a>
+                                            </span>
+                                            <div class="list">
+                                                @*style="overflow"*@
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="ltn__car-dealer-form-tab">
+                                                                <div class="ltn__tab-menu  text-uppercase ">
+                                                                    <div class="nav" style="margin-left:50px;">
+                                                                        <a class="active show" id="tabRooms" data-bs-toggle="tab"
+                                                                           href="#search__form_tab_1_1">Rooms</a>
+                                                                        <a data-bs-toggle="tab" id="tabFlatmates"
+                                                                           href="#search__form_tab_1_2"
+                                                                           class="">Flatmate</a>
+                                                                        <a data-bs-toggle="tab" id="tabTeamups"
+                                                                           href="#search__form_tab_1_3"
+                                                                           class="">Teamups</a>
+                                                                    </div>
+                                                                    <input type="hidden" name="txtsearchtype" value="rooms" id="txtsearchtype" />
+                                                                </div>
+                                                                <div class="tab-content  position-relative pb-10">
+                                                                    <div class="tab-pane fade active show"
+                                                                         id="search__form_tab_1_1">
+                                                                        <div class="search-form">
+                                                                            <input type="text" name="address" id="address" class="text-capitalize"
+                                                                                   placeholder="Start typing a suburb, city, station or uni">
+                                                                        </div>
+                                                                        @{
+                                                                            List<PropertyType> propTypes = new List<PropertyType>
+                                                                        {
+                                                                        new PropertyType{ID=1,Title="House",isSelected=false},
+                                                                        new PropertyType{ID=2,Title="Flat",isSelected=false},
+                                                                        new PropertyType{ID=3,Title="2 Bed Flat",isSelected=false},
+                                                                        new PropertyType{ID=4,Title="1 Bed Flat",isSelected=false},
+                                                                        new PropertyType{ID=5,Title="Studio",isSelected=false},
+                                                                        new PropertyType{ID=6,Title="Granny Flat",isSelected=false},
+                                                                        new PropertyType{ID=7,Title="Hostel",isSelected=false},
+                                                                        new PropertyType{ID=8,Title="Homestay",isSelected=false},
+
+                                                                        };
+
+                                                                            SearchVM searchVM = new SearchVM
+            {
+                propertyTypes = propTypes,
+                Property = new Property { WomenOnlyProperty = false, },
+                PersonListing = new PersonListing(),
+                Acceptings = _unitOfWork.Accepting.GetAll(a => a.IsActive == true).ToList(),
+                filterType = SearchVM.Filter.Property,
+                propTypes4Person = _unitOfWork.PropertyType.GetAll(p => p.ID > 0).ToList(),
+                Lifestyles = _unitOfWork.Lifestyle.GetAll(p => p.ID > 0).ToList(),
+                Professions = _unitOfWork.Employment.GetAll(p => p.ID > 0).ToList(),
+            };
+                                                                            <input type="hidden" id="txtCityId" asp-for=@searchVM.cityId />
+                                                                            <input type="hidden" id="filterType" name="searchVM.filterType" value="@searchVM.filterType" />
+                                                                        }
+                                                                        <div id="divPropFilters" class="d-none">
+                                                                            <div class="row">
+                                                                                <h6 class="mb-3 mt-3">Monthly rent</h6>
+                                                                                <div class="col-md-4">
+                                                                                    <h6 style="font-size: small;" class="mb-1">Rent Min</h6>
+                                                                                    <div class="d-flex">
+                                                                                        <input type="text" class="form-control input-default" asp-for="@searchVM.minRent" placeholder="Rs any" />
+                                                                                        <span id="spanaddress" asp-validation-for="@searchVM.minRent" class="text-danger"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-4">
+                                                                                    <h6 style="font-size: small;" class="mb-1">Rent Max</h6>
+                                                                                    <div class="d-flex">
+                                                                                        <input type="text" class="form-control input-default" asp-for="@searchVM.maxRent" placeholder="Rs any" />
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-4">
+                                                                                    <div class="form-check custom-checkbox" style="margin-top: 20px;">
+                                                                                        <input class="form-check-input" id="chkTerms" type="checkbox" asp-for="@searchVM.billsIncluded">
+                                                                                        <label style="font-size:small;">Bills included</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row mt-1">
+                                                                                <h6>Availability</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <h6 style="font-size: small;" class="mt-3 mb-1">Date available</h6>
+                                                                                    <div class="d-flex">
+                                                                                        <input type="text" class="datepicker" asp-for="@searchVM.Property.AvailableFrom" />
+                                                                                    </div>
+                                                                                </div>
+                                                                                @*<div class="col-md-6">
+                                                                                <select class="default-select form-control" style="display:block;">
+                                                                                <option selected value="">Any</option>
+                                                                                <option value="1">test</option>
+                                                                                </select>
+                                                                                </div>*@
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <h6 class="mb-1">Accommodation type</h6>
+                                                                                 @for (int i = 0; i < searchVM.propertyTypes.Count; i++)
+                                                                                {
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-check custom-checkbox">
+                                                                                            <input type="hidden" name="searchVM.propertyTypes[@i].ID"
+                                                                                                   id="searchVM.propertyTypes[@i].ID"
+                                                                                                   asp-for="@searchVM.propertyTypes[@i].ID">
+                                                                                            <input name="searchVM.propertyTypes[@i].isSelected"
+                                                                                                   id="searchVM.propertyTypes[@i].isSelected" class="form-check-input"
+                                                                                                   type="checkbox" asp-for="@searchVM.propertyTypes[@i].isSelected" />
+                                                                                            <label style="font-size:small;">
+                                                                                                @searchVM.propertyTypes[i].Title
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                } 
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <h6 class="mb-1">Household</h6>
+                                                                                    <div class="form-check custom-checkbox">
+                                                                                        <input type="checkbox" class="form-check-input" asp-for="@searchVM.Property.WomenOnlyProperty" />
+                                                                                        <label style="font-size:small;">
+                                                                                            Women only household
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <h6 class="mb-1">Room type</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.roomType"
+                                                                                               checked value="@Room.RType.Any" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Any
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.roomType"
+                                                                                               checked="@(searchVM.roomType == @Room.RType.Private? true : false)"
+                                                                                               value="@Room.RType.Private" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Private
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.roomType"
+                                                                                               checked="@(searchVM.roomType == @Room.RType.Shared? true : false)"
+                                                                                               value="@Room.RType.Shared" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Shared
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <h6 class="mb-1">Places accepting</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.Property.Flatmatepreference"
+                                                                                               checked value="@Property.Preference.AnyoneIncCouples" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Anyone (inc. couples)
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.Property.Flatmatepreference"
+                                                                                               value="@Property.Preference.Womenonly" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Women
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.Property.Flatmatepreference"
+                                                                                               value="@Property.Preference.Menonly" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Men
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.Property.Flatmatepreference"
+                                                                                               value="@Property.Preference.couple" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Couples
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <h6 class="mb-1">Properties accepting of</h6>
+                                                                                @for (int i = 0; i < searchVM.Acceptings.Count; i++)
+                                                                                {
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-check custom-checkbox">
+                                                                                            <input type="hidden" name="searchVM.Acceptings[@i].ID"
+                                                                                                   id="searchVM.Acceptings[@i].ID"
+                                                                                                   asp-for="@searchVM.Acceptings[@i].ID">
+                                                                                            <input class="form-check-input" name="searchVM.Acceptings[@i].isSelected"
+                                                                                                   id="searchVM.Acceptings[@i].isSelected"
+                                                                                                   type="checkbox" asp-for="@searchVM.Acceptings[@i].isSelected" />
+                                                                                            <label style="font-size:small;">
+                                                                                                @searchVM.Acceptings[i].Title
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <h6 class="mb-1">Furnishings</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.roomfurnishing."
+                                                                                               checked value="@Property.RoomFurnishing.Flexible" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Any
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.roomfurnishing"
+                                                                                               value="@Property.RoomFurnishing.Furnished" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Furnished room
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.roomfurnishing"
+                                                                                               value="@Property.RoomFurnishing.UnFurnished" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Unfurnished room
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <h6 class="mb-1">Bathroom type</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.bathType"
+                                                                                               checked value="@Room.Bathroom.Any" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Any
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.bathType"
+                                                                                               checked="@(searchVM.bathType == @Room.Bathroom.Ensuite? true : false)"
+                                                                                               value="@Room.Bathroom.Ensuite" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Ensuite
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.bathType"
+                                                                                               checked="@(searchVM.bathType == @Room.Bathroom.Own? true : false)"
+                                                                                               value="@Room.Bathroom.Own" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Own
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.bathType"
+                                                                                               checked="@(searchVM.bathType == @Room.Bathroom.Shared? true : false)"
+                                                                                               value="@Room.Bathroom.Shared" />
+                                                                                        <label style="font-size: small;">
+                                                                                            Shared
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="col-lg-12 mb-2">
+                                                                                <h6 class="mb-1">Total bedrooms</h6>
+                                                                                <div class="">
+                                                                                    <div class="btn-group w-100" role="group"
+                                                                                         aria-label="Basic radio toggle button group">
+                                                                                        <input type="radio" class="btn-check" required
+                                                                                               checked id="1bed" asp-for="@searchVM.Property.Bed" value="1" />
+                                                                                        <label class="btn btn-outline-primary"
+                                                                                               for="1bed">1</label>
+                                                                                        <input type="radio" class="btn-check"
+                                                                                               id="2bed" asp-for="@searchVM.Property.Bed" value="2" />
+                                                                                        <label class="btn btn-outline-primary"
+                                                                                               for="2bed">2</label>
+                                                                                        <input type="radio" class="btn-check"
+                                                                                               id="3bed" asp-for="@searchVM.Property.Bed" value="3" />
+                                                                                        <label class="btn btn-outline-primary"
+                                                                                               for="3bed">3</label>
+                                                                                        <input type="radio" class="btn-check"
+                                                                                               id="4bed" asp-for="@searchVM.Property.Bed" value="4" />
+                                                                                        <label class="btn btn-outline-primary"
+                                                                                               for="4bed">4</label>
+                                                                                        <input type="radio" class="btn-check"
+                                                                                               id="5bed" asp-for="@searchVM.Property.Bed" value="5" />
+                                                                                        <label class="btn btn-outline-primary"
+                                                                                               for="5bed">5</label>
+                                                                                        <input type="radio" class="btn-check"
+                                                                                               id="6bed" asp-for="@searchVM.Property.Bed" value="6" />
+                                                                                        <label class="btn btn-outline-primary"
+                                                                                               for="6bed">6+</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr />
+                                                                            </div>
+                                                                            <div class="row mb-2">
+                                                                                <h6 class="mb-1">Parking type</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.Property.Parkingtype"
+                                                                                               checked value="@Property.Parking.Any" />
+                                                                                        <span class="labelcust">
+                                                                                            Any
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.Property.Parkingtype"
+                                                                                               checked="@(searchVM.Property.Parkingtype == @Property.Parking.NoParking? true : false)"
+                                                                                               value="@Property.Parking.NoParking" />
+                                                                                        <span class="labelcust">
+                                                                                            No parking
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.Property.Parkingtype"
+                                                                                               checked="@(searchVM.Property.Parkingtype == @Property.Parking.Offstree? true : false)"
+                                                                                               value="@Property.Parking.Offstree" />
+                                                                                        <span class="labelcust">
+                                                                                            Off-street parking
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.Property.Parkingtype"
+                                                                                               checked="@(searchVM.Property.Parkingtype == @Property.Parking.Onstreet? true : false)"
+                                                                                               value="@Property.Parking.Onstreet" />
+                                                                                        <span class="labelcust">
+                                                                                            On-street Parking
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                @*<hr />*@
+                                                                            </div>
+                                                                        </div>
+                                                                        <div id="divFlatemateFilters" class="d-none">
+                                                                            <div class="row">
+                                                                                <h6 class="mb-3 mt-3">Monthly rent</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <h6 style="font-size: small;" class="mb-1">Rent Min</h6>
+                                                                                    <div class="d-flex">
+                                                                                        <input class="form-control input-default" type="text" asp-for="@searchVM.minBudget" placeholder="Rs any" />
+                                                                                        <span id="spanaddress" asp-validation-for="@searchVM.minBudget" class="text-danger"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <h6 style="font-size: small;" class="mb-1">Rent Max</h6>
+                                                                                    <div class="d-flex">
+                                                                                        <input class="form-control input-default" type="text" asp-for="@searchVM.maxBudget"
+                                                                                               placeholder="Rs any" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div><hr />
+                                                                            <div class="row">
+                                                                                <h6>Availability</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <h6 style="font-size: small;" class="mt-3 mb-1">Date available</h6>
+                                                                                    <div class="d-flex">
+                                                                                        <input type="text" class="datepicker"
+                                                                                               asp-for="@searchVM.PersonListing.MoveDate" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <h6 style="font-size: small;">Stay length min</h6>
+                                                                                    <div class="d-flex">
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <h6 style="font-size: small;">Stay length max</h6>
+                                                                                    <div class="d-flex">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div><hr />
+                                                                            <div class="row">
+                                                                                <h6 class="mb-3">Flatmate preference</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.PersonListing.PlaceFor"
+                                                                                               checked value="@PersonListing.Purpose.anyone" />
+                                                                                        <label class="labelcust">
+                                                                                            Anyone (inc. couples)
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.PersonListing.PlaceFor"
+                                                                                               value="@PersonListing.Purpose.Woman" />
+                                                                                        <label class="labelcust">
+                                                                                            Women
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.PersonListing.PlaceFor"
+                                                                                               value="@PersonListing.Purpose.Man" />
+                                                                                        <label class="labelcust">
+                                                                                            Man
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.PersonListing.PlaceFor"
+                                                                                               value="@PersonListing.Purpose.nocouple" />
+                                                                                        <label class="labelcust">
+                                                                                            No couples
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <div class="form-check">
+                                                                                        <input class="form-check-input" type="radio" asp-for="@searchVM.PersonListing.PlaceFor"
+                                                                                               value="@PersonListing.Purpose.Couple" />
+                                                                                        <label class="labelcust">
+                                                                                            Couples
+                                                                                        </label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div><hr />
+                                                                            <div class="row">
+                                                                                <h6 class="mb-3">Age preference</h6>
+                                                                                <div class="col-md-6">
+                                                                                    <h6 style="font-size: small;" class="mb-1">Min age</h6>
+                                                                                    <div class="d-flex">
+                                                                                        <input class="form-control input-default" type="text" asp-for="@searchVM.minAge" placeholder="Rs any" />
+                                                                                        <span id="spanaddress" asp-validation-for="@searchVM.minAge" class="text-danger"></span>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <h6 style="font-size: small;" class="mb-1">Max age</h6>
+                                                                                    <div class="d-flex">
+                                                                                        <input class="form-control input-default" type="text" asp-for="@searchVM.maxAge" placeholder="Rs any" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div><hr />
+                                                                            <div class="row">
+                                                                                <h6 class="mb-3">My property type</h6>
+                                                                                 @for (int i = 0; i < searchVM.propTypes4Person.Count; i++)
+                                                                                {
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-check custom-checkbox">
+                                                                                            <input type="hidden" name="searchVM.propTypes4Person[@i].ID"
+                                                                                                   id="searchVM.propTypes4Person[@i].ID"
+                                                                                                   asp-for="@searchVM.propTypes4Person[@i].ID">
+                                                                                            <input class="form-check-input" name="searchVM.propTypes4Person[@i].isSelected"
+                                                                                                   id="searchVM.propTypes4Person[@i].isSelected"
+                                                                                                   type="checkbox" asp-for="@searchVM.propTypes4Person[@i].isSelected" />
+                                                                                            <label style="font-size:small;">
+                                                                                                @searchVM.propTypes4Person[i].Title
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                } 
+                                                                            </div><hr />
+                                                                            <div class="row">
+                                                                                <h6 class="mb-3">Profession</h6>
+                                                                                @for (int i = 0; i < searchVM.Professions.Count; i++)
+                                                                                {
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-check custom-checkbox">
+                                                                                            <input type="hidden" name="searchVM.propertyTypes[@i].ID"
+                                                                                                   id="searchVM.Professions[@i].ID"
+                                                                                                   asp-for="@searchVM.Professions[@i].ID">
+                                                                                            <input class="form-check-input" name="searchVM.Professions[@i].isSelected"
+                                                                                                   id="searchVM.Professions[@i].isSelected"
+                                                                                                   type="checkbox" asp-for="@searchVM.Professions[@i].isSelected" />
+                                                                                            <label style="font-size:small;">
+                                                                                                @searchVM.Professions[i].Title
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                            </div><hr />
+                                                                            <div class="row">
+                                                                                <h6 class="mb-3">People that have/are</h6>
+                                                                                @for (int i = 0; i < searchVM.Lifestyles.Count; i++)
+                                                                                {
+                                                                                    <div class="col-md-6">
+                                                                                        <div class="form-check custom-checkbox">
+                                                                                            <input type="hidden" name="searchVM.Lifestyles[@i].ID"
+                                                                                                   id="searchVM.Lifestyles[@i].ID"
+                                                                                                   asp-for="@searchVM.Lifestyles[@i].ID">
+                                                                                            <input class="form-check-input" name="searchVM.Lifestyles[@i].isSelected"
+                                                                                                   id="searchVM.Lifestyles[@i].isSelected"
+                                                                                                   type="checkbox" asp-for="@searchVM.Lifestyles[@i].isSelected" />
+                                                                                            <label style="font-size:small;">
+                                                                                                @searchVM.Lifestyles[i].Title
+                                                                                            </label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                            </div><hr />
+                                                                        </div>
+                                                                        <section class=" search-btn">
+                                                                            <div class="btn">
+                                                                                <button class="theme-btn-2a
+                                                                                 btn btn-effect-1 d-block m-auto mt-2 btn-2a">
+                                                                                    <i class="fas fa-search"></i>
+                                                                                    Search
+                                                                                </button>
+                                                                            </div>
+                                                                        </section>
+
+                                                                        <p class="mt-3 mb-0 lh-1">Explore a city</p>
+                                                                        <span class="cities">
+                                                                            @foreach (var city in featureCities)
+                                                                            {
+                                                                                <span>
+                                                                                    <a asp-action="bycity" asp-controller="search"
+                                                                                       asp-route-name=@city.Shortname
+                                                                                       rel="noopener noreferrer">
+                                                                                        <i class="fas fa-map-marker-alt"></i>
+                                                                                        @city.Shortname.ToUpper()
+                                                                                    </a>
+                                                                                </span>
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col ltn__header-options ltn__header-options-2">
+                            <!-- header-btn -->
+
+                            <div class="header-menu_mobile d-block d-xl-none  ">
+                                <form action="#" class="ltn__car-dealer-form-box row">
+                                    <div class="ltn__car-dealer-form-item ltn__custom-icon---- ltn__icon-car---- col-md-12 m-0">
+                                        <div class="nice-select" tabindex="0">
+                                            <span class="current theme-btn-2 btn btn-effect-1  d-block m-auto ">
+                                                <i class="fas fa-search d-block d-md-inline"></i> Search
+                                            </span>
+                                            <div class="list">
+                                                <div class="container">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="ltn__car-dealer-form-tab">
+                                                                <div class="ltn__tab-menu  text-uppercase ">
+                                                                    <div class="nav">
+                                                                        <a class="active show" data-bs-toggle="tab"
+                                                                           href="#search__form_tab_1_1">Rooms</a>
+                                                                        <a data-bs-toggle="tab"
+                                                                           href="#search__form_tab_1_2"
+                                                                           class="">Flatmate</a>
+                                                                        <a data-bs-toggle="tab"
+                                                                           href="#search__form_tab_1_3"
+                                                                           class="">Teamups</a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="tab-content  position-relative pb-10">
+                                                                    <div class="tab-pane fade active show"
+                                                                         id="search__form_tab_1_1">
+                                                                        <div class="search-form">
+                                                                            <input type="text"
+                                                                                   placeholder="Start typing">
+                                                                        </div>
+                                                                        <button class="theme-btn-2 btn btn-effect-1 d-block m-auto mt-2">
+                                                                            <i class="fas fa-search"></i>
+                                                                            Search
+                                                                        </button>
+                                                                        <p class="mt-3 mb-0 lh-1">Explore a city</p>
+                                                                        <span class="cities">
+                                                                            <span>
+                                                                                <a href="http://" target="_blank"
+                                                                                   rel="noopener noreferrer">
+                                                                                    <i class="fas fa-location"></i>
+                                                                                    ISB
+                                                                                </a>
+                                                                            </span>
+                                                                            <span>
+                                                                                <a href="http://" target="_blank"
+                                                                                   rel="noopener noreferrer">
+                                                                                    <i class="fas fa-location"></i>
+                                                                                    KPK
+                                                                                </a>
+                                                                            </span>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            @if (!_signInManager.IsSignedIn(User))
+                            {
+                                <a asp-area="identity" asp-page="/account/login"
+                                   class="theme-btn-2a btn-2a btn btn-effect-1 d-block m-auto">
+                                    <i class="fa-solid fa-list  d-block d-md-inline"></i>
+                                    Shortlist
+                                </a>
+                                <div class="dropdown" id="infoDropdown" style="margin-right:0px;">
+                                    <a class="theme-btn-2a btn-2a btn btn-effect-1 d-block m-auto"
+                                       type="button" id="dropdownMenuInfo" data-bs-toggle="dropdown"
+                                       style="min-width:110px;" aria-expanded="false">
+                                        <i class="fa-solid fa-circle-info d-block d-md-inline"></i> Info
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuInfo" style="min-width:8rem;">
+                                        <li>
+                                            <a class="dropdown-item" asp-action="content" asp-controller="info"
+                                               asp-route-type="articles">Latest Articles</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-action="content" asp-controller="info"
+                                               asp-route-type="howtoguide">How to Guides</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-action="content" asp-controller="info"
+                                               asp-route-type="legalguide">Legal Guides</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="/aboutus">About Us</a>
+                                        </li>
+                                        <li>
+                                            <a href="/aboutus/localguides" class="dropdown-item">Local Guides</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                if (user.UserType == ApplicationUser.usertype.admin ||
+                                user.UserType == ApplicationUser.usertype.superadmin)
+                                {
+                                    <a asp-area="admin" asp-controller="site" asp-action="index"
+                                       class="theme-btn-2a btn-2a btn btn-effect-1 d-block m-auto">
+                                        <i class="fa-solid fa-list  d-block d-md-inline"></i>
+                                        Admin
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="listing" asp-action="shortlist"
+                                       class="theme-btn-2a btn-2a btn btn-effect-1 d-block m-auto">
+                                        <i class="fa-solid fa-list  d-block d-md-inline"></i>
+                                        Shortlist
+                                    </a>
+                                }
+                                <a asp-controller="message" asp-action="inbox" asp-route-type="to" class="theme-btn-2a btn-2a btn btn-effect-1 d-block m-auto">
+                                    <i class="fa-solid fa-message d-block d-md-inline"></i>
+                                    Inbox
+                                </a>
+                            }
+
+                            @if (!_signInManager.IsSignedIn(User))
+                            {
+                                <a class="theme-btn-1a btn-2a btn btn-effect-1 d-block m-auto"
+                                   asp-area="Identity" asp-page="/Account/Login">
+                                    <i class="fa-solid fa-user d-block d-md-inline"></i>
+                                    Login
+                                </a>
+                            }
+                            else
+                            {
+                                name = @Utility.shortusername(name, 10);
+
+                                <a class="theme-btn-1a btn-2a btn btn-effect-1 d-block m-auto"
+                                   onclick="openLoginNav()">
+                                    <i class="fa-solid fa-user d-block d-md-inline"></i>
+                                    <span id="spanLoginName">@name</span>
+                                </a>
+                            }
+                            <div id="logNav" class="overlay">
+                                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                                <div class="overlay-content">
+                                    <div class="container">
+                                        @if (userPlan == null)
+                                        {
+                                            @* <div class="row mb-4"> un-comment to show alert message regarding no subscription plan. commenting as client instructed.
+                                                <div class="alert alert-danger solid alert-dismissible fade show">
+                                                    <div class="d-flex">
+                                                        <svg viewBox="0 0 24 24" width="24 " height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                                        <a style="color:white;" asp-controller="profile"
+                                                           asp-action="plans">Alert! You don't have a subscription plan. Please click here to subscribe a plan to unlock all features.</a>
+                                                    </div>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+                                                    </button>
+                                                </div>
+                                            </div> *@
+                                        }
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="loginBox">
+                                                    <div class="rounded-image mb-3">
+                                                        <div id="profilePic">
+                                                            <img src=@(user?.ProfilePicture??"../img/user-image.png") alt="Rounded Image"
+                                                                 onclick="document.getElementById('file-upload').click();" />
+                                                        </div>
+                                                        <input id="file-upload" type="file" accept="image/*" style="display: none;"
+                                                               onchange="validateAndUploadImage(this);" />
+                                                    </div>
+                                                    <a href="#" onclick="loadAccountSettings()" data-bs-toggle="modal"
+                                                       data-bs-target="#basicModal">
+                                                        @if (name != string.Empty)
+                                                        {
+                                                            <h6 id="nameUnderprofilePic">@name</h6>
+                                                            <input id="txtUserId" type="hidden" value=@user.Id>
+                                                        }
+                                                    </a>
+                                                    @if (userPlan == null)
+                                                    {
+                                                        <p>Free Account</p>
+                                                    }
+                                                    else
+                                                    {
+
+                                                        <p>
+                                                            @userPlan.Plan.Title Plan (@userPlan.Plan.Days Days)
+                                                        </p>
+
+                                                    }
+                                                    @if (userPlan == null)
+                                                    {
+                                                        @* un-comment below when subscription enabled *@
+                                                        @* <a class="theme-btn-2 btn btn-effect-4"
+                                                           asp-controller="profile" asp-action="plans">
+                                                            Upgrade Now
+                                                        </a> *@
+                                                    }
+                                                    <a href="#" onclick="showUserpayments()" data-bs-toggle="modal"
+                                                       data-bs-target="#AccountModal">
+                                                        Payment History
+                                                    </a>
+                                                    <a asp-action="content" asp-controller="info"
+                                                       asp-route-type="howtoguide" target="_blank">Why Upgrade?</a>
+                                                </div>
+                                                <div class="loginBox mt-3">
+                                                    <form id="frmMessage2Admin">
+                                                        @if (user != null)
+                                                        {
+                                                            PropertyListingVM propertyListingVM = new PropertyListingVM
+                {
+                    Enquiry = new Enquiry(),
+                };
+                                                            <div class="row mb-2 flex m-1">
+                                                                <textarea id="txtMessage2Admin" rows="4" style="height: 100px;"
+                                                                          asp-for="@propertyListingVM.Enquiry.Message" placeholder="Type your message... ">
+                                                                </textarea>
+                                                                <span id="spanMessage2Admin" class="text-danger"></span>
+                                                                <input type="hidden" asp-for="@propertyListingVM.Enquiry.Enquirytype" value="@Enquiry.EnquriyType.tosharehousepk">
+                                                                <input type="hidden" asp-for="@propertyListingVM.Enquiry.FromUserID" value="@user.Id">
+                                                                <input type="hidden" asp-for="@propertyListingVM.Enquiry.ToUserID" value="@defaultAdminId">
+                                                                <input type="hidden" asp-for="@propertyListingVM.Enquiry.Enquirystatus" value="@Enquiry.EnquiryStatus.unread">
+                                                                <input type="hidden" asp-for="@propertyListingVM.Enquiry.CreatedOn" value="@DateTime.UtcNow">
+                                                                <input type="hidden" asp-for="@propertyListingVM.Enquiry.DateReceived" value="@DateTime.UtcNow">
+                                                            </div>
+                                                        }
+
+
+                                                        @if (user != null)
+                                                        {
+                                                            <div class="mb-1">
+                                                                <button type="submit" id="btnMessage" class="btn btn-primary">Send message to sharehouse.pk</button>
+                                                            </div>
+                                                        }
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <h4 style="color: #ffffff;">My listings</h4>
+                                                <hr style="margin-top: 5px;">
+                                                <div class="subtitle-bar mb-2">
+                                                    <h6 style="color: #ffffff;">
+                                                        <i class="fa-solid fa-house"></i>
+                                                        Offering a place
+                                                    </h6>
+                                                    @if (@* to be uncommented when subscription enabled userPlan != null && *@ placelist.Count() < allowedPropertylistings)
+                                                    {
+                                                        <div class="my-account-create-button">
+                                                            <button type="button" onclick="location.href='@Url.Action("listplace", "listing")'" class="btn-listing">
+                                                                <i class="fa fa-plus iconAdd"></i>
+                                                                Create Listing
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                    else if (placelist.Count() == 0)
+                                                    {
+                                                        <div class="my-account-create-button">
+                                                            <button type="button" onclick="location.href='@Url.Action("listplace", "listing")'" class="btn-listing">
+                                                                <i class="fa fa-plus iconAdd"></i>
+                                                                Create Listing
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                @if (placelist.Any())
+                                                {
+                                                    foreach (var place in placelist)
+                                                    {
+                                                        <div class="mb-3 subtitle-bar listing my-account-create-button">
+                                                            <div class="col-md-2">
+                                                                @if (place.listingstatus == Property.Status.Active)
+                                                                {
+                                                                    <div class="status-Active">
+                                                                        <div class="status-label">
+                                                                            <span>Active</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (place.listingstatus == Property.Status.Pending)
+                                                                {
+                                                                    <div class="status-pending">
+                                                                        <div class="status-label">
+                                                                            <span>Pending</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (place.listingstatus == Property.Status.Draft)
+                                                                {
+                                                                    <div class="status-draft">
+                                                                        <div class="status-label">
+                                                                            <span>Draft</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (place.listingstatus == Property.Status.Inactive)
+                                                                {
+                                                                    <div class="status-inactive">
+                                                                        <div class="status-label">
+                                                                            <span>Inactive</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (place.listingstatus == Property.Status.blocked)
+                                                                {
+                                                                    <div class="status-blocked">
+                                                                        <div class="status-label">
+                                                                            <span>Bloked</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (place.listingstatus == Property.Status.expired)
+                                                                {
+                                                                    <div class="status-expired">
+                                                                        <div class="status-label">
+                                                                            <span>Plan Expired</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <a asp-action="listplacepreview" asp-controller="listing" title="@place.Address"
+                                                                   asp-route-propertyId="@place.UId">
+                                                                    <p style="color: #ffffff;margin-left:25px;text-align:left;">
+                                                                        @if (place.Address != "" & place.Address != null)
+                                                                        {
+                                                                            @Utility.shortText(place.Address, 25)
+                                                                        }
+                                                                    </p>
+                                                                </a>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <a asp-action="listplacepreview" asp-controller="listing"
+                                                                   asp-route-propertyId="@place.UId" asp-route-preview=false>
+                                                                    <i class="fa fa-pencil"></i>
+                                                                    <span>Edit</span>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <div class="subtitle-bar listing my-account-create-button">
+                                                        <p style="color: #ffffff;"> You don’t have any property listing</p>
+                                                        <div class="my-account-create-button">
+                                                            <button type="button" onclick="location.href='@Url.Action("listplace", "listing")'" class="btn-listing">
+                                                                <i class="fa fa-plus iconAdd"></i><span class="createButtonText"> Create listing</span>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <hr>
+                                                <div class="subtitle-bar mb-2">
+                                                    <h6 style="color: #ffffff;">
+                                                        <i class="fa-solid fa-user"></i> Looking
+                                                        for a place
+                                                    </h6>
+                                                    @if (personListings.Count() == 0)
+                                                    {
+                                                        <div class="my-account-create-button">
+                                                            <button type="button" onclick="location.href='@Url.Action("findplace", "findplace")'"
+                                                                    class="btn-listing">
+                                                                <i class="fa fa-plus iconAdd"></i>
+                                                                <span class="createButtonText">
+                                                                    Create Listing
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                @if (personListings.Any())
+                                                {
+                                                    foreach (var personlisting in personListings)
+                                                    {
+                                                        <div class="mb-3 subtitle-bar listing my-account-create-button">
+                                                            <div class="col-md-2">
+                                                                @if (personlisting.listingstatus == PersonListing.Status.Active)
+                                                                {
+                                                                    <div class="status-Active">
+                                                                        <div class="status-label">
+                                                                            <span>Active</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (personlisting.listingstatus == PersonListing.Status.Pending)
+                                                                {
+                                                                    <div class="status-pending">
+                                                                        <div class="status-label">
+                                                                            <span>Pending</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (personlisting.listingstatus == PersonListing.Status.Draft)
+                                                                {
+                                                                    <div class="status-draft">
+                                                                        <div class="status-label">
+                                                                            <span>Draft</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (personlisting.listingstatus == PersonListing.Status.Inactive)
+                                                                {
+                                                                    <div class="status-inactive">
+                                                                        <div class="status-label">
+                                                                            <span>Inactive</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (personlisting.listingstatus == PersonListing.Status.blocked)
+                                                                {
+                                                                    <div class="status-blocked">
+                                                                        <div class="status-label">
+                                                                            <span>Blocked</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                                else if (personlisting.listingstatus == PersonListing.Status.expired)
+                                                                {
+                                                                    <div class="status-expired">
+                                                                        <div class="status-label">
+                                                                            <span>Plan expired</span>
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                <a asp-action="findplacepreview" asp-controller="findplace" title="@personlisting.Suburb"
+                                                                   asp-route-listingId="@personlisting.ID">
+                                                                    <p style="color: #ffffff;margin-left:25px;text-align:left;">
+                                                                        @if (!string.IsNullOrEmpty(personlisting.Suburb) && personlisting.Suburb.Length > 9)
+                                                                        {
+                                                                            <span>Need accommodation in</span>
+                                                                            Utility.shortText(@personlisting.Suburb, 9);
+                                                                            <span>....</span>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span>Need accommodation in</span> @personlisting.Suburb
+                                                                        }
+                                                                    </p>
+                                                                </a>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <a asp-action="findplacepreview" asp-controller="findplace"
+                                                                   asp-route-listingId="@personlisting.UId">
+                                                                    <i class="fa fa-pencil"></i>
+                                                                    <span>Edit</span>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <div class="subtitle-bar listing my-account-create-button">
+                                                        <p style="color: #ffffff;"> You don’t have any person listing</p>
+                                                        @*<div class="subtitle-bar listing my-account-create-button">*@
+                                                        <div class="my-account-create-button">
+                                                            <button type="button" onclick="location.href='@Url.Action("findplace", "findplace")'"
+                                                                    class="btn-listing">
+                                                                <i class="fa fa-plus iconAdd"></i>
+                                                                <span class="createButtonText">
+                                                                    Create listing
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                        @*</div>*@
+                                                    </div>
+                                                }
+                                                @if (!(placelist.Count() > 0) && !(personListings.Count() > 0) && _signInManager.IsSignedIn(User))
+                                                {
+                                                    <div class="pt-20 mt-5 messageBoxAccount mb-1">
+                                                        <h5 style="color: #ffffff;">Hey @user.Name,</h5>
+                                                        <p style="color: #ffffff;">You don't have a listing!</p>
+                                                        <ul style="color: #ffffff;">
+                                                            <li>Some members won't contact you without a listing</li>
+                                                            <li>
+                                                                Members with listings are twice as likely to receive a reply
+                                                            </li>
+                                                            <li>Listings will allow you to receive direct enquiries</li>
+                                                        </ul>
+                                                    </div>
+                                                    <div class="subtitle-bar pb-10" style="display:none;">
+                                                        <a asp-action="listplace" asp-controller="listing" class="theme-btn-2 btn btn-effect-4">
+                                                            List my Place
+                                                        </a>
+                                                        <a href="" class="theme-btn-2 btn btn-effect-4">
+                                                            Find my Place
+                                                        </a>
+                                                    </div>
+                                                }
+
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <h4 style="color: #ffffff;">My account</h4>
+                                                <div class="footer-menu-account">
+                                                    <ul>
+                                                        <li>
+                                                            <a href="#" onclick="loadVerifymobilenuminPopup()" data-bs-toggle="modal"
+                                                               data-bs-target="#basicModal">
+                                                                <i class="fa-solid fa-bell"></i> Verify mobile
+                                                                phone
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" onclick="loadAccountSettings()" data-bs-toggle="modal"
+                                                               data-bs-target="#basicModal">
+                                                                <i class="fa-solid fa-gear"></i>
+                                                                Account settings
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" onclick="loadUsernNotificationSettingsinPopup()"
+                                                               data-bs-toggle="modal" data-bs-target="#basicModal">
+                                                                <i class="fa-solid fa-envelope"></i>
+                                                                Email alert settings
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="#" onclick="loadDeactivateAccountInPopup()"
+                                                               data-bs-toggle="modal"
+                                                               data-bs-target="#basicModal">
+                                                                <i class="fa-solid fa-circle-xmark"></i>
+                                                                Deactivate account
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a asp-action="faqs" asp-controller="aboutus" target="_blank">
+                                                                <i class="fa-solid fa-circle-info"></i>
+                                                                Help & FAQ
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a id="logout" href="#">
+                                                                <i class="fa-solid fa-power-off"></i>
+                                                                Log Out
+                                                            </a>
+                                                            <form id="logoutForm" asp-area="identity" asp-page="/account/logout" asp-route-returnUrl="@Url.Action("index", "home", new { area = "" })">
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                    <h5 style="color: #ffffff;" class="m-3">Information & tips</h5>
+                                                    <ul>
+                                                        <li>
+                                                            <a class="" asp-action="index" asp-controller="aboutus"
+                                                               target="_blank">+ About us</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="" asp-action="content" asp-controller="info"
+                                                               asp-route-type="howtoguide" target="_blank">+ How to guides</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="" asp-action="content" asp-controller="info"
+                                                               asp-route-type="legalguide" target="_blank">+ Legal guides</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="" asp-action="content" asp-controller="info"
+                                                               asp-route-type="articles" target="_blank">+ View all articles</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="" href="/aboutus/localguides" target="_blank">+ Local guides</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mobile Menu Button -->
+                            <!-- <div class="mobile-menu-toggle d-xl-none">
+                                <a href="#ltn__utilize-mobile-menu" class="ltn__utilize-toggle">
+                                    <svg viewBox="0 0 800 600">
+                                        <path
+                                            d="M300,220 C300,220 520,220 540,220 C740,220 640,540 520,420 C440,340 300,200 300,200"
+                                            id="top"></path>
+                                        <path d="M300,320 L540,320" id="middle"></path>
+                                        <path
+                                            d="M300,210 C300,210 520,210 540,210 C740,210 640,530 520,410 C440,330 300,190 300,190"
+                                            id="bottom"
+                                            transform="translate(480, 320) scale(1, -1) translate(-480, -318) "></path>
+                                    </svg>
+                                </a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ltn__header-middle-area end -->
+        </header>
+        <!-- HEADER AREA END -->
+        <div class="ltn__utilize-overlay"></div>
+        <partial name="_Notification" />
+        @RenderBody()
+        <!-- CALL TO ACTION START (call-to-action-6) -->
+        @* <div class="ltn__call-to-action-area call-to-action-6 before-bg-bottom" data-bs-bg="/img/bg/1.jpeg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="call-to-action-inner call-to-action-inner-6 ltn__secondary-bg position-relative text-center---">
+                            <div class="coll-to-info text-color-white">
+                                <h1>Looking for a dream home?</h1>
+                                <p>We can help you realize your dream of a new home</p>
+                            </div>
+                            <div class="btn-wrapper">
+                                <a class="btn btn-effect-3 btn-white" href="/search/index">
+                                    Explore Properties <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+        <!-- CALL TO ACTION END -->
+        <!-- FOOTER AREA START -->
+        <footer class="ltn__footer-area mt-1">
+            <div class="footer-top-area section-bg-2 plr--5">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 col-sm-6 col-12">
+                            <div class="footer-widget footer-about-widget">
+                                <div class="footer-logo">
+                                    <div class="site-logo">
+                                        <img src="~/img/new/sharehouseLogo.webp" alt="Logo" height="60px;">
+                                    </div>
+                                </div>
+                                <p>
+                                    Sharehouse.pk is a peer-to-peer listing site for those looking for shared homes or
+                                    those looking for a tenant. Simply create a listing, search and connect.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-sm-6 col-12">
+                            <div class="footer-widget footer-menu-widget clearfix">
+                                <h4 class="footer-title"></h4>
+                                <div class="footer-menu">
+                                    <ul>
+                                        <li><a href="/aboutus">About Us</a></li>
+                                        <li><a href="/aboutus/howitworks">How it works</a></li>
+                                        <li><a href="/aboutus/localguides">Local Guides</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-sm-6 col-12">
+                            <div class="footer-widget footer-menu-widget clearfix">
+                                <h4 class="footer-title"></h4>
+                                <div class="footer-menu">
+                                    <ul>
+                                        <li><a href="/aboutus/privacy">Privacy Policy</a></li>
+                                        <li><a href="/aboutus/terms">Term & Conditions</a></li>
+                                        <li><a href="/aboutus/faqs">FAQ & contact</a></li>                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-sm-12 col-12">
+                            <div class="footer-widget footer-newsletter-widget">
+                                <h6 class="footer-title">Connect with us on:</h6>
+                                <div class="ltn__social-media mt-20">
+                                    <ul>
+                                        <li>
+                                            <a href="https://www.facebook.com/profile.php?id=61558962586427"
+                                               target="_blank"
+                                               title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                                        </li>
+                                        @* <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li> *@
+                                        <li>
+                                            <a href="https://www.instagram.com/sharehousepk/" title="Instagram" target="_blank">
+                                                <i class="fab fa-instagram"></i>
+                                            </a>
+                                        </li>
+                                        @* <li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li> *@
+                                        <li>
+                                            <a href="https://youtube.com/channel/UCqsYfCHrgn2B33ePA_vLrtg" target="_blank"
+                                               title="Youtube"><i class="fab fa-youtube"></i></a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ltn__copyright-area ltn__copyright-2 section-bg-7  plr--5">
+                <div class="container-fluid ltn__border-top-2">
+                    <div class="row">
+                        <div class="col-md-4 col-12">
+                            <div class="ltn__copyright-design clearfix">
+                                <p>All Rights Reserved@ShareHouse.pk <span class="current-year"></span></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12">
+                            <div class="ltn__copyright-design clearfix">
+                                <p>Design & developed by <a href="http://www.encodingcorner.com/">Encoding Corner Pvt(Ltd)</a></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-12 align-self-center">
+                            <div class="ltn__copyright-menu text-end">
+                                <ul>
+                                    <li><a href="/aboutus/terms" target="_blank">Terms & Conditions</a></li>
+                                    <li><a href="/aboutus/claims">Claim</a></li>
+                                    <li><a href="/aboutus/privacy" target="_blank">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- FOOTER AREA END -->
+    </div>
+    <!-- Body main wrapper end -->
+    <!-- preloader area start -->
+    <div class="preloader d-none" id="preloader">
+        <div class="preloader-inner">
+            <div class="spinner">
+                <div class="dot1"></div>
+                <div class="dot2"></div>
+            </div>
+        </div>
+    </div>
+    <!-- preloader area end -->
+    <!-- First, include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/theme/vendor/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="~/theme/vendor/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/theme/js/plugins-init/jquery.validate-init.js"></script>
+
+    <script src="~/theme/vendor/jquery-nice-select/js/jquery.nice-select.min.js"></script>
+    <script src="~/theme/vendor/global/global.min.js"></script>
+    <!-- All JS Plugins -->
+    <script src="~/theme/js/plugins.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.32/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    @await RenderSectionAsync("Scripts", required: false) @*dont remove it.*@
+    <script src="~/js/flatmates/main.js"></script>
+    <script src="~/theme/js/custom.min.js"></script>
+    <script src="~/theme/js/deznav-init.js"></script>
+
+    @*For image gallery carosel*@
+    <script src="~/theme/vendor/owl-carousel/owl.carousel.js"></script>
+    <script src="~/theme/js/dz.carousel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.12/js/lightgallery-all.min.js"
+            integrity="sha512-1O7rMAz8mHEOXRPzDKm/athhHp/DotlK5EzZ1qlg2bfe5bBTS0rgWM2bvV3tdWodTdX9Hctvggq95wzFogi9wQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    @*End of image gallery carosel*@
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/profile/loadAccountsettingsViewinPopup.js"></script>
+    <script src="/js/profile/loadDeactivateAccountInPopup.js"></script>
+    <script src="/js/profile/loadVerifymobilenuminPopup.js"></script>
+    <script src="~/js/profile/uploadProfileImage.js"></script>
+    <script src="~/js/profile/openAccountArea.js"></script>
+    <script src="~/js/profile/loadUsernNotificationSettingsinPopup.js"></script>
+    <script src="~/js/profile/logout.js"></script>
+    <script src="~/js/profile/showUserpayments.js"></script>
+    <script src="~/js/search/getSelectedtab.js"></script>
+    <script src="~/js/search/showHideSearchfilters.js"></script>
+    <script src="~/js/commonfunctions/closeInfoDropdown.js"></script>
+    <script src="~/js/message/sendMessage2Admin.js"></script>
+    <partial name="_dtpPartial" />
+</body>
+</html>

@@ -1,0 +1,96 @@
+﻿@using Gharshare.Models
+@model EmailTemplate
+@{
+    if (ViewBag.Case == "add")
+        ViewData["Title"] = "Create new email template";
+    else
+        ViewData["Title"] = "Edit email template";
+    Layout = "_LayoutAdmin";
+}
+<div class="col-lg-12">
+    <div class="card m-5">
+        <div class="card-header">
+            @if (ViewBag.Case == "add")
+            {
+                <h4 class="card-title">Create new email template</h4>
+            }
+            else
+            {
+                <h4 class="card-title">Edit email template</h4>
+            }
+        </div>
+        <div class="card-body">
+            <form asp-area="admin" asp-action="createemailtemplate" method="Post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="@Model.ID" />
+                <input type="hidden" asp-for="@Model.CreatedbyUserId" />
+                <input type="hidden" asp-for="@Model.CreatedOn" />
+                <div class="row justify-content-center mb-3">
+                    <div class="col-sm-6">
+                        <label class="text-label form-label">Template Type</label>
+                        <div class="flex">
+                            <select asp-for="@Model.EmailTemplateType" required
+                                    class="nice-select wide w-100">
+                                <option value="" selected>--select template type--</option>
+                                <option value="@EmailTemplate.TemplateType.welcome">Welcome message</option>
+                                <option value="@EmailTemplate.TemplateType.security">Message about security</option>
+                                <option value="@EmailTemplate.TemplateType.reminder">Email Reminder</option>
+                                <option value="@EmailTemplate.TemplateType.other">Other template</option>
+                            </select>
+                            <span asp-validation-for="@Model.EmailTemplateType" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center mb-3">
+                    <div class="col-sm-6">
+                        <label class="text-label form-label">Title</label>
+                        <div class="flex">
+                            <input asp-for="@Model.Title" type="text" class="form-control"
+                                   required placeholder="Enter template title...">
+                            <span asp-validation-for="@Model.Title" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center mb-3">
+                    <div class="col-sm-6 text-start">
+                        <label class="text-label form-label">Do you want to set this template active?</label>
+                        <div class="form-check custom-checkbox ms-1 ">
+                            <input type="checkbox" asp-for="@Model.IsActive"
+                                   class="form-check-input" />
+                            <label class="form-check-label">
+                                Yes! set this template active for use
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row justify-content-center mb-3 mt-2">
+                    <div class="col-sm-12">
+                        <label class="text-label form-label">Template content</label>
+                        <div id="editor"></div>
+                        <input type="hidden" asp-for="@Model.Template" />
+                    </div>
+                </div>
+                <div class="row justify-content-center mb-2">
+                    @if (ViewBag.Case == "add")
+                    {
+                        <button type="submit" class="btn btn-primary w-50">
+                            Save
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary w-50">
+                            Update
+                        </button>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script src="~/js/commonfunctions/initializeCkeditor.js"></script>
+<script>
+    // Call the function to initialize CKEditor
+    initializeCKEditor('Template');
+</script>

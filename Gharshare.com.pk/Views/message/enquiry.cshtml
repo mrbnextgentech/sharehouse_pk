@@ -1,0 +1,96 @@
+﻿@using Gharshare.CommonHelper
+@using Gharshare.Models
+@model Enquiry
+@{
+    ViewData["Title"] = "sharehouse.pk | Enquiry";
+    Layout = "_Layout4Popups";
+    var loggedinUser = @Context.Session.GetString("_UserId");
+    string propertyAddress = string.Empty;
+    if (Model.Property != null)
+        propertyAddress = Model.Property.Address;
+    else
+        propertyAddress = "";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="replyenquiry">
+                            <div>
+                                <label><strong>From</strong></label>
+                                @if (@Model.FromUserID == loggedinUser)
+                                {
+                                    <input value="You" readonly
+                                       type="text" class="form-control">
+                                }
+                                else
+                                {
+                                    <input asp-for="FromUser.Name" readonly
+                                       type="text" class="form-control">
+                                }
+                            </div>
+                            <div>
+                                <label><strong>To</strong></label>
+                                <input asp-for="ToUser.Name" readonly
+                                       type="text" class="form-control">
+                            </div>
+                            <div>
+                                <label><strong>Date</strong></label>
+                                @{
+                                    var receivedDate = Utility.ConvertToShortDateTime(Model.DateReceived);
+                                }
+                                <input value="@receivedDate" readonly
+                                       type="text" class="form-control">
+                            </div>
+                            <div>
+                                <label><strong>Message</strong></label>
+                                <div class="usermessage mb-3">@Html.Raw(Model.Message)</div>
+                            </div>
+                            <div>
+                                @*<label><strong>Message</strong></label>*@
+                                <div id="editor" class="mb-3"></div>
+                                <input type="hidden" asp-for="@Model.Message" />
+                            </div>
+                            @if (@Model.FromUserID != loggedinUser)
+                            {
+                                <div id="dvReply" class="d-block mb-3 mt-3 text-center">
+                                    @if (@Model.Enquirytype == Enquiry.EnquriyType.aboutinspection ||
+                                   @Model.Enquirytype == Enquiry.EnquriyType.aboutproperty)
+                                    {
+                                        <button onclick="initializeCKE(event,'@Model.Enquirytype','@Model.PropertyID',
+                                '@Model.FromUser.Name','@Model.ToUser.Name','@propertyAddress')" type="submit" class="btn btn-primary w-50">
+                                            Reply
+                                        </button> @*@Model.Property.Address*@
+                                    }
+                                    else
+                                    {
+                                        <button onclick="initializeCKE(event,'@Model.Enquirytype','@Model.PropertyID',
+                                '@Model.FromUser.Name','@Model.ToUser.Name')" type="submit" class="btn btn-primary w-50">
+                                            Reply
+                                        </button>
+                                    }
+                                </div>
+                            }
+                            <div id="dvSend" style="display:none;" class="d-none justify-content-center d-flex mb-3 mt-3 text-center">
+                                <button onclick="sendReply(event,'@Model.Enquirytype','@Model.PropertyID',
+                                '@Model.FromUserID','@Model.ToUserID','@Model.RoomId','@Model.ID')" type="submit" class="btn btn-primary w-25 m-2">
+                                    Send
+                                </button>
+                                <button id="cancel" type="submit" class="btn btn-secondary w-25 m-2">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+<script src="~/js/commonfunctions/initializeCkeditor.js"></script>
+<script src="~/js/message/loadReply.js"></script>
+<script src="~/js/message/sendReply.js"></script>

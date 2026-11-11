@@ -1,0 +1,288 @@
+﻿@using Gharshare.Models
+@model PlanVM
+@{
+    ViewData["Title"] = "";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmplan">
+                            <input type="hidden" asp-for="@Model.plan.ID" />
+                            <input type="hidden" asp-for="@Model.plan.UId" />
+                            <input id="txtintroPersonId" type="hidden" />
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-12">
+                                    <label class="text-label form-label">Plan name</label>
+                                    <div class="flex">
+                                        <input id="txtname" asp-for="@Model.plan.Title" type="text" class="form-control"
+                                               required placeholder="Enter plan name...">
+                                        <span asp-validation-for="@Model.plan.Title" id="spanname" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Plan Type</label>
+                                    <div class="d-flex">
+                                        <select id="ddltype" asp-for="@Model.plan.PlanType" class="nice-select w-100">
+                                            <option value="" selected>select plan type</option>
+                                            <option value="1">For landlord</option>
+                                            <option value="2">For tenant</option>
+                                            <option value="3">For both</option>
+                                        </select>
+                                        <span asp-validation-for="@Model.plan.PlanType" id="spantype" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Plan Status</label>
+                                    <div class="flex">
+                                        <select id="ddlstatus" asp-for="@Model.plan.PlanStatus" class="nice-select w-100">
+                                            <option value="" selected>select plan status</option>
+                                            <option value="1">Active</option>
+                                            <option value="2">Pending</option>
+                                            <option value="3">Canceled</option>
+                                        </select>
+                                        <span asp-validation-for="@Model.plan.PlanStatus" id="spanstatus" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Price</label>
+                                    <div class="flex">
+                                        <input id="txtprice" asp-for="@Model.plan.Price" number type="text" class="form-control"
+                                               required placeholder="Enter plan price...">
+                                        <span asp-validation-for="@Model.plan.Price" id="spanprice" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Plan Days</label>
+                                    <div class="flex">
+                                        <input id="txtdays" asp-for="@Model.plan.Days" type="text" class="form-control"
+                                               required placeholder="Enter no of days plan is valid for...">
+                                        <span asp-validation-for="@Model.plan.Days" id="spandays" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Tagline</label>
+                                    <div class="flex">
+                                        <input id="txttagline" asp-for="@Model.plan.Tagline" type="text" class="form-control"
+                                               required placeholder="Enter tagline...">
+                                        <span asp-validation-for="@Model.plan.Tagline" id="spantagline" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Guarantees success?</label>
+                                    <div class="form-check custom-checkbox ms-1 ">
+                                        <input type="checkbox" value="true" id="plan.Guaranteed" name="plan.Guaranteed"
+                                               @(Model.plan.Guaranteed == true ? "checked" : "")
+                                               asp-for="@Model.plan.Guaranteed"
+                                               class="form-check-input" />                                                
+                                        <label class="form-check-label">
+                                            Yes! this plan guarantees to provide tenant/property?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div>*@
+                            <div class="row justify-content-center mb-3">
+                                <label class="text-label form-label">Plan description</label>
+                                <div class="flex">
+                                    <textarea id="txtdescription" rows="10" style="height:100px;"
+                                              class="form-control" placeholder="Enter plan description..."
+                                              asp-for="@Model.plan.Description"></textarea>
+                                    <span id="spandescription" class="text-danger"></span>
+                                </div>
+                            </div>
+                            @*</div>*@
+                            @if (Model.planservices.Any())
+                            {
+                                <div class="row mb-3">
+                                    <strong class="mt-4">Services in Plan</strong>
+                                </div>
+                                for (int i = 0; i < Model.planservices.Count(); i++)
+                                {
+                                    switch (Model.planservices[i].Service.Servicetype)
+                                    {
+                                        case Service.ServiceType.listingsize:
+                                            <div class="row mb-3">
+                                                <label class="text-label form-label">Listing size</label>
+                                                <div class="d-flex">
+                                                    <select asp-for="@Model.planservices[i].listingsize" class="nice-select w-100">
+                                                        <option value="" selected>select listing size</option>
+                                                        <option value=@PlanService.Listingsize.basic>Free</option>
+                                                        <option value=@PlanService.Listingsize.basic>Basic</option>
+                                                        <option value=@PlanService.Listingsize.full>Full</option>
+                                                        <option value=@PlanService.Listingsize.pro>Pro</option>
+                                                        <option value=@PlanService.Listingsize.None>None</option>                                             
+                                                    </select>
+                                                </div>
+                                                <input type="hidden" asp-for="@Model.planservices[i].ID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].UId">
+                                                <input type="hidden" asp-for="@Model.planservices[i].ServiceID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].PlanID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedOn">
+                                            </div>
+                                            break;
+                                        case Service.ServiceType.searchranking:
+                                            <div class="row mb-3">
+                                                <label class="text-label form-label">Search ranking</label>
+                                                <div class="flex">
+                                                    <select id="ddlstatus" asp-for="@Model.planservices[i].searchranking" class="nice-select w-100">
+                                                        <option value="" selected>select search ranking</option>
+                                                        <option value=@PlanService.Searchranking.free>Free</option>
+                                                        <option value=@PlanService.Searchranking.basic>Basic</option>
+                                                        <option value=@PlanService.Searchranking.full>Full</option>
+                                                        <option value=@PlanService.Searchranking.pro>Pro</option>
+                                                        <option value=@PlanService.Searchranking.None>None</option>                                             
+                                                    </select>
+                                                </div>
+                                                <input type="hidden" asp-for="@Model.planservices[i].ID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].UId">
+                                                <input type="hidden" asp-for="@Model.planservices[i].ServiceID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].PlanID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedOn">
+                                            </div>
+                                            break;
+                                        case Service.ServiceType.topsearch:
+                                            <div class="col-sm-12">
+                                                <label class="text-label form-label">Listing will appear in top search</label>
+                                                <div class="flex">
+                                                    <select id="ddlstatus" class="nice-select w-100 mb-3" asp-for="@Model.planservices[i].topsearch" class="nice-select w-100">
+                                                        <option value="" selected>select search ranking</option>
+                                                        <option value=@PlanService.Topsearch.no>No</option>
+                                                        <option value=@PlanService.Topsearch.every5days>Every 5 days</option>
+                                                        <option value=@PlanService.Topsearch.every7days>Every 7 days</option>
+                                                    </select>
+                                                </div>
+                                                <input type="hidden" asp-for="@Model.planservices[i].ID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].UId">
+                                                <input type="hidden" asp-for="@Model.planservices[i].ServiceID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].PlanID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedOn">
+                                            </div>
+                                            break;
+                                        case Service.ServiceType.livepropertylisting:
+                                            <div class="col-sm-12 mt-3">
+                                                <label class="text-label form-label">No of live property listing</label>
+                                                <div class="flex">
+                                                    <input asp-for="@Model.planservices[i].livepropertylisting" type="text" class="form-control"
+                                           placeholder="Enter no of live property listing...">
+                                                </div>
+                                                <input type="hidden" asp-for="@Model.planservices[i].ID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].UId">
+                                                <input type="hidden" asp-for="@Model.planservices[i].ServiceID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].PlanID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedOn">
+                                            </div>
+                                            break;
+                                        case Service.ServiceType.livepersonlisting:
+                                            <div class="col-sm-12 mt-3">
+                                                <label class="text-label form-label">No of live person listing</label>
+                                                <div class="flex">
+                                                    <input asp-for="@Model.planservices[i].livepersonlisting" type="text" class="form-control"
+                                           placeholder="Enter no of person listing...">
+                                                </div>
+                                                <input type="hidden" asp-for="@Model.planservices[i].ID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].UId">
+                                                <input type="hidden" asp-for="@Model.planservices[i].ServiceID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].PlanID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedOn">
+                                            </div>
+                                            break;
+                                        case Service.ServiceType.sendreceivemessage:
+                                            <div class="col-sm-12 mt-3">
+                                                <label class="text-label form-label">Send and receive instant messages?</label>
+                                                <div class="form-check custom-checkbox ms-1 ">
+                                                    <input type="checkbox" value="true"
+                                           @(Model.planservices[i].sendreceivemessage == true ? "checked" : "")
+                                           id="planservices[@i].sendreceivemessage" name="planservices[@i].sendreceivemessage"
+                                           class="form-check-input" />
+                                                    <input type="hidden" id="planservices[@i].sendreceivemessage" 
+                                                    name="planservices[@i].sendreceivemessage" value="false">
+                                                    <label class="form-check-label">
+                                                        Yes! can send and receive instant messages
+                                                    </label>
+                                                </div>
+                                                <input type="hidden" asp-for="@Model.planservices[i].ID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].UId">
+                                                <input type="hidden" asp-for="@Model.planservices[i].ServiceID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].PlanID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedOn">
+                                            </div>
+                                            break;
+                                        case Service.ServiceType.seemobilenumber:
+                                            <div class="col-sm-12 mt-3">
+                                                <label class="text-label form-label">See mobile numbers?</label>
+                                                <div class="form-check custom-checkbox ms-1 ">
+                                                    <input type="checkbox" value="true"
+                                           @(Model.planservices[i].seemobilenumber == true ? "checked" : "")
+                                           id="planservices[@i].seemobilenumber" name="planservices[@i].seemobilenumber"
+                                           class="form-check-input" />                                                     
+                                                    <label class="form-check-label">
+                                                        Yes! can see mobile number, if allowed
+                                                    </label> 
+                                                    <input type="hidden" 
+                                                    name="planservices[@i].seemobilenumber" value="false">
+                                                </div>
+                                                <input type="hidden" asp-for="@Model.planservices[i].ID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].UId">
+                                                <input type="hidden" asp-for="@Model.planservices[i].ServiceID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].PlanID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedOn">
+                                            </div>
+                                            break;
+                                        case Service.ServiceType.thirtydayguarantee:
+                                            <div class="col-sm-12 mt-3">
+                                                <label class="text-label form-label">30 day guarantee</label>
+                                                <div class="form-check custom-checkbox ms-1 ">
+                                                    <input type="checkbox" value="true"
+                                           @(Model.planservices[i].thirtydayguarantee == true ? "checked" : "")
+                                           name="planservices[@i].thirtydayguarantee" id="planservices[@i].thirtydayguarantee"
+                                           class="form-check-input" />
+                                                    <input type="hidden" id="thirtydayguaranteefalse"
+                                                    name="planservices[@i].thirtydayguarantee" value="false">
+                                                    <label class="form-check-label">
+                                                        Yes! this service gives 30 day success guarantee
+                                                    </label>
+                                                </div>
+                                                <input type="hidden" asp-for="@Model.planservices[i].ID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].UId">
+                                                <input type="hidden" asp-for="@Model.planservices[i].ServiceID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].PlanID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedbyUserID">
+                                                <input type="hidden" asp-for="@Model.planservices[i].CreatedOn">
+                                            </div>
+                                            break;
+                                    }
+                                }
+                            }
+                            <div class="row justify-content-center mb-3 mt-5">
+                                <button type="submit" class="btn btn-primary w-50">
+                                    Update
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<partial name="_dtpPartial" />
+<script src="~/js/plan/loadPlan2edit.js"></script>
+<script src="~/js/plan/updatePlan.js"></script>

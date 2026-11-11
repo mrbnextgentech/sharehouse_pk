@@ -1,0 +1,157 @@
+﻿@using Gharshare.Models
+@model PropertyVM
+@{
+    ViewData["Title"] = "Edit Property Pictures";
+}
+<form method="post" asp-action="PropertyPics" enctype="multipart/form-data">
+<div class="container" style="padding:60px;">
+    <div class="row">
+         <div class="col-md-6">
+        <h1>Edit Property Pictures</h1>
+        </div>
+        <div class="col-md-6 text-end" style="padding-top:20px;">
+             <a asp-action="Index" class="link-info">Go back to list</a>
+             <input asp-for=Property.ID type="hidden" id="PID" value="@Model.Property.ID" />              
+        </div>
+        <hr />
+    </div>
+    <section class="section-property section-t8">
+    <div class="container">
+        <div id="property-carousel" class="swiper">
+            <div class="swiper-wrapper">
+                @if(@Model.Property.CoverImage !="")
+                    {
+                <div class="carousel-item-b swiper-slide">
+                    
+                    <div class="card-box-a card-shadow">
+                        <div class="img-box-a">
+                            <img src="@Model.Property.CoverImage" style="height:600px; width:600px" alt="" class="img-a img-fluid">
+                        </div>                        
+                    </div>                    
+                    <div class="card-overlay">
+                            <div class="card-overlay-a-content">
+                                <div class="card-header-a">                                    
+                                        @*<a asp-area="Admin" asp-controller="Property" asp-action="DeleteCoverPicture" asp-route-id=@Model.Property.ID class="link-a">
+                                            Click here to delete Cover picture
+                                        <span class="bi bi-chevron-right"></span>
+                                        </a>*@
+                                        <a href="#" class="link-a" onclick="DeleteCoverImage();">                                        
+                                            Click here to delete Cover picture
+                                        <span class="bi bi-chevron-right"></span>
+                                        </a>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                }                
+                @{
+                    if (@Model.PropertyImages != null)
+                {
+                     @foreach (var propertyImage in @Model.PropertyImages)
+                    {
+                <div class="carousel-item-b swiper-slide">
+                    <div class="card-box-a card-shadow">
+                        <div class="img-box-a">
+                            <img src="@propertyImage.ImagePath" style="height:600px; width:600px" alt="" class="img-a img-fluid">
+                        </div>                        
+                    </div>
+                    <div class="card-overlay">
+                            <div class="card-overlay-a-content">
+                                <div class="card-header-a">
+                                <a href="#" id=@propertyImage.ID class="link-a" onclick="DeletePropertyImage(this.id);">                                        
+                                            Click here to delete picture
+                                        <span class="bi bi-chevron-right"></span>
+                                        </a>
+                                                                           
+                                </div>
+                            </div>
+                        </div>
+                </div><!-- End carousel item -->
+                }
+                }
+                }               
+            </div>
+        </div>
+        <div class="propery-carousel-pagination carousel-pagination"></div>
+    </div>
+</section><!-- End Latest Properties Section -->
+   
+        <div class="row">
+        <label>Select new property cover image</label>
+                <div class="custom-file">
+                    <input id="filecoverImage" type="file" name="filecoverImage" class="custom-file-input pb-2" />
+                </div>
+                <label>Add new property images</label>
+                <div class="custom-file">
+                    <input id="imageFiles" multiple type="file" name="imageFiles" class="custom-file-input pb-2" />
+                </div>
+            <div class="col-md-3">
+                <button type="submit"class="w-100 btn btn-primary" onclick="return Validate()">Add New Images</button>
+            </div>
+            <div class="col-md-6">
+                <a asp-action="Index" class="w-50 btn btn-secondary">Cancle</a>
+            </div>
+        </div>    
+</div>
+</form>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}
+<script type="text/javascript">
+
+    var DeletePropertyImage=function(ID)
+    {
+        var ImageID = ID;     
+        var PID = document.getElementById('PID').value;
+        
+            $.ajax({
+                url:'/Property/DeletePropertyImage',
+                type:"POST",
+                dataType: "JSON",                
+                data:{ID:ImageID},
+                success:function(response){
+                   // window.location = "https://www.aspsnippets.com/";
+                    window.location = "/Property/PropertyPics/"+PID.toString();
+
+                }
+            })        
+    }
+
+</script>
+<script type="text/javascript">
+
+    var DeleteCoverImage=function()
+    {
+        var PID = document.getElementById('PID').value;        
+      
+        
+            $.ajax({
+                url:'/Property/DeleteCover',
+                type:"POST",
+                dataType: "JSON",                
+                data:{ID:PID},
+                success:function(response){
+                   // window.location = "https://www.aspsnippets.com/";
+                    window.location = "/Property/PropertyPics/"+PID.toString();
+
+                }
+            })        
+    }
+</script>
+
+<script type="text/javascript">
+    function Validate()
+    {
+        if(document.getElementById("filecoverImage").value=="" && document.getElementById("imageFiles").value=="")
+        {
+        Swal.fire({
+      icon: 'error',
+      title: 'Validation Error',
+      text: 'Must select new property cover image or image(s)!',
+      //footer: '<a href="">Why do I have this issue?</a>'
+    })
+    return false;
+    }
+    return true;
+    }
+</script>

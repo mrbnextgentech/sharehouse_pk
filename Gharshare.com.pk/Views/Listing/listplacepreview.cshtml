@@ -1,0 +1,945 @@
+﻿@using Gharshare.CommonHelper
+@using Gharshare.Models
+@inject IHttpContextAccessor accessor
+@model PropertyListingVM
+@{
+    Layout = "_Layoutmain";
+    ViewData["Title"] = "Place Listing Preview";
+    ApplicationUser.usertype userType;
+    Enum.TryParse(accessor.HttpContext.Session
+    .GetString("_UserType"), out userType);
+}
+
+<div class="container">
+    <input type="hidden" id="txtPlaceListingId" asp-for="@Model.Property.ID" />
+    @if (!Model.Preview)
+    {
+        <div class="row mt-3">
+            <div class="col-lg-12">
+                @if (Model.Property.listingstatus == Property.Status.blocked)
+                {
+                    var message = "";
+                    if (userType != ApplicationUser.usertype.admin &&
+                    userType != ApplicationUser.usertype.superadmin)
+                        message = "Alert! This listing has been blocked. Please contact program administrator for further information.";
+                    else
+                        message = "This listing has been blocked by program administrator. Click on 'activate listing' button to activate.";
+                    <div class="row mb-4" style="margin-right:10px;">
+                        <div class="alert alert-danger solid alert-dismissible fade show m-3">
+                            <div class="d-flex">
+                                <svg viewBox="0 0 24 24" width="24 " height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                                @message
+                                @*<a style="color:white;" asp-controller="profile"
+                        asp-action="plans">@message</a>*@
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+                            </button>
+                        </div>
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-lg-6 order-lg-2 mb-4 h-80">
+                        <div class="card" style="background-color: #f8f8f9;">
+                            @if (Model.Property.VideoURL != "" && Model.Property.VideoURL != null)
+                            {
+                                <div class="card-body p-4 text-black text-center">
+                                    <h3>
+                                        Your video tour
+                                    </h3>
+                                </div>
+                                <div class="youtube-video-container">
+                                    @{
+                                        string videoId = Model.Property.VideoURL;
+                                        string embeddedUrl = $"https://www.youtube.com/embed/{videoId}";
+                                    }
+                                    <iframe title="video-tour" src="@embeddedUrl"
+                                            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture
+                                    fullscreen" allowfullscreen="" frameborder="0"></iframe>
+                                </div>
+                                <div class="row m-2">
+                                    <div class="col-md-6">
+                                        <a class="m-2 btn btn-primary" href="#" data-bs-target="#basicModal" data-bs-toggle="modal"
+                                           onclick="loadVideotourView(@Model.Property.ID)">
+                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                            Edit Video Tour
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a class="m-2 btn btn-secondary" href="#" data-bs-target="#basicModal" data-bs-toggle="modal"
+                                           onclick="loadVideotourView(@Model.Property.ID)">
+                                            <i class="fa fa-trash" aria-hidden="true"></i>
+                                            Delete Video Tour
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+
+                            else
+                            {
+                                @*<a href="@Url.Action("videotourAndinspection", "listing", new { listingid = @Model.Property.ID })">*@
+                                <a href="#" id="@Model.Property.ID" data-bs-target="#basicModal" data-bs-toggle="modal"
+                                   onclick="loadVideotourView(this.id)">
+                                    <div class="card-body p-4 text-black text-center">
+                                        <h3>
+                                            Upload video tour (recommended)
+                                        </h3>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <i style="font-size: 70px;" class="fa-brands fa-youtube"></i>
+                                    </div>
+                                    <div class="p-3 text-center">
+                                        <p>
+                                            Uploading a video of your home can reduce the
+                                            need for in-person inspections.
+                                        </p>
+                                    </div>
+                                    <div class="p-3 text-center">
+                                        <a href="#" class="btn btn-primary w-50"
+                                           onclick="loadVideotourView(@Model.Property.ID)"
+                                           data-bs-target="#basicModal" data-bs-toggle="modal">
+                                            Add YouTube Video Tour
+                                        </a>
+                                    </div>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-lg-6 order-lg-2 mb-4 h-80">
+                        @{
+                            var inspectionList = Model.Property.PropertyInspections.ToList();
+                            int sno = 1;
+                        }
+                        @if (inspectionList == null || inspectionList.Count() == 0)
+                        {
+                            <a href="@Url.Action("propertyinspection", "listing", new { listingid = @Model.Property.ID })">
+                                <div class="card" style="background-color: #f8f8f9;">
+                                    <div class="p-4 d-flex justify-content-center">
+                                        <i style="font-size:70px;" class="fa fa-calendar" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="p-1 text-center">
+                                        <h3>Finalise your inspection times</h3>
+                                    </div>
+                                    <div class="p-2 text-center">
+                                        <p>
+                                            Once completed, you can invite potential flatmates to
+                                            book times via messages.
+                                        </p>
+                                    </div>
+                                    <div class="p-1 text-center">
+                                        @* <a href="@Url.Action("propertyinspection", "listing",
+                                new { listingid = @Model.Property.ID })"> Learn more</a> *@
+                                    </div>
+                                    <div class="p-3 text-center">
+                                        <a href="@Url.Action("propertyinspection", "listing", new { listingid = @Model.Property.ID })"
+                                           class="btn btn-primary">
+                                            Finish setting up inspections
+                                        </a>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="card" style="background-color: #f8f8f9;">
+                                <div class="card-body p-4 text-black">
+                                    <h3 class="animated fadeIn text-center">
+                                        Your Property Inspection Schedule
+                                    </h3>
+                                    <table class="table table-responsive-md text-center mt-3">
+                                        <tr>
+                                            <th>S.no</th>
+                                            <th>Date</th>
+                                            <th>From</th>
+                                            <th>To</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        @foreach (var inspection in inspectionList)
+                                        {
+                                            <tr>
+                                                <td>@sno</td>
+                                                <td>@Utility.ConvertToShortDateFormat(inspection.InspectionDate)</td>
+                                                <td>@inspection.From</td>
+                                                <td>@inspection.To</td>
+                                                <td>
+                                                    <div>
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#basicModal"
+                                                           onclick="loadInspection(@inspection.ID)" class="edit btn btn-danger shadow btn-xs sharp me-1">
+                                                            <i class="fa fa-pen"></i>
+                                                        </a>
+                                                        <a href="#" onclick="loadInspection2Delete(@inspection.ID)" data-bs-toggle="modal" data-bs-target="#basicModal"
+                                                           class="delete btn btn-danger shadow btn-xs sharp" title="Delete Plan">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            sno += 1;
+                                        }
+                                    </table>
+                                    <div class="row m-2">
+                                        <div class="col-md-6">
+                                            <a class="m-2 btn btn-primary" href="#" data-bs-target="#basicModal"
+                                               data-bs-toggle="modal" onclick="addInspection(@Model.Property.ID)">
+                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                Add New Inspection
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a id="delete" class="m-2 btn btn-secondary" href="#">
+                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                Delete Full Schedule
+                                            </a>
+                                            <input id="txtListingId" type="hidden" value="@Model.Property.ID" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- row -->
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div id="stepalert" style="display:none;" class="alert alert-success alert-dismissible fade show p-2">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
+                                 fill="none" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            </svg>
+                            Images are being saved. Please wait....
+                        </div>
+                    </div>
+                    @if (Model.Property.Images.Count() > 0)
+                    {
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="card" style="background-color: #f8f8f9;height:275px;">
+                                    <div class="mb-5">
+                                        <div class="text-center mt-3">
+                                            <div class="photo-content mb-3">
+                                                <div class="cover-photo rounded">
+                                                    <div class="text-center">
+                                                        <h4 id="photoCount">@Model.Property.Images.Count() Photos</h4>
+                                                    </div>
+                                                    <div>
+                                                        <img class="mt-1" src="/img/Illustration-have-place_SVG.svg" alt="" width="300">
+                                                    </div>
+                                                    @if (Model.Property.Images.Count() < 14)
+                                                    {
+                                                        <div class="text-center pb-3 mt-2">
+                                                            <span class="btn btn-primary"
+                                                                  onclick="document.getElementById('photoUploader').click();">
+                                                                Add photos
+                                                                <input id="photoUploader" type="file" multiple accept="image/*"
+                                                                       style="display: none;" />
+                                                            </span>
+                                                            <input type="hidden" id="txtListingId" value="@Model.Property.ID">
+                                                        </div>
+                                                    }
+                                                    <div class="text-center pb-3 mt-2">
+                                                        <i class="fa fa-exchange"></i>
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#AccountModal"
+                                                           onclick="loadlistingPhotos();">
+                                                            Reorder
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="mb-5">
+                                    <div class="image-gallery owl-carousel" id="lightgallery">
+                                        @if (Model.Property.Images.Any())
+                                        {
+                                            var Images = Model.Property.Images.OrderBy(img => img.order);
+                                            @foreach (var img in Images)
+                                            {
+                                                <a href="@img.ImagePath" data-exthumbimage="@img.ImagePath"
+                                                   data-src="@img.ImagePath"
+                                                   class="mb-1 col-lg-4 col-xl-4 col-sm-4 col-6 image-container">
+                                                    <img src="@img.ImagePath" alt="" class="img-fluid">
+                                                    <span class="delete-icon" onclick="deltelistingimage(event,@Model.Property.ID,@img.ID)">
+                                                        <i class="fa fa-trash" style="font-size:20px;" title="Delete" aria-hidden="true" data-image-id="@img.ID"></i>
+                                                    </span>
+                                                </a>
+                                            }
+                                        }
+                                    </div>
+                                    @*<button class="btn btn-primary Shortlist">
+                                <span class="me-2">
+                                <i class="fa fa-star"></i>
+                                </span>Shortlist
+                                </button>
+                                @if (Model.Property.Images.Any())
+                                {
+                                <button class="btn btn-primary social-share">
+                                Share <span class="me-2">
+                                <a href="#"><i class="fa fa-facebook"></i></a>
+                                <a href="#"><i class="fa fa-twitter"></i></a>
+                                <a href="#"><i class="fa fa-envelope"></i></a>
+                                </span>
+                                </button>
+                                }*@
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="">
+                                    <div class="">
+                                        <div class="mb-5">
+                                            <div class="text-center mt-5">
+                                                <div class="photo-content mb-3">
+                                                    <div class="cover-photo rounded">
+                                                        <div class="d-flex justify-content-center mb-3">
+                                                            <img class="mt-3" src="/img/Illustration-have-place_SVG.svg" alt="" width="300">
+                                                        </div>
+                                                        <div class="text-center pb-3">
+                                                            <h3>Show off your property!</h3>
+                                                            <p>
+                                                                Let potential flatmates know you're for real and appear
+                                                                higher in search results.
+                                                            </p>
+                                                            <span class="btn btn-primary"
+                                                                  onclick="document.getElementById('photoUploader').click();">
+                                                                Add photos
+                                                                <input id="photoUploader" type="file" multiple accept="image/*"
+                                                                       style="display: none;" />
+                                                            </span>
+                                                            <input type="hidden" id="txtListingId" value="@Model.Property.ID">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-lg-4 order-lg-2 mb-4 h-50">
+                            <div class="card" style="background-color: #f8f8f9;">
+                                <div class="card-body p-4 text-black">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="flex-shrink-0">
+                                            @if (@Model.Property.Owner.ProfilePicture != null)
+                                            {
+                                                <img src="@Model.Property.Owner.ProfilePicture"
+                                                     alt="Generic placeholder image"
+                                                     class="img-fluid rounded-circle border border-dark border-3"
+                                                     style="width: 100px;">
+                                            }
+                                            else
+                                            {
+                                                <img src="/img/user-image.png"
+                                                     alt="Generic placeholder image"
+                                                     class="img-fluid rounded-circle border border-dark border-3"
+                                                     style="width: 100px;">
+                                            }
+
+                                        </div>
+                                        <div class="flex-grow-1 text-center">
+                                            <div class="mb-2">
+                                                <h4 class="text-center">
+                                                    Message
+                                                    @Utility.shortusername(@Model.Property.Owner.Name, 10)
+                                                </h4>
+                                                <p>Online Today</p>
+                                            </div>
+                                            <div>
+                                                <button type="button"
+                                                        class="btn btn-outline-primary btn-rounded btn-sm"
+                                                        data-mdb-ripple-color="dark">
+                                                    Response rate: <strong>
+                                                        @{
+                                                            var responseRate = (int)Math.Floor(Model.Property.Owner.Responserate);
+                                                        }
+                                                        @responseRate%
+                                                    </strong>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-2 text-center">
+                                <h3>
+                                    Listing
+                                    @Utility.GetEnumDisplayName(Model.Property.listingstatus)
+                                </h3>
+                                @*  <a href="">Tips to increase your response</a> *@
+                                @if (Model.Property.listingstatus == Property.Status.Active)
+                                {
+                                    <input id="txtListingId" type="hidden"
+                                           value="@Model.Property.ID">
+                                    <a id="deactivate" href="#"
+                                       class="btn btn-primary w-100">
+                                        Deactivate
+                                        listing
+                                    </a>
+                                }
+                                else if (Model.Property.listingstatus == Property.Status.blocked &&
+                                userType == ApplicationUser.usertype.admin ||
+                                userType == ApplicationUser.usertype.superadmin)
+                                {
+                                    <button id="btnActivateListing" class="btn btn-primary w-100 pb-2">
+                                        Activate Listing
+                                    </button>
+                                }
+                                else if (Model.Property.listingstatus != Property.Status.blocked)
+                                {
+                                    <button id="btnActivateListing" class="btn btn-primary w-100 pb-2">
+                                        Activate Listing
+                                    </button>
+                                }
+                            </div>
+                            <div class="text-center pt-3 p-2">
+                                <a href="/" class="btn btn-primary w-100">
+                                    View other
+                                    listings
+                                </a>
+                            </div>
+                            @* <div class="card" style="background-color: #f8f8f9;">
+                            <div class="card-body p-4 text-black">
+                            <div class="d-flex align-items-center mb-4">
+                            <div class="flex-grow-1 text-center">
+                            <div class="mb-2">
+                            <h4 class="text-center">Social media verifications</h4>
+                            <a href="#">
+                            <button class="btn btn-danger" type="button">
+                            <i class="lab la-facebook-f"></i>
+                            </button>
+                            </a>
+                            <a href="#">
+                            <button class="btn btn-danger" type="button">
+                            <i class="lab la-twitter"></i>
+                            </button>
+                            </a>
+                            <a href="#">
+                            <button class="btn btn-danger" type="button">
+                            <i class="lab la-instagram"></i>
+                            </button>
+                            </a>
+                            <a href="#">
+                            <button class="btn btn-primary" type="button">
+                            <i class="lab la-linkedin"></i>
+                            </button>
+                            </a>
+
+                            </div>
+                            <div>
+                            <button type="button"
+                            class="btn btn-outline-primary btn-rounded btn-sm"
+                            data-mdb-ripple-color="dark">
+                            Edit verifications
+                            </button>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>*@
+                            <div>
+                                @*@if (@Model.Property.IsActive)
+                                {
+                                <button id="btnActivateListing" disabled class="btn btn-primary w-100">
+                                Activate Listing
+                                </button>
+                                }
+                                else
+                                {
+                                <button id="btnActivateListing" class="btn btn-primary w-100">
+                                Activate Listing
+                                </button>
+                                }*@
+                            </div>
+                        </div>
+                        <div class="col-lg-8 order-lg-1">
+                            <div class="row">
+                                <div class="col-md-10">
+                                    @if (Model.Property.Address != null && Model.Property.Address != "")
+                                    {
+                                        <h3 id="address">@Utility.RemoveStreetHouse(Model.Property.Address)</h3>
+                                    }
+                                </div>
+                                @if (!Model.Preview)
+                                {
+                                    <div class="col-md-2 mt-2">
+                                        <a href="#" onclick="loadProperty('editpropertyaddress')"
+                                           data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                            <i class="fa fa-pencil"></i>&nbsp;
+                                            Edit
+                                        </a>
+                                    </div>
+                                    <input id="txtPropertyId" type="hidden" asp-for="@Model.Property.ID">
+                                }
+                            </div>
+                            @if (@Model.Property.Accommodationtype != @Property.AccType.WholeProperty)
+                            {
+                                <h5>
+                                    @* <span class="badge badge-primary badge-lg">Early Bird</span>*@
+                                    @Model.Property.RoomsForRent
+                                    @if (@Model.Property.Accommodationtype != null)
+                                    {
+                                        @Utility.GetEnumDisplayName(@Model.Property.Accommodationtype)
+                                    }
+                                </h5>
+                            }
+                            else
+                            {
+                                <h5>
+                                    @if (@Model.Property.Accommodationtype > 0)
+                                        @Utility.GetEnumDisplayName(@Model.Property.Propertytype)
+
+
+                                </h5>
+                            }
+                            <hr>
+                            @if (@Model.Property.Accommodationtype == @Property.AccType.WholeProperty)
+                            {
+                                <a href="#">
+                                    <span id="rentUnderAddress" class="btn btn-outline-primary ">
+                                        Rs.@Utility.Format(@Model.Property.Rent)/month<br>
+                                        @if (@Model.Property.Bill != null)
+                                            @Utility.GetEnumDisplayName(@Model.Property.Bill)
+
+
+                                    </span>
+                                </a>
+                            }
+                            else
+                            {
+                                foreach (var room in @Model.Property.Rooms)
+                                {
+                                    <a href="#">
+                                        <span class="btn btn-outline-primary ">
+                                            Rs.@Utility.Format(room.Rent)/month<br>
+                                            @if (@room.Billstatus > 0)
+                                                @Utility.GetEnumDisplayName(room.Billstatus)
+
+
+
+
+
+
+
+
+                                        </span>
+                                    </a>
+                                }
+                            }
+                            <div class="col-md-12 mt-3">
+                                <span>
+                                    <img src="/img/icons/detail/bed.png" style="height:35px;width:35px;" />
+                                    <span class="h3">
+                                        @Model.Property.Bed
+                                    </span>
+                                </span>
+                                <span>
+                                    <img src="/img/icons/detail/bath-tub.png" style="height:32px;width:32px;" />
+                                    <span class="h3">@Model.Property.Bathroom</span>
+                                </span>
+                                @if (@Model.Property.Accommodationtype != @Property.AccType.WholeProperty)
+                                {
+                                    <span>
+                                        <img src="/img/icons/detail/men.png" style="height:35px;width:35px;" />
+
+                                        <span class="h3">@Model.Property.Totalflatmates</span>
+                                    </span>
+                                }
+                            </div>
+                            <hr>
+                            <h3>About the property</h3>
+                            <div class="row">
+                                <div class="col-md-10">
+                                    <p id="description">
+                                        @Model.Property.Description
+                                    </p>
+                                </div>
+                                @if (!Model.Preview)
+                                {
+                                    <div class="col-md-2 mt-2">
+                                        <a href="#" onclick="loadProperty('editpropertydescription')"
+                                           data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                            <i class="fa fa-pencil"></i>&nbsp;
+                                            Edit
+                                        </a>
+                                    </div>
+                                }
+
+                            </div>
+
+                            @if (Model.PropertyAcceptings.Any())
+                            {
+                                <h3>Property Accepting</h3>
+                                <div class="row">
+                                    <div id="divacceptings" class="col-md-10">
+                                        @foreach (var pa in Model.PropertyAcceptings)
+                                        {
+                                            <span class="mt-2 m-1 btn btn-outline-primary">
+                                                <img src="/img/icons/detail/tick.svg" style="width:20px;height:14px;" />
+                                                @pa.Accepting.Title
+                                            </span>
+                                        }
+                                    </div>
+                                    <div class="col-md-2 mt-4">
+                                        @if (!Model.Preview)
+                                        {
+                                            <a href="#" onclick="loadProperty('editpropertyacceptings')"
+                                               data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                                <i class="fa fa-pencil"></i>&nbsp;
+                                                Edit
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            <hr>
+                            @if (@Model.Property.Accommodationtype != @Property.AccType.WholeProperty
+                            && @Model.Property.Rooms.Any())
+                            {
+                                foreach (var room in @Model.Property.Rooms)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-10 mt-2">
+                                            <h3>@room.Name</h3>
+                                        </div>
+                                        @if (!Model.Preview)
+                                        {
+                                            <div class="col-md-2 mt-2">
+                                                <a href="#" id="@room.ID" onclick="loadRoom(this.id)"
+                                                   data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                                    <i class="fa fa-pencil"></i>&nbsp;
+                                                    Edit
+                                                </a>
+                                            </div>
+                                            <input id="txtPropertyId" type="hidden" asp-for="@Model.Property.ID">
+                                        }
+                                    </div>
+
+                                    <h4>Details</h4>
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <tbody>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/Rs.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                <h5 id="roomrent" class="mb-0">@room.Rent?.ToString("#,##0") monthly rent</h5>
+                                                                @{
+                                                                    var bondAmount = @room.Rent * @Convert.ToInt32(room.BondType);
+                                                                }
+                                                                <p id="roombond" class="mb-0">@bondAmount?.ToString("#,##0")  bond</p> @* or need to include bondvalue field in room model*@
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/Bill.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.Billstatus > 0) //Billsatatus
+                                                                {
+                                                                    <h5 id="roombillstatus" class="mb-0">@Utility.GetEnumDisplayName(room.Billstatus)</h5>
+                                                                }
+                                                                @if (@Model.Property.InternetStatus != null)
+                                                                {
+                                                                    <p class="mb-0">@Utility.GetEnumDisplayName(@Model.Property.InternetStatus)</p>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/room.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.RoomType > 0)
+                                                                {
+                                                                    <h5 class="mb-0">@Utility.GetEnumDisplayName(room.RoomType)</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/bath-tub.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.BathroomType > 0)
+                                                                {
+                                                                    <h5 class="mb-0">
+                                                                        @Utility.GetEnumDisplayName(room.BathroomType)
+                                                                    </h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/calendar.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.MinStay > 0)
+                                                                {
+                                                                    <h5 id="roomstay" class="mb-0">
+                                                                        @Utility.GetEnumDisplayName(room.MinStay)
+                                                                        -@Utility.GetEnumDisplayName(room.MaxStay)
+                                                                    </h5>
+                                                                }
+                                                                <p id="roomavailable" class="mb-0">Available @Utility.ConvertToShortDateFormat(@room.AvailableFrom)</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/man.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.PreferredFlatmate > 0)
+                                                                {
+                                                                    <h5 class="mb-0">@Utility.GetEnumDisplayName(room.PreferredFlatmate)</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/bed.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (room.Furnishing > 0)
+                                                                {
+                                                                    <h5 class="mb-0">@Utility.GetEnumDisplayName(room.Furnishing)</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="w-50">
+                                                        <div class="media">
+                                                            <img src="/img/icons/detail/car.png" style="height:35px;width:35px;" />
+                                                            <div class="ms-2">
+                                                                @if (Model.Property.Parkingtype != null)
+                                                                {
+                                                                    <h5 class="mb-0">@Utility.GetEnumDisplayName(Model.Property.Parkingtype)</h5>
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    @if (room.RoomFurnishings.Any()) // room features & furnishings
+                                    {
+                                        <h4>Features</h4>
+                                        <div id="roomfeatures" class="row">
+                                            @foreach (var roomfurnishing in room.RoomFurnishings)
+                                            {
+                                                if (roomfurnishing.isSelected == true)
+                                                {
+                                                    <div class="col-6 mb-3">
+                                                        <div class="media" style="margin-left:5px;">
+                                                            <img src="@roomfurnishing.Furnishing.Svgd"
+                                                                 style="height:35px;width:35px;" />
+                                                            <div class="ms-2 mt-2">
+                                                                <h5 class="mb-0">@roomfurnishing.Furnishing.Title</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                    @*<div class="row">
+                            <a class="btn btn-primary w-50" id="@room.ID" onclick="roomEnquiryPopup(this.id,@room.PropertyId)"
+                            data-bs-toggle="modal" data-bs-target="#basicModal">
+                            Enquire about this room
+                            </a>
+                            </div>*@
+                                    <hr>
+                                }
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <h4>Details</h4>
+                                    </div>
+                                    <div class="col-md-2">
+                                        @if (!Model.Preview)
+                                        {
+                                            <a href="#" onclick="loadProperty('editpropertydetails')"
+                                               data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                                <i class="fa fa-pencil"></i>&nbsp;
+                                                Edit
+                                            </a>
+                                        }
+                                    </div>
+                                </div>
+                                /// whole property details
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tbody>
+                                            <tr>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <img src="/img/icons/detail/Rs.png" style="height:35px;width:35px;" />
+                                                        <div class="ms-2">
+                                                            <h5 id="rent" class="mb-0">Rs @Utility.Format(Model.Property.Rent)/month rent</h5>
+                                                            @{
+                                                                var bondAmount = @Model.Property.Rent * @Convert.ToInt32(@Model.Property.Bond);
+                                                            }
+                                                            <p id="bond" class="mb-0">@Utility.Format(bondAmount) bond</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <img src="/img/icons/detail/Bill.png" style="height:35px;width:35px;" />
+                                                        <div class="ms-2">
+                                                            @if (@Model.Property.Bill > 0) //Billsatatus
+                                                            {
+                                                                <h5 id="billstatus" class="mb-0">@Utility.GetEnumDisplayName(@Model.Property.Bill)</h5>
+                                                            }
+                                                            @if (@Model.Property.InternetStatus != null)
+                                                            {
+                                                                <p id="internetstatus" class="mb-0">@Utility.GetEnumDisplayName(@Model.Property.InternetStatus)</p>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <svg width="24" height="24" viewBox="0 0 24 24"
+                                                             xmlns:xlink="http://www.w3.org/1999/xlink" label="">
+                                                            <g fill="none" fill-rule="evenodd">
+                                                                <path d="M21.108 23H20v-3h3v1.195C23 22.224 22.187 23 21.108 23zM1 21.195V20h3v3H2.737C1.714 23 1 22.258 1 21.195zM20 11h3V8h-3v3zm0 4h3v-3h-3v3zm0 4h3v-3h-3v3zm-5 0h4v-3h-4v3zm0 4h4v-3h-4v3zm-5 0h4v-3h-4v3zm-5 0h4v-3H5v3zm0-4h4v-3H5v3zm-4 0h3v-3H1v3zm0-4h3v-3H1v3zm0-4h3V8H1v3zm4 0h4V8H5v3zm5 0h4V8h-4v3zm5 0h4V8h-4v3zm0 4h4v-3h-4v3zM5 15h4v-3H5v3zm5 4h4v-3h-4v3zm0-4h4v-3h-4v3zM2.737 1h18.37C22.188 1 23 1.759 23 2.765V7H1V2.765C1 1.709 1.698 1 2.737 1zm18.37-1H2.738C1.15 0 0 1.163 0 2.765v18.43C0 22.82 1.15 24 2.737 24h18.37C22.73 24 24 22.768 24 21.195V2.765C24 1.188 22.757 0 21.108 0z"
+                                                                      fill="#2E3A4B"></path>
+                                                                <path d="M7.642 3.232a.333.333 0 1 1 0 .666.333.333 0 0 1 0-.666m0 1.665c.735 0 1.333-.598 1.333-1.332 0-.735-.598-1.333-1.333-1.333-.734 0-1.332.598-1.332 1.333 0 .734.598 1.332 1.332 1.332M16.358 3.232a.333.333 0 1 1 0 .665.333.333 0 0 1 0-.665m0 1.665c.734 0 1.332-.598 1.332-1.332 0-.735-.598-1.333-1.332-1.333-.735 0-1.333.598-1.333 1.333 0 .734.598 1.332 1.333 1.332"
+                                                                      fill="#2E3A4B"></path>
+                                                            </g>
+                                                        </svg>
+                                                        <div class="ms-2">
+                                                            <h5 class="mb-0">
+                                                                @if (@Model.Property.MinStay > 0)
+                                                                {
+                                                                    <span id="pminstay">@Utility.GetEnumDisplayName(@Model.Property.MinStay)</span>
+                                                                }
+                                                                @if (@Model.Property.MaxStay > 0)
+                                                                {
+                                                                    <span id="pmaxstay">-@Utility.GetEnumDisplayName(@Model.Property.MaxStay)</span>
+                                                                }
+                                                            </h5>
+                                                            <p id="pavailable" class="mb-0">Available @Utility.ConvertToShortDateFormat(Model.Property.AvailableFrom)</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <svg width="24" height="23" label="">
+                                                            <g stroke="#000" fill="none" fill-rule="evenodd"
+                                                               stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="M13.795 13.997c-.462-.323-.765-.622-.844-.88v-1.034c.668-.7 1.196-1.674 1.507-2.816.75-.54.935-1.648.316-2.43V4.525c0-2.388-1.3-4.024-4.272-4.024C7.607.5 6.23 2.136 6.23 4.524v2.315a1.7 1.7 0 0 0 .315 2.428c.312 1.142.84 2.117 1.507 2.816v1.034c-.299.984-3.875 2.566-7.095 3.84a.737.737 0 0 0-.456.688v1.089M22.101 14.547a4.288 4.288 0 1 0-6.063 6.064 4.288 4.288 0 0 0 6.063-6.064zM18.332 19.313l2.752-2.941M18.332 19.313l-1.277-1.366">
+                                                                </path>
+                                                            </g>
+                                                        </svg>
+                                                        <div class="ms-2">
+                                                            @if (@Model.Property.Flatmatepreference > 0)
+                                                            {
+                                                                <h5 class="mb-0">@Utility.GetEnumDisplayName(@Model.Property.Flatmatepreference)</h5>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="w-50">
+                                                    <div class="media">
+                                                        <svg width="24" height="21"
+                                                             xmlns:xlink="http://www.w3.org/1999/xlink" label="">
+                                                            <g fill="none" fill-rule="evenodd">
+                                                                <g transform="translate(0 -.5)">
+                                                                    <path d="M0 .5v20a.5.5 0 0 0 1 0v-19h22v19a.5.5 0 0 0 1 0V.5H0z"
+                                                                          fill="#2E3A4B"></path>
+                                                                </g>
+                                                                <path d="M20.064 10.23l-.262.038a.508.508 0 0 0-.346.264.527.527 0 0 0-.02.446c.108.27.346 2.064.502 3.517V17H4.075l-.002-2.455c.159-1.503.396-3.294.498-3.551a.499.499 0 0 0-.36-.724l-.263-.04c-.152-.021-.406-.052-.425-.036l-.031-.53h1.8c.378.836 1.412 1.336 2.393 1.336h8.643c.985 0 2.02-.503 2.396-1.342l1.752-.032.041.507c-.063.043-.309.076-.454.096zM19.602 19h-1.276a.329.329 0 0 1-.335-.322V18h1.947v.677c0 .179-.15.323-.335.323zm-13.578-.322c0 .179-.15.323-.335.323H4.413a.329.329 0 0 1-.336-.323V18h1.947v.677zm.923-12.511C7.06 5.603 7.466 5 8.264 5h7.488c.8 0 1.205.6 1.325 1.203l.803 2.837c-.052.553-.841.96-1.55.96H7.686c-.712 0-1.5-.392-1.553-.96l.813-2.874zm13.56 2.499h-1.693L18.05 5.97C17.813 4.774 16.912 4 15.752 4H8.262c-1.135 0-2.058.79-2.288 1.93l-.773 2.736h-1.71a.966.966 0 0 0-.969.96v.569c0 .685.542.893.99.98-.167.865-.334 2.332-.435 3.32v4.183c0 .73.599 1.323 1.336 1.323h1.275c.736 0 1.335-.593 1.335-1.323V18h9.967v.677c0 .73.599 1.323 1.335 1.323h1.276a1.33 1.33 0 0 0 1.335-1.323v-1.174-.003-.004l-.003-3.054c-.1-.95-.265-2.407-.431-3.27.442-.087.974-.296.974-.978v-.568a.966.966 0 0 0-.97-.961z"
+                                                                      fill="#2E3A4B"></path>
+                                                                <path d="M14 15h-4a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1M14 13h-4a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1M17.508 15.126a.639.639 0 0 1-.646-.63c0-.347.29-.629.646-.629a.64.64 0 0 1 .646.63.64.64 0 0 1-.646.63m0-2.26a1.64 1.64 0 0 0-1.646 1.63c0 .898.738 1.63 1.646 1.63a1.64 1.64 0 0 0 1.646-1.63 1.64 1.64 0 0 0-1.646-1.63M6.507 15.126a.639.639 0 0 1-.646-.63c0-.347.29-.629.646-.629a.64.64 0 0 1 .646.63.64.64 0 0 1-.646.63m0-2.26a1.64 1.64 0 0 0-1.646 1.63c0 .898.738 1.63 1.646 1.63a1.64 1.64 0 0 0 1.646-1.63 1.64 1.64 0 0 0-1.646-1.63M10.979 6.528h2.063a.5.5 0 0 0 0-1h-2.063a.5.5 0 0 0 0 1"
+                                                                      fill="#2E3A4B"></path>
+                                                            </g>
+                                                        </svg>
+                                                        <div class="ms-2">
+                                                            @if (Model.Property.Parkingtype != null)
+                                                            {
+                                                                <h5 class="mb-0">@Utility.GetEnumDisplayName(Model.Property.Parkingtype)</h5>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            <div class="row">
+                                <div class="col-md-10 mt-2">
+                                    <h3 class="animated fadeIn">About the flatmates</h3>
+                                </div>
+                                <div class="col-md-2 mt-2">
+                                    <a href="#" onclick="loadProperty('editaboutflatmates')" data-bs-toggle="modal" data-bs-target="#AccountModal">
+                                        <i class="fa fa-pencil"></i>&nbsp;
+                                        Edit
+                                    </a>
+                                </div>
+                            </div>
+                            <p id="aboutflatmates">@(Model.Property.AboutFlatmates ?? "NA")</p>
+                        </div>
+                    </div>
+                    <h4>Location Map</h4>
+                    @if (Model.Property.Address != null && Model.Property.Address != "")
+                    {
+                        <input id="txtAddress" type="hidden" value="@Utility.RemoveStreetHouse(Model.Property.Address)" />
+                    }
+                    <div class="row mt-3">
+                        <div class="col-lg-12" id="map" style="height: 300px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/listings/activatePlaceListing.js"></script>
+<script src="~/js/listings/deactivateListing.js"></script>
+<script src="~/js/listings/loadPropertyinPopup.js"></script>
+<script src="~/js/listings/addInspection.js"></script>
+<script src="~/js/listings/loadInspectioninPopup.js"></script>
+<script src="~/js/listings/loadInspection2Delete.js"></script>
+<script src="~/js/listings/loadRoominPopup.js"></script>
+<script src="~/js/listings/loadPropertyVideotourViewPopup.js"></script>
+<script src="~/js/listings/deleteListingImage.js"></script>
+<script src="~/js/listings/addListingImages.js"></script>
+<script src="~/js/listings/loadlistingPhotos.js"></script>
+<script src="~/js/listings/deleteInspectionSchedule.js"></script>
+<script src="~/js/commonfunctions/createGooglemap.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAyQhihensPLJP3qiNAT0_b-SbtD1jbrOs&callback=initMap&libraries=&v=weekly" defer"></script>
+

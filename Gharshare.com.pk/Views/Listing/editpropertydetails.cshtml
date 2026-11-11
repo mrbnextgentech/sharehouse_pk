@@ -1,0 +1,201 @@
+﻿@using Gharshare.Models
+@model Property
+@{
+    ViewData["Title"] = "Edit Property Details";
+    Layout = "_Layout4Popups";     
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <h4 class="text-center mb-3">
+                            Edit details
+                        </h4>
+                        <select class="mb-3 nice-select wide w-100">
+                                <option> test</option>
+                                <option> test2</option>
+                            </select>
+                        <div class="mb-4">
+                            <div class="card-action coin-tabs review-tabs-1">
+                                <ul class="nav nav-tabs justify-content-center" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link  active" data-bs-toggle="tab" href="#Rent" role="tab"
+                                           aria-selected="false">Rent</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#avail"
+                                           role="tab" aria-selected="false">Availbility</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#furnishing"
+                                           role="tab" aria-selected="false">Furnishings</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active " id="Rent">
+                                <form id="frmPropertyrent">
+                                    <input id="txtrentPropertyId" type="hidden" asp-for="ID" />
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Monthly Rent</label>
+                                            <div class="input-group">
+                                                <input id="txtrent" type="text" asp-for="Rent"
+                                                       class="form-control" />
+                                                <span id="spanrent" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Bond</label>
+                                            <select asp-for="Bond"
+                                                    class="nice-select wide w-100">
+                                                <option value="@Property.BondType.none">none</option>
+                                                <option value="@Property.BondType.onemonth">1 month</option>
+                                                <option value="@Property.BondType.twomonths">2 months</option>
+                                                <option value="@Property.BondType.threemonths">3 months</option>
+                                                <option value="@Property.BondType.fourmonths">4 months</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Bills</label>
+                                            <select asp-for="Bill"
+                                                    class="mb-3 nice-select wide w-100">
+                                                <option value="@Property.Billstatus.AdditionalToRent">
+                                                    Additional to the rent
+                                                </option>
+                                                <option value="@Property.Billstatus.SomeIncludedinRent">
+                                                    Some included in the rent
+                                                </option>
+                                                <option value="@Property.Billstatus.IncludedinRent">
+                                                    Included in rent
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3 text-center">
+                                            <button type="submit" class="btn btn-primary w-50">
+                                                Update
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade " id="avail">
+                                <div class="tab-pane fade show active " id="Rent">
+                                    <form id="frmPropertyavailability">
+                                        <input id="txtavailPropertyId" type="hidden" asp-for="ID" />
+                                        <div class="col-lg-12 mb-2">
+                                            <div class="mb-3">
+                                                <div class="input-group mb-3">
+                                                    <label class="text-label form-label">Date available</label>
+                                                    <div class="input-group">
+                                                        <input id="txtAvailablefrom" asp-for="AvailableFrom" type="text"
+                                                               class="datepicker form-control" readonly>
+                                                        <div class="input-group-text fa fa-calendar"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-2">
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">
+                                                    Minimum length of stay
+                                                </label>
+                                                <select asp-for="MinStay"
+                                                        class="nice-select wide w-100">
+                                                    <option value="@Property.MinimumStay.None">Minimum stay not known</option>
+                                                    <option value="@Property.MinimumStay.OneMonth">1 month</option>
+                                                    <option value="@Property.MinimumStay.TwoMonth">2 months</option>
+                                                    <option value="@Property.MinimumStay.FourMonth">4 months</option>
+                                                    <option value="@Property.MinimumStay.Sixmonth">6 months</option>
+                                                    <option value="@Property.MinimumStay.Twelvemonth">12 months</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-2">
+                                            <div class="mb-3">
+                                                <label class="text-label form-label mt-3">
+                                                    Maximum length of stay
+                                                </label>
+                                                <select asp-for="MaxStay" class="mb-3 nice-select wide w-100">
+                                                    <option value="@Property.MaximumStay.none">
+                                                        Maximum stay not known
+                                                    </option>
+                                                    <option value="@Property.MaximumStay.OneMonth">1 month</option>
+                                                    <option value="@Property.MaximumStay.SixMonths">6 months</option>
+                                                    <option value="@Property.MaximumStay.OneYear">1 year</option>
+                                                    <option value="@Property.MaximumStay.TwoYears">2 years</option>
+                                                    <option value="@Property.MaximumStay.ThreeYears">3 years</option>
+                                                    <option value="@Property.MaximumStay.FiveYears">5 years or more</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-2 text-center">
+                                            <div class="mb-3">
+                                                <button type="submit" class="btn btn-primary w-50">
+                                                    Update
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade " id="furnishing">
+                                <form id="frmPropertyfurnishing">
+                                    <input id="txtfurnishingPropertyId" type="hidden" asp-for="ID" />
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Room furnishings</label>
+                                            <div class="btn-group w-100" role="group"
+                                                 aria-label="Basic radio toggle button group">
+                                                <input type="radio" class="btn-check"
+                                                       asp-for="FurnishingType"
+                                                       id="radioflexible" value="@Property.RoomFurnishing.Flexible">
+                                                <label class="btn btn-outline-primary"
+                                                       for="radioflexible">Flexible</label>
+                                                <input type="radio" class="btn-check" id="radiofurnished"
+                                                       asp-for="FurnishingType"
+                                                       value="@Property.RoomFurnishing.Furnished">
+                                                <label class="btn btn-outline-primary"
+                                                       for="radiofurnished">Furnished</label>
+                                                <input type="radio" class="btn-check" id="radioUnfurnished"
+                                                       asp-for="FurnishingType" value="@Property.RoomFurnishing.UnFurnished">
+                                                <label class="btn btn-outline-primary"
+                                                       for="radioUnfurnished">Unfurnished</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2 text-center">
+                                        <div class="mb-3 text-center">
+                                            <button type="submit" class="btn btn-primary w-50">
+                                                Update
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<partial name="_ValidationScriptsPartial" />*@
+<script src="~/js/listings/updatePropertyrent.js"></script>
+<script src="~/js/listings/updatePropertyavailability.js"></script>
+<script src="~/js/listings/updatePropertyfurnishing.js"></script>
+
+@*<!--Mandatory script order for dtp--> added in layout4popups.cshtml
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+<partial name="_dtpPartial" />  
+<!--End Mandatory script order for dtp-->*@

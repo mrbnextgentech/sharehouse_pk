@@ -1,0 +1,58 @@
+﻿@using Gharshare.Models
+@model EmailTemplateType
+@{
+    ViewData["Title"] = "Add Template Type";
+    Layout = "_Layout4Popups";
+}
+<div class="col-lg-12">
+    <form id="frmTemptype" method="Post">
+        <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="CreatedbyUserId" />
+        <input type="hidden" asp-for="CreatedOn" />
+        @Html.AntiForgeryToken()
+        <div class="row justify-content-center mb-3">
+            <label class="text-label form-label">
+                Template type name
+            </label>
+            <div class="flex">
+                <input type="text" asp-for="Title" required
+                       class="form-control required placeholder="Enter template /type name..." />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <label class="text-label form-label">Is template type ready to use?</label>
+                <div class="form-check custom-checkbox ms-1 ">
+                    <input type="checkbox" asp-for="IsActive" class="form-check-input" />
+                    <label class="form-check-label">
+                        Yes! this template type is ready to use
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-sm-6 text-end">
+                @if (Model.ID > 0)
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Update
+                    </button>
+                }
+                else
+                {
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+                }
+            </div>
+            <div class="col-sm-6">
+                <a id="btnclose" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/site/saveEmailTemplatetype.js"></script>

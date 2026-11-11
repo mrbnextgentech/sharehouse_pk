@@ -1,0 +1,147 @@
+﻿@page "/externallogin"
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = null; //_Layoutmain
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="~/img/favicon.png" type="image/x-icon" />
+    <link href="~/css/admin/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="vh-100">
+    <div class="authincation h-100">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100 align-items-center">
+                <div class="col-md-6">
+                    <div class="authincation-content">
+                        <div class="row no-gutters">
+                            <div class="col-xl-12">
+                                <div class="auth-form">
+                                    <h1>@ViewData["Title"]</h1>
+                                    <div class="mb-3">
+                                        <h2 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h2>
+                                        <hr />
+                                        <p id="external-login-description">
+                                            You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
+                                            Please enter an email address for this site below and click the Register button to finish
+                                            logging in.
+                                        </p>
+                                    </div>
+                                    <div class="row">
+                                        @*<div class="col-md-4">*@
+                                            <form id="externalLoginForm" asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="Input.Email" class="form-control" autocomplete="email" />
+                                                    <label asp-for="Input.Email" class="form-label"></label>
+                                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input asp-for="Input.Name" class="form-control" />
+                                                    <label asp-for="Input.Name" class="form-label"></label>
+                                                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                <select asp-for="Input.Gender" required class="form-control" style="padding-top:10px;">
+                                                <option selected="selected" value="">--select gender--</option>
+                                                <option value="1">Male</option>
+                                                <option value="2">Female</option>
+                                                <option value="3">Transgender</option>
+                                                <option value="4">Undisclosed</option>                                                 
+                                            </select>
+                                            <span asp-validation-for="Input.Gender" class="text-danger"></span>
+                                                </div>
+                                                 <div id="divcaptcha" class="mb-3"></div>
+                                                  <input type="hidden" id="txtcaptcha" required />
+                                                <button type="submit" class="btn btn-primary btn-block">Register</button>
+                                            </form>
+
+                                       @* </div>*@
+                                    </div>
+                                    @* <form id="account" method="post">
+                                    <div class="mb-3">
+                                    <div class="input-group mb-3">
+                                    <span class="input-group-text">
+                                    <i class="fa fa-user icon"></i>
+                                    </span>
+                                    <input type="email" data-val="true" data-val-required="*" class="form-control" asp-for="Input.Email" />
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+                                    </div>
+                                    <div class="mb-3">
+                                    <div class="input-group mb-3">
+                                    <span class="input-group-text">
+                                    <i class="fa fa-lock icon"></i>
+                                    </span>
+                                    <input type="password" asp-for="Input.Password" class="form-control" value="Password">
+                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                    </div>
+                                    </div>
+                                    <div class="row d-flex justify-content-between mt-4 mb-2">
+                                    <div class="mb-3">
+                                    <div class="form-check custom-checkbox ms-1">
+                                    <input type="checkbox" asp-for="Input.RememberMe" class="form-check-input" id="basic_checkbox_1">
+                                    <label asp-for="Input.RememberMe" class="form-check-label" for="basic_checkbox_1">Remember Me</label>
+                                    </div>
+                                    </div>
+                                    <div class="mb-3">
+                                    <a id="forgot-password" asp-page="./ForgotPassword">Forgot Password?</a>
+                                    </div>
+                                    </div>
+                                    <div class="text-center">
+                                    <button type="submit" id="login-submit" class="btn btn-primary btn-block">Sign Me In</button>
+                                    </div>
+                                    @*</form>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" 
+    async defer>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.32/dist/sweetalert2.all.min.js"></script>
+<script type="text/javascript">
+    var onloadCallback = function() {
+        grecaptcha.render('divcaptcha', {
+            'sitekey': '6LeH4xgmAAAAAM8l9lUYWCc8QsFC04JY9qnlAZ9n',
+            'callback': function(response) {
+                $('#txtcaptcha').val(response); // Set the response value in the hidden input field
+            }
+        });
+    };
+
+    // Add client-side validation to prevent form submission if reCAPTCHA is unchecked
+    $(document).ready(function() {
+        $('#externalLoginForm').submit(function(e) {
+            var response = $('#txtcaptcha').val();
+            if (!response) {
+                e.preventDefault(); // Prevent form submission
+              //  alert('Please verify that you are not a robot.'); // Display an error message
+              Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: "Please check 'I'm not a robot' to verify that you are a human",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+            }
+        });
+    });
+</script>
+</body>
+</html>
+

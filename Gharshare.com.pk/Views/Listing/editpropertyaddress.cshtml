@@ -1,0 +1,78 @@
+﻿@using Gharshare.Models
+@model Property
+@{
+    ViewData["Title"] = "Edit Property Details";
+    Layout = "_Layout4Popups";     
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <h4 class="text-center mb-3">
+                            Edit details
+                        </h4>
+                        <form id="frmPropertyaddress">
+                            <input id="txtPropertyId" type="hidden" asp-for="ID" />
+                            <div class="col-lg-12 mb-2">
+                                <div class="mb-3">
+                                <label class="text-label form-label">
+                                 Property Address
+                                 </label>
+                                <div class="form-inline">
+                                    <input id="txtaddress" type="text" class="form-control" 
+                                    asp-for="Address">
+                                    <span id="spanAddress" class="text-danger"></span>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 mb-2">
+                                <div class="mb-3">
+                                    <label class="text-label form-label">Internet Status</label>
+                                    <select asp-for="InternetStatus" class="mb-4 nice-select wide w-100">
+                                        <option value="@Property.Internet.Nointernet">
+                                            No internet
+                                        </option>
+                                        <option value="@Property.Internet.AvailableNotincludedInRent">
+                                            Available
+                                            but
+                                            not inc in rent
+                                        </option>
+                                        <option value="@Property.Internet.IncludedInRent">
+                                            Included in rent
+                                        </option>
+                                        <option value="@Property.Internet.UnlimitedIncludedInRent">
+                                            Unlimited included in rent
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>                             
+                            <div class="col-lg-12 mb-2">
+                                <div class="mb-3">
+                                    <label class="text-label form-label">Parking</label>
+                                    <select class="mb-4 nice-select wide w-100" required
+                                            asp-for="Parkingtype">
+                                        <option value="@Property.Parking.NoParking">No parking</option>
+                                        <option value="@Property.Parking.Offstree">
+                                            Off-street parking
+                                        </option>
+                                        <option value="@Property.Parking.Onstreet">
+                                            On-street Parking
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3 text-center">
+                                <button type="submit" class="btn btn-primary w-50">
+                                    Update
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<script src="~/js/listings/updatePropertyaddress.js"></script>

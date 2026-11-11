@@ -1,0 +1,78 @@
+﻿@using Gharshare.CommonHelper
+@using Gharshare.Models
+@model EnquiryVM
+@{
+    ViewData["Title"] = "| inspection request about this property";
+    Layout = "_Layout4Popups";
+    var userId = @Context.Session.GetString("_UserId");
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmInspection">
+                            @*<div class="row mb-2">
+                                <label><strong>Message to request an inspection</strong></label>
+                            </div>*@
+                            <div class="row mb-2">
+                                <p>
+                                    Introduce yourself, describe why you are interested in the room and why you
+                                    think you would be a great fit for the home.
+                                </p>
+                            </div>
+                            <div class="row mb-2 flex">
+                                @if (userId != "")
+                                {                                     
+                                    <textarea id="txtMessage" rows="4" style="height: 100px;" asp-for="@Model.Enquiry.Message"
+                                          placeholder="Type your message... "></textarea>
+                                    <span id="spanMessage" class="text-danger"></span>
+                                    <input type="hidden" asp-for="@Model.Enquiry.Enquirytype" value="@Enquiry.EnquriyType.aboutinspection">
+                                    <input type="hidden" asp-for="@Model.Enquiry.FromUserID" value="@userId">
+                                    <input type="hidden" asp-for="@Model.Enquiry.ToUserID" value="@Model.Property.Owner.Id">
+                                    <input type="hidden" asp-for="@Model.Enquiry.Enquirystatus" value="@Enquiry.EnquiryStatus.unread">
+                                    <input type="hidden" asp-for="@Model.Enquiry.PropertyID" value="@Model.Property.ID">                                     
+                                    <input type="hidden" asp-for="@Model.Enquiry.CreatedOn" value="@DateTime.UtcNow">
+                                    <input type="hidden" asp-for="@Model.Enquiry.DateReceived" value="@DateTime.UtcNow">
+                                }
+                                else
+                                {
+                                    <textarea rows="4" asp-for="@Model.Enquiry.Message"
+                                          placeholder="Login or signup to message... "></textarea>
+                                    <span id="spanMessage" class="text-danger"></span>
+                                }
+                            </div>
+                            <div class="row mb-2 text-center">
+                                @if (userId != null && userId != "")
+                                {
+                                    if (userId != Model.Property.Owner.Id)
+                                    {
+                                        <div class="mb-2">
+                                            <button type="submit" id="btnMessage" class="btn btn-primary">Send message to @Model.Property.Owner.Name</button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="mb-2">
+                                            <button disabled type="submit" id="btnMessage" class="btn btn-primary">Send message to @Model.Property.Owner.Name</button>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="mb-2 text-center">
+                                        <a class="btn btn-primary" asp-area="identity" asp-page="/account/login">
+                                            Login to message @Model.Property.Owner.Name
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/Message/sendInspectionRequest.js"></script>

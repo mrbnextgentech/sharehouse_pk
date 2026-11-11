@@ -1,0 +1,35 @@
+﻿@using Gharshare.Models
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+<div class="authincation h-100">
+        <div class="container h-100">
+            <div class="row justify-content-center h-100 align-items-center">
+                <div class="col-md-5 mt-5">
+                    <div class="form-input-content text-center error-page mt-5">
+                        @*<h1 class="error-text fw-bold">Error</h1>*@
+                        <h4><i class="fa fa-times-circle text-danger"></i> Internal Server Error</h4>
+                        <p>An error occurred while processing your request. Please try later.</p> 
+						<div>
+                            <a asp-controller="home" asp-action="index" asp-area="" class="btn btn-primary">Back to Home</a>
+                        </div>	
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@*<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+    <p>
+        <strong>Error Detail:</strong> <code>@Model.ErrorMessage</code>
+    </p>
+}*@
+
+ 

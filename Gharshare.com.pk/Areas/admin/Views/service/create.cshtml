@@ -1,0 +1,65 @@
+﻿@using Gharshare.Models
+@model Service
+@{
+    ViewData["Title"] = "Create service";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmservice">
+                            <div class="row justify-content-center mb-3">
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Service type</label>
+                                    <div class="d-flex">
+                                        <select id="ddltype" required asp-for="Servicetype" class="nice-select w-100">
+                                            <option value="" selected>select service type</option>
+                                            <option value="1">Listing size</option>
+                                            <option value="2">Search Ranking</option>
+                                            <option value="3">Top search</option>
+                                            <option value="4">Property Listing</option>
+                                            <option value="5">Person Listing</option>
+                                            <option value="6">Send Message</option>                                             
+                                            <option value="7">See Mobile number</option>
+                                            <option value="8">Guarantee</option>                                            
+                                            <option value="9">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="text-label form-label">Service name</label>
+                                    <div class="flex">
+                                        <input asp-for="title" type="text" class="form-control"
+                                               required placeholder="Enter service name...">
+                                        <span asp-validation-for="title" id="spanname" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-3">
+                                <label class="text-label form-label">Service description</label>
+                                <div class="flex">
+                                    <textarea required rows="10" style="height:100px;"
+                                              class="form-control" placeholder="Enter service description..."
+                                              asp-for="description"></textarea>
+                                    <span id="spandescription" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-2">
+                                <button type="submit" class="btn btn-primary w-50">
+                                    Save
+                                </button>
+                            </div>
+                        </form>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<partial name="_dtpPartial" />
+<script src="~/js/service/createServicelist.js"></script>
+<script src="~/js/service/saveService.js"></script>

@@ -1,0 +1,111 @@
+﻿@using Gharshare.Models
+@model ApplicationUser
+@{
+    ViewData["Title"] = "Account Settings";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        @*<h4 class="text-center mb-2">
+                            Edit my account
+                        </h4>*@
+                        <div class="text-center mb-2">
+                            <div class="rounded-image">
+                                <div id="AccountPic">
+                                    <img src=@(Model?.ProfilePicture??"./img/user-image.png") alt="Rounded Image"
+                                         onclick="document.getElementById('file-upload').click();" />
+                                </div>
+                                <input id="file-upload" type="file" accept="image/*" style="display: none;"
+                                       onchange="validateAndUploadImage(this);" />
+                            </div>
+                        </div>
+                        <form id="accountSettingsForm">
+                            <div>
+                                <label><strong>Your Name</strong></label>
+                                <div class="form-inline">
+                                    <input id="txtName" type="text" class="form-control" asp-for=@Model.Name
+                                           data-val="true" data-val-required="*">
+                                    <span id="spanName" asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label><strong>Email Address</strong></label>
+                                <div class="form-inline">
+                                    <input id="txtEmail" type="email" class="form-control" asp-for="Email">
+                                    <span id="spanEmail" asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                @*<span id="spanEmailMsg" asp-validation-for="Email" class="text-danger"></span>*@
+                            </div>
+                            <div>
+                                <label><strong>Mobile Number</strong></label>
+                                <div class="form-inline">
+                                    <input id="txtMobile" oninput="formatMobileNumber(this)" type="tel"
+                                           class="form-control" asp-for="Mobile" maxlength="15">                                     
+                                </div>
+                                <a href="">Verify mobile phone</a>
+                            </div>
+                            <div class="loginBoxAccount">
+                                <label for="">
+                                    Do you want members to be able to contact you directly on your mobile?                                     
+                                </label>
+                                <div class="form-check custom-checkbox ms-1 ">
+                                    <input type="radio" name="showNumber" id="chkShownumber"
+                                           value="true" @(Model.ShowNumber == true ? "checked" : "") class="form-check-input" />
+
+                                    <label class="form-check-label">
+                                        Yes, please make my number public
+                                    </label>
+                                </div>
+                                <div class="form-check custom-checkbox ms-1 ">
+                                    <input type="radio" name="showNumber" id="chkNotShownumber"
+                                           class="form-check-input" value="false" @(Model.ShowNumber == false ? "checked" : "") />
+                                    <label class="form-check-label"
+                                           for="basic_checkbox_1">No thanks, Keep it private</label>
+                                </div>
+                            </div>
+                            <div class="loginBoxAccount mt-2">
+                                <label for="">
+                                    Do you want members to be able to send you message?                                     
+                                </label>
+                                <div class="form-check custom-checkbox ms-1 ">
+                                    <input type="radio" name="FreetoMessage" id="chkFreetoMessage"
+                                           value="true" @(Model.FreetoMessage == true ? "checked" : "") class="form-check-input" />
+
+                                    <label class="form-check-label">
+                                        Yes, please allow members to send message
+                                    </label>
+                                </div>
+                                <div class="form-check custom-checkbox ms-1 ">
+                                    <input type="radio" name="FreetoMessage" id="notFreetoMessage"
+                                           class="form-check-input" value="false" @(Model.FreetoMessage == false ? "checked" : "") />
+                                    <label class="form-check-label"
+                                           for="basic_checkbox_1">No thanks, disable sending me messages</label>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3 mb-1">
+                                <button type="submit"
+                                        class="btn btn-primary btn-block">
+                                    Save my changes
+                                </button>
+                            </div>                            
+                        </form>                         
+                            <div class="text-center mt-2">
+                                <a onclick="loadChangepasswordPageInPopup();"
+                                class="btn btn-secondary btn-block">
+                                    Change Password
+                                </a>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="/js/profile/updateAccount.js"></script>
+<script src="/js/profile/formatmobilenum.js"></script>
+<script src="/js/profile/loadChangepasswordPageInPopup.js"></script>

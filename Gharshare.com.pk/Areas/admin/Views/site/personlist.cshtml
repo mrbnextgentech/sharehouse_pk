@@ -1,0 +1,137 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model List<PersonListing>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Person Listing";
+    Pager pager = new Pager();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="col-lg-12">
+    <div class="card m-5">
+        <div class="card-header">
+            <h4 class="card-title">Person Listings</h4>
+        </div>
+        <div class="card-body">
+            <div class="row m-2">
+                <div class="col-md-8">
+                    <a asp-area="" asp-action="findplace" asp-controller="findplace"
+                       class="btn btn-primary">
+                        <i class="fa fa-plus"></i>
+                        Create new person Listing
+                    </a>
+                </div>
+                @*<div class="col-md-4">
+                <select id="ddlplantype" class="nice-select wide w-100">
+                <option value="" data-plantype="">All plans</option>
+                <option value="1" data-plantype="1">For landlords</option>
+                <option value="2" data-plantype="2">For tenants</option>
+                <option value="3" data-plantype="3">For both </option>
+                </select>
+                </div>*@
+            </div>
+            @if (Model.Any())
+            {
+                <div id="planlist" class="table-responsive">
+                    <table class="table table-responsive-md">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">
+                                    <strong>No</strong>
+                                </th>
+                                <th><strong>Name</strong></th>
+                                <th><strong>Address</strong></th>
+                                <th><strong>Email</strong></th>
+                                <th><strong>Phone</strong></th>
+                                <th><strong>Status</strong></th>
+                                <th class="text-center"><strong>Action</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Count(); i++)
+                            {
+                                var personListing = Model[i];
+                                var sno = @i + 1;
+                                <tr>
+                                    <td>@sno</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="w-space-no">@personListing.User.Name</span>
+                                        </div>
+                                    </td>
+                                    <td>@(personListing.User.Address!=null?personListing.User.Address:"N/A")</td>
+                                    <td>@personListing.User.Email</td>
+                                    <td>@(personListing.User.PhoneNumber!=null?personListing.User.PhoneNumber:"N/A")</td>
+                                    <td>
+                                        @if (personListing.listingstatus == PersonListing.Status.Active)
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-success me-1"></i> Active
+                                            </div>
+                                        }
+                                        else if (personListing.listingstatus == PersonListing.Status.Inactive)
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-inactive me-1"></i> Inactive
+                                            </div>
+                                        }
+                                        else if (personListing.listingstatus == PersonListing.Status.blocked)
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-danger me-1"></i> Blocked
+                                            </div>
+                                        }
+                                        else if (personListing.listingstatus == PersonListing.Status.Pending)
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-orange me-1"></i> Pending
+                                            </div>
+                                        }
+                                        else if (personListing.listingstatus == PersonListing.Status.Draft)
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-info me-1"></i> Draft
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="d-flex align-items-center">
+                                                <i class="fa fa-circle text-dark me-1"></i> Expired
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                            <a asp-area="" asp-action="findplacepreview" asp-controller="findplace"
+                                       asp-route-listingId="@personListing.UId" title="Edit"
+                                       class="edit btn btn-danger shadow btn-xs sharp me-1">
+                                                <i class="fa fa-pen"></i>
+                                            </a>
+                                            @*<a href="#" title="Take down listing" class="btn btn-danger shadow btn-xs sharp"><i class="fa fa-trash"></i></a>*@
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <partial name="_Pager" model="@pager" />
+            }
+            else
+            {
+                <div id="noplan" class="row text-center p-3">
+                    <h4>No record exists</h4>
+                </div>
+            }
+            <div style="display:none" id="message" class="row text-center p-3">
+                <h4>No record exists</h4>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,130 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Add Service to Plan";
+}
+<div style="padding:60px;">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Service List</h1>
+        </div>
+        <div class="col-md-6">
+        </div>
+        <hr />
+    </div>
+    @*<form method="Post" asp-action="AddServicestoPlan" >*@
+    <div class="row">       
+        <div class="text-center col-md-12">
+            <div class="form-floating p-1">
+                <input class="form-control" type="text" value="@Model.PlanName" readonly />
+                <input type="hidden" id="planid" value="@Model.PlanId" />
+                <label>Plan Name:</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table id="ItemList" class="table table-bordered table-striped" >
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col" class="col-4">Name</th>
+                        <th scope="col" class="col-7">Description</th>
+                        <th scope="col" class="col-1 text-center">
+                            <input type="checkbox" onClick="toggle(this)" class="form-check-input" /> All
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        if (@Model.Services != null)
+                        {
+                            var count = 1;
+
+                            @foreach (var service in Model.Services)
+                            {                                
+                                <tr>
+                                    <th scope="row">@count</th>
+                                    <td>@service.Name</td>
+                                    <td>@service.Description</td>
+                                    
+                                    <td>
+                                    @*<ul class="list-group" ><li class="list-group-item">*@
+                                        <div class="text-center">
+                                            <input type="checkbox" name="checkbox" class="form-check-input" ID="check_@service.ID" checked="@service.IsSelected" />
+                                        </div>
+                                        @*</li></ul>*@
+                                    </td>                                    
+                                </tr>
+                                count = count + 1;
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="text-end col-md-12 p-0 ">
+        @*<button type="submit" class="float-right btn btn-primary" style="width:200px;">Add Services to Plan</button>*@
+        <a class="float-right btn btn-primary" onclick="SaveList();" style="width:200px;">Add Services to Plan</a>
+    </div>
+    @*</form>*@
+    <div>
+
+        @*@{
+            if (@Model != null)
+            {
+            if (@Model.Count() == 0)
+            {
+            <p>There is no plan. Click 'Create Plan' to add new plan.</p>
+            }
+            }
+            else
+            {
+            <p>There is no service. Click 'Create Service' to add new service.</p>
+            }
+            }*@
+    </div>
+</div>
+<script type="text/javascript">
+
+    var SaveList=function(){
+
+        var planid = document.getElementById('planid').value;
+        //debugger
+        var arrItem=[];
+        var commaSeparatedIds="";
+        $("#ItemList tr td input[type=checkbox]").each(function(index,val){
+
+            var checkId=$(val).attr("Id");    
+            
+            var arr=checkId.split('_');
+            var currentCheckboxId=arr[1];
+            var isChecked=$("#"+checkId).is(":checked",true);
+            if(isChecked){
+
+                arrItem.push(currentCheckboxId);
+            }
+
+        })
+
+        if(arrItem.length !=0){
+             //debugger
+
+            commaSeparatedIds=arrItem.toString();
+            
+            $.ajax({
+                url:'/Admin/Plan/SaveList',
+                type:"POST",
+                dataType: "JSON", 
+                //data: JSON.stringify({ ItemList:commaSeparatedIds }),
+                data:{ItemList:commaSeparatedIds,Planid:planid},
+                success:function(response){
+                   // window.location = "https://www.aspsnippets.com/";
+                    window.location = "/Admin/Plan/Edit/"+planid.toString();
+
+                }
+            })
+        }
+    }
+
+</script>

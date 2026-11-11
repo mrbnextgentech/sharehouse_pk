@@ -1,0 +1,45 @@
+﻿@using Gharshare.Models
+@model PersonListingVM
+@{
+    ViewData["Title"] = "";
+    Layout = "_Layout4Popups";
+    //Layout = "_Layoutmain";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmmylocations" enctype="multipart/form-data">
+                            <input id="txtintroPersonId" type="hidden" asp-for="@Model.PersonListing.ID" />
+                            <div class="row justify-content-center">
+                                <div class="col-sm-12 mb-2">
+                                    <div class="text-center row mb-3">
+                                        <h4>My preferred locations</h4>
+                                        <div class="flex">
+                                            <textarea class="form-control" rows="4"
+                                                      asp-for="PersonListing.Suburb" required
+                                                      id="txtMylocations" style="height: 100px;"
+                                                      placeholder="Search for a suburb...">                                                   
+                                        </textarea>
+                                            <span id="spanlocations" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" class="btn btn-primary w-50">
+                                            Update
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" /> 
+<script src="~/js/listings/findplace/updateLocations.js"></script>
+ 

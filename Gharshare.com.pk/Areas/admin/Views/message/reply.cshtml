@@ -1,0 +1,30 @@
+﻿@*@model IEnumerable<Gharshare.Models.Message>*@
+ 
+@{
+    ViewData["Title"] = "Reply Message";
+    Layout = "~/Views/Shared/_Layout_1.cshtml";
+}
+
+<div style="padding:60px;">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Reply Message</h1>
+        </div>
+        <div class="col-md-6">
+        </div>
+        <hr />
+    </div>
+    <div class="row">
+        <div class="text-end col-md-6 p-2 ">            
+        </div>
+        <div class="text-end col-md-6 p-2 ">
+            <a asp-area="Admin" class="float-right btn btn-primary" asp-controller="Message" asp-action="Index" style="width:200px;"><i class="bi bi-list"></i></i> List Messages</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <img src="~/assets//img/under-construction-page.jpg" height="400px" width=90%/>
+        </div>
+    </div>    
+</div>

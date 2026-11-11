@@ -1,0 +1,54 @@
+﻿@using Gharshare.CommonHelper
+@using Gharshare.Models
+@using Gharshare.CommonHelper
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model StaticContent
+@{
+    ViewData["Title"] = "Delete content";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="col-lg-12">
+    <div class="card m-5">
+        <div class="card-header">
+            <h4 class="card-title">Delete content</h4>
+        </div>
+        <div class="card-body">
+            <form asp-area="admin" method="post" asp-action="delete">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h3 class="mb-3">@Model.Heading</h3>
+                        <div class="row"><p>@Model.CreatedbyUser.Name</p></div>
+                        <div class="row mb-3">
+                            <p>@Utility.ConvertToCustomDateFormat(@Model.CreatedOn)</p>
+                        </div>
+                        <div class="row mb-3">
+                            <p>@Model.Topsection</p>
+                        </div>
+                        @if (Model.Imagepath != null)
+                        {
+                            <div class="row mb-5">
+                                <img src="@Model.Imagepath" alt="article image">
+                            </div>
+                        }
+                        <div class="row mb-3">
+                            @Html.Raw(@Model.LowerSection)
+                        </div>
+                        <hr>
+                        <div class="row mb-3">
+                            <div class="col-lg-6  text-end">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </div>
+                            <div class="col-lg-6">
+                                <a class="btn btn-secondary" asp-action="index">Cancel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

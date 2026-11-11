@@ -1,0 +1,421 @@
+.btn {
+  padding: 16px 28px !important;
+  border-radius: 0.6rem;
+}
+
+.btn::after {
+  border-radius: 0.6rem;
+}
+
+.btn:hover {
+  overflow: hidden;
+}
+
+.btn-secondary {
+  background: var(--section-bg-6);
+  color: var(--white);
+}
+
+.custom-rounded {
+  border-radius: 1rem !important;
+}
+
+.menu-icon>a::before {
+  content: "\276E" !important;
+  font-size: 10px !important;
+  top: 40% !important;
+  -webkit-transform: rotate(-90deg) !important;
+  -ms-transform: rotate(-90deg) !important;
+  transform: rotate(-90deg) !important;
+  font-weight: 500 !important;
+  transition: all 0.5s;
+}
+
+.menu-icon:hover>a::before {
+  -webkit-transform: rotate(90deg) !important;
+  -ms-transform: rotate(90deg) !important;
+  transform: rotate(90deg) !important;
+}
+
+.custom-padding {
+  padding-bottom: 62px;
+}
+
+.section-title-area .bullets,
+.bullets {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 0;
+  color: var(--ltn__heading-color);
+  line-height: 1.375em;
+  margin: 5px 0;
+}
+
+.service-icon {
+  width: 130px;
+  height: 150px;
+}
+
+/* .input-control {
+  transition: 0.5s all;
+  border-radius: 1.125rem !important;
+  margin-bottom: 24px !important;
+  height: 3.5rem !important;
+  border: 1px solid transparent !important;
+  border-color: var(--border-color-1);
+  min-width: 100%;
+  padding: 0.3125rem 1.25rem !important;
+  box-shadow: 0 16px 32px 0 rgba(7, 28, 31, 0.1) !important;
+} */
+
+.input-control {
+  transition: 0.5s all;
+  border-radius: 1.125rem !important;
+  margin-bottom: 24px !important;
+  height: 3.5rem !important;
+  border: 1px solid #F2F6F7 !important;
+  min-width: 100%;
+  padding: 0.3125rem 1.25rem !important;
+  /* box-shadow: 0 16px 32px 0 rgba(7, 28, 31, 0.1) !important; */
+}
+
+.input-control-btn {
+  width: 4.5rem !important;
+  height: 3.5rem !important;
+}
+
+.input-control:focus {
+  /* box-shadow: 0 0 0 0 rgba(7, 28, 31, 0.1) !important; */
+  border-color: var(--ltn__secondary-color) !important;
+}
+
+.sticky_effect {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+}
+
+.ltn__blog-img a img {
+  object-fit: cover;
+  width: 100%;
+  height: 250px;
+}
+
+.ltn__car-dealer-form-tab .tab-content {
+  top: -40px;
+}
+
+.btn-news {
+  border-radius: 0 1rem 1rem 0;
+}
+
+.bullets {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  margin-bottom: 0;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  color: #082642;
+  line-height: 1.375em;
+}
+
+.title.h4-size.home-feature-title {
+  font-family: 'Made tommy webfont', sans-serif;
+  color: #082642;
+}
+
+.title.h4-size {
+  font-size: 20px;
+  line-height: 1.4em;
+}
+
+.image.analytics-tool-feature-icon-copy {
+  margin-top: 7px;
+  margin-right: 10px;
+  margin-bottom: auto;
+}
+
+/* faq start */
+.container-medium-712px {
+  max-width: 712px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 24px;
+  padding-left: 24px;
+}
+
+
+/* responsive */
+@media screen and (max-width: 1440px) {
+  .btn {
+    padding: 14px 14px !important;
+  }
+}
+
+/* index-main start here */
+.header-menu .nice-select::after,
+.header-menu_mobile .nice-select::after {
+  display: none;
+}
+
+.header-menu_mobile .ltn__car-dealer-form-box .nice-select .list {
+  width: unset !important;
+}
+
+.header-menu_mobile .nice-select {
+  min-width: max-content;
+  padding: 0 12px;
+  height: unset;
+  line-height: 52px;
+  font-size: 22px;
+  border: 0;
+}
+
+.header-menu .ltn__car-dealer-form-tab .tab-content,
+.header-menu_mobile .ltn__car-dealer-form-tab .tab-content {
+  top: 0;
+}
+
+.header-menu .ltn__car-dealer-form-tab .ltn__tab-menu a,
+.header-menu_mobile .ltn__car-dealer-form-tab .ltn__tab-menu a {
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 0.6rem;
+  line-height: 3.5;
+  padding: 0px 16px;
+}
+
+.header-menu .ltn__car-dealer-form-box .nice-select .list {
+  top: 0;
+  margin: 0;
+  max-height: max-content;
+}
+
+.header-menu_mobile .ltn__car-dealer-form-box .nice-select .list {
+  margin: 0;
+  max-height: max-content;
+}
+
+.header-menu .ltn__car-dealer-form-tab,
+.header-menu_mobile .ltn__car-dealer-form-tab {
+  padding: 20px 0;
+}
+
+.header-menu .ltn__car-dealer-form-tab .ltn__tab-menu,
+.header-menu_mobile .ltn__car-dealer-form-tab .ltn__tab-menu {
+  text-align: center;
+}
+
+.header-menu .ltn__car-dealer-form-tab .tab-content,
+.header-menu_mobile .ltn__car-dealer-form-tab .tab-content {
+  padding: 0;
+  background-color: transparent;
+}
+
+.ltn__header-fixed {
+  position: fixed !important;
+  background: #fff;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  left: 0;
+}
+
+.scrollHide {
+  overflow: hidden;
+}
+
+.sreachPosition {
+  position: relative;
+  top: -100px;
+}
+
+@media (max-width:767px) {
+  .header-menu_mobile .ltn__car-dealer-form-box .nice-select .list {
+    width: 600px !important;
+  }
+
+}
+
+@media (max-width:667px) {
+  .header-menu_mobile .ltn__car-dealer-form-box .nice-select .list {
+    width: 500px !important;
+  }
+
+}
+
+@media (max-width:480px) {
+  .header-menu_mobile .ltn__car-dealer-form-box .nice-select .list {
+    width: unset !important;
+  }
+
+  .header-menu_mobile .nice-select {
+    line-height: 44px;
+    font-size: 18px;
+  }
+
+  .ltn__header-options .btn {
+    padding: 12px 8px !important;
+    margin: 6px;
+  }
+
+  .header-menu_mobile .ltn__car-dealer-form-tab .ltn__tab-menu a {
+    font-weight: 700;
+    font-size: 12px;
+    border-radius: 0.6rem;
+    line-height: 3;
+    padding: 0px 14px;
+  }
+
+}
+
+
+/* 
+.search-button{
+width: 100%;
+height: 50px;
+border-radius: 10px;
+} */
+.card {
+  border: 2px solid #08264200;
+  transition: border-color 0.5s;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .12), 0 3px 1px rgba(0, 0, 0, .04);
+}
+
+.card:hover {
+  border-color: #FF005D;
+}
+
+/* shortlistButton */
+.shortlistButton {
+  cursor: pointer;
+  position: absolute;
+  line-height: 0;
+  right: .5rem;
+  bottom: .8rem;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  border-radius: 50%;
+  padding: .8rem;
+  transition: .3s;
+}
+
+.shortlistButton:hover {
+
+  background-color: rgb(255, 255, 255);
+  border-radius: 50%;
+}
+
+/* login Nav start  */
+.overlay {
+  height: 0%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #082642;
+  overflow-y: scroll;
+  transition: 0.5s;
+}
+
+.overlay-content {
+  position: relative;
+  top: 15%;
+  width: 100%;
+}
+
+.overlay a {
+  text-decoration: none;
+  font-size: 26px;
+  color: #FF005D;
+  display: block;
+  transition: 0.3s;
+}
+
+.overlay a:hover,
+.overlay a:focus {
+  color: #f1f1f1;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 0px;
+  right: 45px;
+  font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay {
+    overflow-y: auto;
+  }
+
+  .overlay a {
+    font-size: 20px
+  }
+
+  .overlay .closebtn {
+    font-size: 40px;
+    top: 0px;
+    right: 35px;
+  }
+}
+
+.loginBox {
+  background-color: #f4f5f5;
+  border-radius: 5px;
+  margin: 0 auto;
+  padding: 1rem 1rem 1rem 1rem;
+  position: relative;
+  text-align: center;
+
+}
+
+.loginBox a:hover {
+  color: #082642;
+}
+
+.subtitle-bar {
+  display: flex;
+  justify-content: space-between;
+  
+}
+.my-account-create-button{
+  padding-bottom: 12px;
+}
+.my-account-create-button button{
+  border-radius: 5px;
+}
+.listing {
+  font-size: 0.9em;
+  position: relative;
+  display: flex;
+  /* align-items: center; */
+  background-color: #0d3c68a1;
+  border-radius: 5px;
+  padding: 20px 10px 0px 10px;
+
+}
+.overlay a {
+  text-decoration: none;
+  font-size: 16px;
+  display: block;
+  transition: 0.3s;
+}
+
+.footer-menu-account a {
+  color: #f1f1f1;
+}
+
+.footer-menu-account a:hover {
+  background-color: #0d3c68a1;
+}

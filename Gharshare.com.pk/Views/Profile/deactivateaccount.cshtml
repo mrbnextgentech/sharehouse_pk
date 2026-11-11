@@ -1,0 +1,51 @@
+﻿@using Gharshare.Models
+@*@model ApplicationUser*@
+@{
+    ViewData["Title"] = "Deactivate Account";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        @*<h4 class="text-center mb-2">
+                            Deactivate or delete your account
+                        </h4>*@
+                        <div class="mb-2">
+                            <p>
+                                Deactivating your account means your listings will be taken down
+                                and your listing alerts will be turned off. You can still access
+                                your account but it will remain dormant until you reactivate or
+                                create a new listing.
+                            </p>
+                        </div>
+                        <form id="deactivateAccountForm">
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Deactivating my account and listings
+                                </button>
+                            </div>
+                            <hr />
+                            <div class="mb-3 mt-3">
+                                <p>
+                                    Deleting your account means that your account and listings
+                                    are permantly removed from the website.
+                                </p>
+                            </div>
+                        </form>
+                        <form id="deleteAccount">
+                        <div class="new-account mt-2 text-center">
+                            <button class="btn btn-secondary btn-block" href="#">Delete my account</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="/js/profile/deactivateAccount.js"></script>
+<script src="/js/profile/deleteAccount.js"></script>

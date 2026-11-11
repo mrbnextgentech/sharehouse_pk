@@ -1,0 +1,217 @@
+﻿@using Gharshare.Models
+@model RoomVM
+@{
+    ViewData["Title"] = "Edit Property Details";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <h4 class="text-center mb-3">
+                            Edit Room details
+                        </h4>
+                        <div class="mb-4">                            
+                            <div class="card-action coin-tabs review-tabs-1">
+                                <ul class="nav nav-tabs justify-content-center" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link  active" data-bs-toggle="tab" href="#Rent" role="tab"
+                                           aria-selected="false">Rent</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#avail"
+                                           role="tab" aria-selected="false">Availbility</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-bs-toggle="tab" href="#features"
+                                           role="tab" aria-selected="false">Features</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active " id="Rent">
+                                <form id="frmRoomrent">
+                                    <input id="txtrentroomId" type="hidden" asp-for="@Model.Room.ID" />
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Monthly Rent</label>
+                                            <div class="input-group">
+                                                <input id="txtroomrent" type="text" asp-for="@Model.Room.Rent"
+                                                       class="form-control" />
+                                                <span id="spanroomrent" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Bond</label>
+                                            <select asp-for="Room.BondType"
+                                                    class="mb-3 nice-select wide w-100">
+                                                <option value="@Room.Bond.None">none</option>
+                                                <option value="@Room.Bond.OneMonth">1 month</option>
+                                                <option value="@Room.Bond.TwoMonth">2 months</option>
+                                                <option value="@Room.Bond.ThreeMonths">3 months</option>
+                                                <option value="@Room.Bond.FourMonths">4 months</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Bills</label>
+                                            <select asp-for="Room.Billstatus"
+                                                    class="mb-3 nice-select wide w-100">
+                                                <option value="@Room.Bill.AdditionalToRent">
+                                                    Additional to the rent
+                                                </option>
+                                                <option value="@Room.Bill.SomeIncludedinRent">
+                                                    Some included in the rent
+                                                </option>
+                                                <option value="@Room.Bill.IncludedinRent">
+                                                    Included in rent
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2 text-center">
+                                        <div class="mb-3">
+                                            <button type="submit" class="btn btn-primary w-50">
+                                                Update
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade " id="avail">
+                                <div class="tab-pane fade show active " id="Rent">
+                                    <form id="frmRoomavailability">
+                                        <input id="txtavailRoomId" type="hidden" asp-for="@Model.Room.ID" />
+                                        <div class="col-lg-12 mb-2">
+                                            <div class="mb-3">
+                                                @*<div class="input-group mb-3">*@
+                                                <label class="text-label form-label">Date available</label>
+                                                <div class="input-group">
+                                                    <input id="txtAvailablefrom" asp-for="@Model.Room.AvailableFrom" type="text"
+                                                           class="datepicker form-control" readonly>
+                                                    <div class="input-group-text fa fa-calendar"></div>
+                                                </div>
+                                                @*</div>*@
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-2">
+                                            <div class="mb-3">
+                                                <label class="text-label form-label">
+                                                    Minimum length of stay
+                                                </label>
+                                                <select asp-for="@Model.Room.MinStay"
+                                                        class="nice-select wide w-100">
+                                                    <option value="@Room.MinimumStay.None" selected>No minimum stay</option>
+                                                    <option value="@Room.MinimumStay.OneMonth">1 month</option>
+                                                    <option value="@Room.MinimumStay.TwoMonth">2 months</option>
+                                                    <option value="@Room.MinimumStay.FourMonth">4 months</option>
+                                                    <option value="@Room.MinimumStay.Sixmonth">6 months</option>
+                                                    <option value="@Room.MinimumStay.Twelvemonth">12 months</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-2">
+                                            <div class="mb-3">
+                                                <label class="text-label form-label mt-3">
+                                                    Maximum length of stay
+                                                </label>
+                                                <select asp-for="@Model.Room.MaxStay" class="mb-3 nice-select wide w-100">
+                                                    <option value="@Room.MaximumStay.None">
+                                                        No maximum stay
+                                                    </option>
+                                                    <option value="@Room.MaximumStay.OneMonth">1 month</option>
+                                                    <option value="@Room.MaximumStay.SixMonths">6 months</option>
+                                                    <option value="@Room.MaximumStay.OneYear">1 year</option>
+                                                    <option value="@Room.MaximumStay.TwoYears">2 years</option>
+                                                    <option value="@Room.MaximumStay.ThreeYears">3 years</option>
+                                                    <option value="@Room.MaximumStay.FiveYears">5 years or more</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12 mb-2 text-center">
+                                            <div class="mb-3">
+                                                <button type="submit" class="btn btn-primary w-50">
+                                                    Update
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade " id="features">
+                                <form id="frmroomfeatures">
+                                    <input id="txtfurnishingRoomId" type="hidden" asp-for="@Model.Room.ID" />
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Room Furnishing</label>
+                                            <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                                                <input type="radio" class="btn-check" id="radioflexible" value="@Room.FurnishingType.Flexible" asp-for="@Model.Room.Furnishing" checked="@((Model.Room.Furnishing == Room.FurnishingType.Flexible))">
+                                                <label class="btn btn-outline-primary" for="radioflexible">Flexible</label>
+                                                <input type="radio" class="btn-check" id="radiofurnished" value="@Room.FurnishingType.Furnished" asp-for="@Model.Room.Furnishing" checked="@((Model.Room.Furnishing == Room.FurnishingType.Furnished))">
+                                                <label class="btn btn-outline-primary" for="radiofurnished">Furnished</label>
+                                                <input type="radio" class="btn-check" id="radioUnfurnished" value="@Room.FurnishingType.UnFurnished" asp-for="@Model.Room.Furnishing" checked="@((Model.Room.Furnishing == Room.FurnishingType.UnFurnished))">
+                                                <label class="btn btn-outline-primary" for="radioUnfurnished">Unfurnished</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2">
+                                        <div class="mb-3">
+                                            <label class="text-label form-label">Room Features</label>
+                                        </div>
+                                        <div class="row mt-3">
+                                            @if (Model.RoomFurnishings.Any())
+                                            {
+                                                @for (int i = 0; i < Model.RoomFurnishings.Count(); i++)
+                                                {
+                                                    <div class="col-lg-3 col-sm-6 col-6">
+                                                        <div class="text-center mt-3">
+                                                            <label for="@Model.RoomFurnishings[i].ID">
+                                                                <input id="@Model.RoomFurnishings[i].ID" asp-for="@Model.RoomFurnishings[i].isSelected"
+                                                               class="radio-input" type="checkbox">
+                                                                <input type="hidden" asp-for="@Model.RoomFurnishings[i].FurnishingID">
+                                                                <input type="hidden" asp-for="@Model.RoomFurnishings[i].ID">
+                                                                <input type="hidden" asp-for="@Model.RoomFurnishings[i].PropertyID">
+                                                                <input type="hidden" asp-for="@Model.RoomFurnishings[i].RoomID">
+                                                                <input type="hidden" asp-for="@Model.RoomFurnishings[i].CreatedbyUserId">
+                                                                <input type="hidden" asp-for="@Model.RoomFurnishings[i].Svgd">
+                                                                <span class="radio-tile">
+                                                                    <span class="radio-icon">
+                                                                        <img src="@Model.RoomFurnishings[i].Furnishing.Svgd" />
+                                                                    </span>
+                                                                </span>
+                                                            </label>
+                                                            <p>@Model.RoomFurnishings[i].Furnishing.Title</p>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 mb-2 text-center">
+                                        <div class="mb-3">
+                                            <button type="submit" class="btn btn-primary w-50">
+                                                Update
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<partial name="_dtpPartial" />
+<script src="~/js/listings/updateRoomrent.js"></script>
+<script src="~/js/listings/updateRoomavailability.js"></script>
+<script src="~/js/listings/updateRoomfeatures.js"></script>
+@*<script src="~/js/commonfunctions/bindDatetimepicker.js"></script>*@

@@ -1,0 +1,59 @@
+﻿@using Gharshare.Models
+@model PropertyListingVM
+@{
+    ViewData["Title"] = "Edit Property Acceptings";
+    Layout = "_Layout4Popups";
+    //Layout = "_Layoutmain";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmPropertyacceptings">
+                            <input id="txtPropertyId" type="hidden" asp-for="@Model.Property.ID" />
+                            <div class="col-lg-12 mb-2 text-center">
+                                <label class="text-label form-label">Accepting</label>
+                            </div>
+                            @if (Model.PropertyAcceptings.Any())
+                            {
+                                <div class="row mt-3">
+                                    @for (int i = 0; i < Model.PropertyAcceptings.Count(); i++)
+                                    {
+                                        <div class="col-lg-3 col-sm-6 col-6">
+                                            <div class="text-center mt-3">
+                                                <label>
+                                                    <input type="hidden" asp-for="@Model.PropertyAcceptings[i].ID">
+                                                    <input type="hidden" asp-for="@Model.PropertyAcceptings[i].AcceptingID">
+                                                    <input type="hidden" asp-for="@Model.PropertyAcceptings[i].CreatedbyUserID">
+                                                    <input type="hidden" asp-for="@Model.PropertyAcceptings[i].CreatedOn">
+                                                    <input type="hidden" asp-for="@Model.PropertyAcceptings[i].PropertyID">                                                     
+                                                    <input class="radio-input" type="checkbox"
+                                                    asp-for="@Model.PropertyAcceptings[i].isSelected">
+                                                    <span class="radio-tile">
+                                                        <span class="radio-icon">
+                                                            <img src="@Model.PropertyAcceptings[i].Accepting.iconpath" style="width:60px;height:60px;"/>
+                                                        </span>
+                                                    </span>
+                                                </label>
+                                                <p>@Model.PropertyAcceptings[i].Accepting.Title</p>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            <div class="mb-3 text-center">
+                                <button type="submit" class="btn btn-primary w-50">
+                                    Update
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/listings/updatePropertyacceptings.js"></script>

@@ -1,0 +1,104 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model List<EmailTemplateType>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "List of Email Template Types";
+    Pager pager = new Pager();
+    int pageNo = 0;
+
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+<div class="row justify-content-center">
+    <div class="col-lg-12">
+        <div class="card m-5">
+            <div class="card-header">
+                <h4 class="card-title">Email Template Type List</h4>
+            </div>
+            <div class="card-body">
+                <div class="row m-2">
+                    <div class="col-md-12">
+                        <a onclick="addTemplateType()"
+                            data-bs-toggle="modal" data-bs-target="#basicModal"
+                           class="btn btn-primary">
+                            <i class="fa fa-plus"></i>
+                            Create new Template Type
+                        </a>
+                    </div>
+                </div>
+                @if (Model.Any())
+                {
+                    <div id="temptypelist">
+                        <table class="table table-responsive-md text-center">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <strong>No</strong>
+                                    </th>
+                                    <th><strong>Name</strong></th>
+                                    <th><strong>Created on</strong></th>
+                                    <th><strong>Created by</strong></th>
+                                    <th><strong>Status</strong></th>
+                                    <th><strong>Action</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (int i = 0; i < Model.Count(); i++)
+                                {
+                                    var template = Model[i];
+                                    var sno = @i + 1;
+                                    <tr>
+                                        <td>@sno</td>
+                                        <td>@template.Title</td>
+                                        <td>@Utility.ConvertToShortDateFormat(@template.CreatedOn)</td>
+                                        <td>@template.CreatedbyUser.Name</td>
+                                        <td class="align-items-center">
+                                            @if (template.IsActive)
+                                            {
+                                                <div class="align-items-center">
+                                                    <i class="fa fa-circle text-success me-1"></i> Active
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="align-items-center">
+                                                    <i class="fa fa-circle text-warning me-1"></i> Inactive
+                                                </div>
+                                            }
+                                        </td>
+                                        <td class="">
+                                            <div class="">
+                                                <a onclick="addTemplateType(@template.ID)" 
+                                                data-bs-target="#basicModal" data-bs-toggle="modal"
+                                                    class="edit btn btn-danger shadow btn-xs sharp me-1">
+                                                    <i class="fa fa-pen"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-danger shadow btn-xs sharp"
+                                           onclick="openDeleteTemptypeView(@template.ID)" data-bs-toggle="modal"
+                                           data-bs-target="#basicModal">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <partial name="_Pager" model="@pager" />
+                }
+                else
+                {
+                    <div id="notemptypes" class="row text-center p-3">
+                        <h4>There are no template types.</h4>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/site/openAddTempTypeview.js"></script>

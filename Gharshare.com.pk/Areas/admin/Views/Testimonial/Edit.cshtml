@@ -1,0 +1,57 @@
+﻿@using Gharshare.Models
+@model Testimonial
+@{
+    ViewData["Title"] = "Edit Testimonial";
+}
+<div class="container" style="padding:60px;">
+    <div class="col-md-12">
+        <h1>Edit Testimonial</h1>
+        <hr />
+    </div>
+    <form method="Post" asp-action="Edit" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-4">
+                <img style="height:310px;" src=@Model.ImagePath class="img-thumbnail" alt="No image found" />
+                <input type="hidden" asp-for="ImagePath" />
+            </div>
+            <div class="col-md-8">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-floating p-1">
+                    <input type="text" asp-for="Name" class="form-control" autocomplete="Name" aria-required="true" />
+                    <label asp-for="Name">Name</label>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-floating p-1">                    
+                        <div class="form-group">
+                           @* <input type="text" asp-for="Description" class="form-control" autocomplete="Description" aria-required="true" />*@
+                       <textarea id="Description" asp-for="Description" class="form-control" rows="8" placeholder="Testimonial" required=""></textarea>
+                   <span asp-validation-for="Description" class="text-danger"></span>   
+                   </div>
+                </div>
+                <div class="custom-file">
+                   @Html.CheckBoxFor(m => m.IsShown)
+                    <label>Show on public website</label>
+                   @*<input type="checkbox" name="IsShown" checked=@Model.IsShown class="m-1 form-check-input" />*@
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                 <input id="file" type="file" name="file" class="custom-file-input pb-2"/>
+            </div>
+        </div>
+        <div class="row">
+             <div class="col-md-3"> </div>
+             <div class="col-md-2"> </div>
+            <div class="col-md-3 text-end">
+                <button type="submit" class="w-100 btn btn-primary" style="">Update</button>
+            </div>
+            <div class="col-md-3">
+                <a asp-action="Index" class="w-100 btn btn-secondary" style="">Cancle</a>
+            </div>
+        </div>
+    </form>
+</div>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,76 @@
+﻿@model Gharshare.CommonHelper.Pager
+
+@if (Model.TotalPages > 1)
+{
+    var param = Model.TotalPages + "," + Model.FromRecord + ","
+                + Model.ToRecord + "," + Model.TotalItems + "," + Model.StartPage + "," + Model.EndPage +
+                "," + Model.PageSize + "," + Model.SortOrderNum + ",";
+    if (Model.SearchPhrase == null || Model.SearchPhrase == "")
+        param += "null";
+    else
+        param += "'" + Model.SearchPhrase + "'";
+
+    <nav id="paging">
+        <ul class="pagination pagination-circle justify-content-center">
+            @if (Model.CurrentPage > 1)
+            {
+                var getFirstPage = @Model.FunctionName + "(1," + param + ",event,this)";
+                <li class="page-item">
+                    <a title="First" data-functionName="@Model.FunctionName" class="page-link me-2" href="#"
+                       data-uid="@Model.Uid" data-id="@Model.Id" onclick="return eval('@getFirstPage');">
+                        <i class="fas fa-angle-double-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+                var pageNo = @Model.CurrentPage - 1;
+
+                var getPreviousPage = @Model.FunctionName + "(" + @pageNo.ToString() + "," + @param + ",event,this)";
+
+                <li class="page-item">
+                    <a title="Previous" data-functionName="@Model.FunctionName"  class="page-link me-2"
+                       data-uid="@Model.Uid" data-id="@Model.Id" href="#" onclick="return eval('@getPreviousPage');">
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                    </a>
+                </li>
+            }
+            @for (var pge = Model.StartPage; pge <= Model.EndPage; pge++)
+            {
+                var getPage = Model.FunctionName + "(" + pge + "," + param + ", event,this)";
+                <li class="page-item @(pge == Model.CurrentPage ? "active" : "")">
+                    <a data-functionName="@Model.FunctionName" class="page-link" href="#"
+                       data-id="@Model.Id" data-uid="@Model.Uid" onclick="return eval(@getPage);">@pge</a>
+                </li>
+            }
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                var pageNo = @Model.CurrentPage + 1;
+                var getNextPage = @Model.FunctionName + "(" + @pageNo + "," + @param + ",event,this)";
+                <li class="page-item page-indicator">
+                    <a title="Next" data-functionName="@Model.FunctionName" class="page-link me-2" href="#"
+                       data-id="@Model.Id" data-uid="@Model.Uid" onclick="return eval('@getNextPage');">
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+                </li>
+                var getLastPage = @Model.FunctionName + "(" + @Model.TotalPages + "," + @param + ",event,this)";
+                <li class="page-item page-indicator">
+                    <a class="page-link me-2" data-functionName="@Model.FunctionName"  title="Last" href="#"
+                       data-id="@Model.Id" data-uid="@Model.Uid" onclick="return eval('@getLastPage');">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+        @if (@Model.FromRecord != @Model.ToRecord)
+        {
+            <p class="text-center mb-3" style="color:#FF005D">
+
+                Viewing @Model.FromRecord - @Model.ToRecord of @Model.TotalItems records
+            </p>
+        }
+        else
+        {
+            <p class="text-center mb-3" style="color:#FF005D">
+                Viewing @Model.FromRecord of @Model.TotalItems records
+            </p>
+        }
+    </nav>
+}

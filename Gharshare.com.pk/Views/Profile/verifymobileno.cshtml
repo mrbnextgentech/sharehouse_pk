@@ -1,0 +1,46 @@
+﻿@using Gharshare.Models
+@*@model ApplicationUser*@
+@model string;
+@{
+    ViewData["Title"] = "Verify your mobile number";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        @*<h4 class="text-center mb-2">
+                            Enter your security code
+                        </h4>*@
+                        <div class="mb-2">
+                            <p>
+                                A security code has been sent to @Model . It may take a few
+                                minutes to arrive.
+                            </p>
+                        </div>
+                        <form id="verifyMobilenumForm">
+                            <div>
+                                <label><strong>Security Code</strong></label>
+                                <div class="form-inline">
+                                    <input id="txtOtp" type="text" class="form-control"
+                                         oninput="validateIntegerInput(this)" maxlength="4">
+                                    <span id="spanOtp" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    Verify
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="/js/profile/verifyMobileNumber.js" ></script>
+<script src="/js/commonfunctions/validateIntegerInput.js"></script>

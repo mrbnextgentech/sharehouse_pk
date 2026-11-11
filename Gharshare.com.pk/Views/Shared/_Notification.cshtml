@@ -1,0 +1,65 @@
+﻿<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.32/dist/sweetalert2.all.min.js"></script>
+  @*<div class="alert alert-primary alert-dismissible fade show"> 
+      @if (TempData["success"]?.ToString() != "") {
+        <strong>Success!</strong>@(TempData["success"]) 
+      }
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="btn-close">
+        </button>
+    </div>*@
+<script>
+    // Define a function to remove the .nice-select element
+  function removeNiceSelectElement() {    
+     // const $targetElement = $('.nice-select.swal2-select');
+      const $targetElement = $('div.nice-select.swal2-select[tabindex="0"]');
+      console.log($targetElement);    
+    if ($targetElement.length > 0) {
+      $targetElement.remove();
+      console.log('Target element removed successfully');
+    } else {
+      console.error('Target element not found');
+    }
+  }
+ 
+if ('@(TempData["success"])' != "") {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success',
+      text: '@(TempData["success"])',
+      showConfirmButton: false,
+      timer: 3000,
+      didRender: () => {
+        // Call the function after 200 ms to remove the .nice-select element
+        setTimeout(removeNiceSelectElement, 200);
+      }
+    });
+  }   
+else if ('@(TempData["error"])' != "") {
+    Swal.fire({
+        position: 'center',
+        icon: 'error',
+        title: '@(TempData["error"])',
+        showConfirmButton: false,
+        timer: 3000,
+        didRender: () => {
+            // Call the function after 200 ms to remove the .nice-select element
+            setTimeout(removeNiceSelectElement, 200);
+        }
+    });
+    //TempData["error"]=null;
+} 
+else if ('@(TempData["info"])' != "") {
+    Swal.fire({
+        position: 'center',
+        icon: 'info',
+        title: '@(TempData["info"])',
+        showConfirmButton: false,
+        timer: 3000,
+        didRender: () => {
+            // Call the function after 200 ms to remove the .nice-select element
+            setTimeout(removeNiceSelectElement, 200);
+        }
+    });
+    //@TempData["info"] = null;
+  } 
+</script> 

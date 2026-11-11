@@ -1,0 +1,36 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model ApplicationUser
+@{
+    ViewData["Title"] = "Delete user";
+    Layout = "_Layout4Popups";
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <div class="mb-3 mt-3">
+                            <p>
+                                The user '@Model.UserName' with @Utility.GetEnumDisplayName(Model.UserType)
+                                role assigned to @Model.Name will permantly be deleted and will
+                                no more be used to access the application.
+                            </p>
+                        </div>
+                        <form id="frmUser">
+                            <input id="txtUserId" type="hidden" asp-for="Id" />
+                            <div class="new-account mt-2 text-center">
+                                <button class="btn btn-secondary btn-block" href="#">
+                                    Delete User
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/admin/user/hardDeleteUser.js"></script>

@@ -1,0 +1,133 @@
+﻿@using Gharshare.Models
+@using Microsoft.AspNetCore.Identity
+@model List<Message>
+@inject UserManager<ApplicationUser> _userManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    Layout = "_LayoutLandlord";
+    ViewData["Title"] = "Send or Receive Messages";
+}
+<style>
+    a.nav-link {
+        color: gray;
+        font-size: 18px;
+        padding: 0;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #e84118;
+        padding: 2px;
+        flex: none;
+    }
+
+    input:focus {
+        outline: 0px !important;
+        box-shadow: none !important;
+    }
+
+    .card-text {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+    }
+     /* Style for the first tick */
+.tick-sent:before {
+  content: "\2713"; /* Check mark symbol */
+  color: blue;
+  font-size: 16px;
+}
+
+/* Style for the second tick */
+.tick-seen:before {
+  content: "\2713\2713"; /* Two check mark symbols */
+  color: green;
+  font-size: 16px;
+}
+
+</style>
+<div class="row p-4 pl-5">
+    @*<div class="col-md-10"><H1>Messages</H1></div>*@
+</div>
+<form>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        @if(ViewBag.Tenant !=null)
+                        {
+                            <strong>@ViewBag.Tenant.Name</strong>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <div class="card" v-for="message in messages">
+                            <div class="card-body">
+                                <ul id="messagesList">
+                                    @{
+                                        var currentUserId = HttpContextAccessor.HttpContext.Session.GetString("_UserId");
+                                    }
+
+                                    @foreach (var message in Model)
+                                    {
+                                        
+                                            @if(currentUserId==message.FromUserID)
+                                            {
+                                                <li><strong>You say  @message.Text </strong><br>
+                                                @message.SentOn                                                 
+                                                @if(message.Read)
+                                                {
+                                                    <span class="tick-seen"></span>
+                                                }                                                
+                                                else
+                                                {
+                                                    <span class="tick-sent"></span>
+                                                }
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                               <li>@message.FromUser.Name says  @message.Text <br>
+                                                @message.SentOn                                                
+                                                @if(message.Read)
+                                                {
+                                                    <span class="tick-seen"></span>
+                                                }                                                
+                                                else
+                                                {
+                                                    <span class="tick-sent"></span>
+                                                }
+                                                </li>
+                                            }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <input type="text" v-model="newMessage" id="messageInput1" />
+                        <button type="submit" id="sendButton1">Send Message</button>
+                    </div>
+                </div>
+            </div>
+            @{                 
+                var user = await _userManager.GetUserAsync(User);
+                var userName = user.Name;
+                var tenantID = "";
+                if (ViewBag.PrimaryTenantID != null)
+                    tenantID = ViewBag.PrimaryTenantID;
+                var landlordID = HttpContextAccessor.HttpContext.Session.GetString("_UserId");
+            }
+            <input id="userInput1" type="hidden" value="@userName" />
+            <input id="tenantInput" type="hidden" value=@tenantID />
+            <input id="landlordInput" type="hidden" value=@landlordID />
+            <input id="sendBy" type="hidden" value="landlord" />
+            <input id="currentUserId1" type="hidden" value=@currentUserId />
+        </div>
+    </div>
+</form>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/lib/signalr/chat.js"></script>
+

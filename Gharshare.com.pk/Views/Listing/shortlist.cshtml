@@ -1,0 +1,310 @@
+﻿@using Gharshare.CommonHelper
+@using Gharshare.Models
+@model ShortlistVM
+@{
+    ViewData["Title"] = "Share Accommodation |";
+    Layout = "_Layoutmain";
+}
+
+<!-- LISTING AREA START -->
+<div class="ltn__blog-area ltn__blog-item-3-normal mt-5 mb-100">
+    <div class="container">
+        <div class="row">
+            <h3>Shortlist</h3><hr />
+        </div>
+        @if (!(Model.PersonListings.Any()) && !(Model.Placelistings.Any()))
+        {
+            <div class="row text-center">
+                <p>Your shortlist is empty</p>
+                <p>
+                    Click on the stars to add or remove listings from your shortlist.
+                    Make sure you login or create a free account before you leave the
+                    site and we will save your shortlist for next time.
+                </p>
+            </div>
+        }
+        <div class="row">
+            <!-- Person Listing Item -->
+            @if (Model.PersonListings.Count() > 0)
+            {
+                foreach (var personListing in Model.PersonListings)
+                {
+                    //var personListing = Listing.PersonListing;
+                    <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="ltn__List-item ltn__blog-item-3">
+                            <div class="ltn__blog-img">
+                                <a asp-action="persondetails" asp-controller="home"
+                           asp-route-listingId="@personListing.UId">
+                                    <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel"
+                                 data-interval="false">
+                                        <ol class="carousel-indicators">
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active">
+                                            </li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                        </ol>
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active">
+                                                <img src="@personListing.User.ProfilePicture" class="d-block w-100" alt="..." style="min-height:360px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <a class="shortlistButton"
+                           onclick="removePersonfromShortlist('@personListing.ID')">
+                                    <i class="fa-solid fa-star fa-xl"
+                               style="color: #ffffff;"></i>
+                                </a>
+                                @if (personListing.User.FreetoMessage)
+                                {
+                                    <div class="sendMessage">
+                                        <span>Free to Message</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="ltn__blog-brief">
+                                <div class="ltn__blog-meta">
+                                    <ul>
+                                        <li class="ltn__blog-author">
+                                            <h6>@personListing.User.Name</h6>
+                                        </li>
+                                        @*@if (personListing.User.FreetoMessage)
+                                {
+                                <li class="ltn__blog-btn float-end">
+                                <a href="#">free to Message</a>
+                                </li>
+                                }*@
+                                    </ul>
+                                    <ul>
+                                        <li>
+                                            <p>
+                                                <span>Rs.</span>@Utility.Format(@personListing.MonthlyBudget)/month
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p>
+                                                <span> • </span>@personListing.User.Age year old
+                                                @Utility.GetEnumDisplayName(@personListing.User.Gender)
+                                            </p>
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        <a asp-action="findplacepreview" asp-controller="findplace" asp-route-listingId=@personListing.UId>
+                                            @if (!string.IsNullOrEmpty(personListing.Introduction) && personListing.Introduction.Length >= 30)
+                                            {
+                                                <p>@personListing.Introduction.Substring(0, 30)....</p>
+                                            }
+                                            else
+                                            {
+                                                @personListing.Introduction
+                                            }
+                                        </a>
+                                    </p>
+                                    @if (personListing.MoveDate <= DateTime.UtcNow)
+                                    {
+                                        <div class="ltn__blog-btn">
+                                            Available Now
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="ltn__blog-btn">
+                                            Available From @Utility.ConvertToShortDateFormat(personListing.MoveDate)
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            <!--End of Person Listing Item -->
+            <!-- Place Listing Item -->
+            @if (@Model.Placelistings.Any())
+            {
+                try
+                {
+                    foreach (var placelisting in @Model.Placelistings)
+                    {
+                        var listingId = placelisting.UId;
+                        <div class="col-lg-4 col-sm-6 col-12">
+                            <div class="ltn__blog-item ltn__blog-item-3">
+                                <div class="ltn__blog-img">
+                                    @if (listingId != null)
+                                    {
+                                        @*<a asp-action="listplacedetail" asp-controller="home"
+                        asp-route-listingid="@listingId">*@
+                                        <a href="@Url.Action("listplacedetail", "home", new { listingid = listingId })">
+                                            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel"
+                                 data-interval="false">
+                                                <ol class="carousel-indicators">
+                                                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active">
+                                                    </li>
+                                                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                                </ol>
+                                                <div class="carousel-inner">
+                                                    <div class="carousel-item active">
+                                                        <img src="@placelisting.CoverImage" class="d-block w-100" alt="..." style="min-height:360px;">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <a class="shortlistButton"
+                           onclick="removeplacefromshortlist('@placelisting.ID')">
+                                            <i class="fa-solid fa-star fa-xl"
+                               style="color: #ffffff;"></i>
+                                        </a>
+                                        @if (@placelisting.Owner.FreetoMessage)
+                                        {
+                                            <div class="sendMessage">
+                                                <span>Free to Message</span>
+                                            </div>
+                                        }
+
+                                    }
+                                </div>
+                                <div class="ltn__blog-brief">
+                                    <div class="ltn__blog-meta">
+                                        <ul>
+                                            @if (@placelisting.Accommodationtype == @Property.AccType.WholeProperty)
+                                            {
+                                                <li class="ltn__blog-author">
+                                                    <h6><span>Rs.</span> @Utility.Format(placelisting.Rent)/month</h6>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                if (placelisting.Rooms.Any())
+                                                {
+                                                    var minRent = @Utility.Format(placelisting.Rooms.Min(room => room.Rent));
+                                                    var maxRent = @Utility.Format(placelisting.Rooms.Max(room => room.Rent));
+
+                                                    <li class="ltn__blog-author">
+                                                        @if (minRent == maxRent)
+                                                        {
+                                                            <h6><span>Rs.</span>@minRent/month</h6>
+                                                        }
+                                                        else
+                                                        {
+                                                            <h6><span>Rs.</span>@minRent-@maxRent/month</h6>
+                                                        }
+                                                    </li>
+                                                }
+                                            }
+
+                                            @*@if (placelisting.Owner.FreetoMessage)
+                                            {
+                                                <li class="ltn__blog-btn float-end">
+                                                    <a href="#">free to Message</a>
+                                                </li>
+                                            }*@
+                                        </ul>
+                                        <div class="ltn__blog-meta">
+                                            <ul>
+                                                <li>
+                                                    <i class="fa-solid fa-bath" style="color: #5c727d;"> <span>@placelisting.Bathroom</span></i>
+                                                    <i class="fa-solid fa-bed" style="color: #5c727d;"> <span>@placelisting.Bed</span></i>
+                                                    <i class="fa-solid fa-user" style="color: #5c727d;"> <span>@placelisting.Totalflatmates</span></i>
+
+                                                </li>
+                                                <li>
+                                                    @if (placelisting.Accommodationtype == @Property.AccType.WholeProperty)
+                                                    {
+                                                        <p>@Utility.GetEnumDisplayName(placelisting.Accommodationtype)</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <p>@placelisting.RoomsForRent @Utility.GetEnumDisplayName(placelisting.Accommodationtype)</p>
+                                                    }
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <p>
+                                            <a asp-action="listplacedetail" asp-controller="home"
+                                   asp-route-listingid="@placelisting.UId">
+                                                @if (!string.IsNullOrEmpty(placelisting.Description) && placelisting.Description.Length >= 30)
+                                                {
+                                                    <p>@placelisting.Description.Substring(0, 30)....</p>
+                                                }
+                                                else
+                                                {
+                                                    <p>@placelisting.Description</p>
+                                                }
+                                            </a>
+                                        </p>
+                                        @if (placelisting.Accommodationtype == @Property.AccType.WholeProperty)
+                                        {
+                                            <div class="ltn__blog-btn">
+                                                @if (placelisting.AvailableFrom <= DateTime.UtcNow)
+                                                {
+                                                    <span>Available Now </span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Available from </span>
+                                                    @Utility.ConvertToShortDateFormat(placelisting.AvailableFrom)
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            if (@placelisting.Rooms.Any())
+                                            {
+                                                <div class="ltn__blog-btn">
+                                                    @if (@placelisting.Rooms[0].AvailableFrom <= DateTime.UtcNow)
+                                                    {
+                                                        <span>Available now</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Available from </span>
+                                                        @Utility.ConvertToShortDateFormat(@placelisting.Rooms[0].AvailableFrom)
+                                                    }
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            <!--  -->
+        </div>
+
+        @* <div class="row">
+        <div class="col-lg-12">
+        <div class="ltn__pagination-area text-center">
+        <div class="ltn__pagination">
+        <ul>
+        <li><a href="#"><i class="fas fa-angle-double-left"></i></a></li>
+        <li><a href="#">1</a></li>
+        <li class="active"><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">...</a></li>
+        <li><a href="#">10</a></li>
+        <li><a href="#"><i class="fas fa-angle-double-right"></i></a></li>
+        </ul>
+        </div>
+        </div>
+        </div>
+        <div class="text-center pt-20">
+        <p>Viewing 1-12 of <span>40360</span> results</p>
+        </div>
+        </div>*@
+    </div>
+</div>
+<!--  lISTING AREA END ----->
+@section Scripts {
+    <script src="~/js/shortlist/removePlaceFromShortlist.js"></script>
+    <script src="~/js/shortlist/removePersonFromShortlist.js"></script>
+      }
+
+

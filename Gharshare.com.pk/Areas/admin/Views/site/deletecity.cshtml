@@ -1,0 +1,55 @@
+﻿@using Gharshare.Models
+@model City
+@{
+    ViewData["Title"] = "Delete city";
+    Layout = "_Layout4Popups";
+}
+<div class="col-lg-12">
+    <form id="frmCity" method="Post">
+        <input type="hidden" asp-for="ID" />
+        @Html.AntiForgeryToken()
+        <div class="row justify-content-center mb-3">
+            <label class="text-label form-label">City name</label>
+            <div class="flex">
+                <input type="text" asp-for="Name" id="txtCity" readonly                
+                class="form-control required placeholder="Enter city name..." />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <label class="text-label form-label">Short name</label>
+            <div class="flex">
+                <input id="txtCityShortName" type="text" asp-for="Shortname" readonly maxlength="3" 
+                class="form-control" required placeholder="Enter city short name..." />
+                <span asp-validation-for="Shortname" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <label class="text-label form-label">Is this a featured city?</label>
+                <div class="form-check custom-checkbox ms-1 ">
+                    <input type="checkbox" value="true" asp-for="Featured"
+                     disabled  class="form-check-input" />
+                    <label class="form-check-label">
+                        Yes! this is a featured city
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center mb-3">
+            <div class="col-sm-6 text-end">
+                <button type="submit" class="btn btn-danger">
+                    Delete
+                </button>
+            </div>
+            <div class="col-sm-6">
+                <a asp-action="lookupdata" class="btn btn-secondary">
+                    Cancel
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<script src="~/js/site/deleteCity.js"></script>
+ 

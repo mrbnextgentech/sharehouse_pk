@@ -1,0 +1,63 @@
+﻿@using Gharshare.Models
+@using Gharshare.CommonHelper
+@model PropertyInspection
+@{
+    ViewData["Title"] = "Delete property inspection schedule";
+    Layout = null;
+}
+<div class="row justify-content-center h-100 align-items-center">
+    <div class="col-md-12">
+        <div class="authincation-content">
+            <div class="row no-gutters">
+                <div class="col-xl-12">
+                    <div class="auth-form">
+                        <form id="frmInspection">
+                           <input id="txtInspectionId" type="hidden" asp-for="ID" />
+                            <div class="row mb-3 inspection">
+                                <div class="col-md-6">
+                                    <label class="text-label form-label">Inspection date</label>
+                                    @{
+                                        var inspectionDate = Utility.ConvertToShortDateFormat(Model.InspectionDate); 
+                                    }
+                                    <div class="input-group">
+                                        <input id="txtInspectionDate" type="text" class="datepicker form-control" 
+                                        asp-for="InspectionDate" readonly  value="@inspectionDate">
+                                        <div class="input-group-text fa fa-calendar"></div>                                         
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="text-label form-label">
+                                        From
+                                    </label>
+                                    <div>@Model.From</div>                                     
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="text-label form-label">
+                                        To
+                                    </label>
+                                    <div>@Model.To</div>
+                                </div>                                 
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6 text-end">
+                                    <button id="delete" type="submit" class="btn btn-primary">
+                                        Delete Inspection Schedule
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <a  class="btn btn-secondary w-75"
+                                            data-bs-dismiss="modal">
+                                        Cancel
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_ValidationScriptsPartial" />
+<partial name="_dtpPartial" /> 
+<script src="~/js/listings/deletePropertyInspection.js"></script>
